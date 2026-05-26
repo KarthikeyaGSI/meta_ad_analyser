@@ -8,10 +8,10 @@
     "node": ">=18"
   },
   "dependencies": {
-    "next": "^15.0.0-rc.1"
+    "next": "^14.2.3"
   },
   "devDependencies": {
-    "next": "^15.0.0-rc.1"
+    "next": "^14.2.3"
   }
 }
 
