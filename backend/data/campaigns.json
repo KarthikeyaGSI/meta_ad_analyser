@@ -1,0 +1,101 @@
+[
+  {
+    "id": "c-prospecting-winner",
+    "metaAccountId": "demo-act-id",
+    "campaignId": "c_winner_prospecting",
+    "name": "🎯 [Scale] Prospecting - Lookalike 1-5% (UGC Winner)",
+    "status": "ACTIVE",
+    "objective": "OUTCOMES",
+    "buyingType": "AUCTION",
+    "budget": 500,
+    "createdTime": "2026-04-20T11:22:44.529Z"
+  },
+  {
+    "id": "c-retargeting-decay",
+    "metaAccountId": "demo-act-id",
+    "campaignId": "c_retargeting_decay",
+    "name": "🔄 [Retargeting] Custom Audiences - Add To Cart (Carousel)",
+    "status": "ACTIVE",
+    "objective": "OUTCOMES",
+    "buyingType": "AUCTION",
+    "budget": 150,
+    "createdTime": "2026-04-15T11:22:44.529Z"
+  },
+  {
+    "id": "c-broad-cpm-spike",
+    "metaAccountId": "demo-act-id",
+    "campaignId": "c_broad_cpm_spike",
+    "name": "🌍 [Test] Broad Interests - Founder Story",
+    "status": "ACTIVE",
+    "objective": "OUTCOMES",
+    "buyingType": "AUCTION",
+    "budget": 100,
+    "createdTime": "2026-05-15T11:22:44.529Z"
+  },
+  {
+    "id": "c-winner-prospecting-demo-act-id",
+    "metaAccountId": "demo-act-id",
+    "campaignId": "c_winner_prospecting_apparel",
+    "name": "🎯 [Scale] Prospecting - Lookalike 1-5% (UGC Winner)",
+    "status": "ACTIVE",
+    "objective": "OUTCOMES",
+    "buyingType": "AUCTION",
+    "budget": 500,
+    "createdTime": "2025-11-16T12:12:46.969Z"
+  },
+  {
+    "id": "c-retargeting-decay-demo-act-id",
+    "metaAccountId": "demo-act-id",
+    "campaignId": "c_retargeting_decay_apparel",
+    "name": "🔄 [Retargeting] Custom Audiences - Add To Cart (Carousel)",
+    "status": "ACTIVE",
+    "objective": "OUTCOMES",
+    "buyingType": "AUCTION",
+    "budget": 150,
+    "createdTime": "2025-11-16T12:12:46.969Z"
+  },
+  {
+    "id": "c-broad-cpm-spike-demo-act-id",
+    "metaAccountId": "demo-act-id",
+    "campaignId": "c_broad_cpm_spike_apparel",
+    "name": "🌍 [Test] Broad Interests - Founder Story",
+    "status": "ACTIVE",
+    "objective": "OUTCOMES",
+    "buyingType": "AUCTION",
+    "budget": 100,
+    "createdTime": "2026-02-04T12:12:46.969Z"
+  },
+  {
+    "id": "c-winner-prospecting-demo-cosmetics-id",
+    "metaAccountId": "demo-cosmetics-id",
+    "campaignId": "c_winner_prospecting_cosmetics",
+    "name": "✨ [Brand] Prospecting - Skincare Glow Serum (UGC Serum)",
+    "status": "ACTIVE",
+    "objective": "OUTCOMES",
+    "buyingType": "AUCTION",
+    "budget": 350,
+    "createdTime": "2025-11-16T12:12:47.067Z"
+  },
+  {
+    "id": "c-retargeting-decay-demo-cosmetics-id",
+    "metaAccountId": "demo-cosmetics-id",
+    "campaignId": "c_retargeting_decay_cosmetics",
+    "name": "🛍️ [Retargeting] Dynamic Catalog - Beauty Buyers (Duo Tint)",
+    "status": "ACTIVE",
+    "objective": "OUTCOMES",
+    "buyingType": "AUCTION",
+    "budget": 120,
+    "createdTime": "2025-11-16T12:12:47.067Z"
+  },
+  {
+    "id": "c-broad-cpm-spike-demo-cosmetics-id",
+    "metaAccountId": "demo-cosmetics-id",
+    "campaignId": "c_broad_cpm_spike_cosmetics",
+    "name": "💄 [Test] Broad Interests - Makeup Artistry (Dr. Aris Video)",
+    "status": "ACTIVE",
+    "objective": "OUTCOMES",
+    "buyingType": "AUCTION",
+    "budget": 80,
+    "createdTime": "2026-02-04T12:12:47.067Z"
+  }
+]

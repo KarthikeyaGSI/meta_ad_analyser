@@ -1,0 +1,181 @@
+[
+  {
+    "id": "sync-sess-1779708490042",
+    "metaAccountId": "demo-act-id",
+    "status": "COMPLETED",
+    "rowsProcessed": 350,
+    "durationMs": 177,
+    "createdAt": "2026-05-25T11:28:10.042Z"
+  },
+  {
+    "id": "sync-sess-1779708491311",
+    "metaAccountId": "demo-act-id",
+    "status": "COMPLETED",
+    "rowsProcessed": 350,
+    "durationMs": 244,
+    "createdAt": "2026-05-25T11:28:11.311Z"
+  },
+  {
+    "id": "sync-sess-1779708492048",
+    "metaAccountId": "demo-act-id",
+    "status": "COMPLETED",
+    "rowsProcessed": 350,
+    "durationMs": 249,
+    "createdAt": "2026-05-25T11:28:12.048Z"
+  },
+  {
+    "id": "sync-sess-1779708492421",
+    "metaAccountId": "demo-act-id",
+    "status": "COMPLETED",
+    "rowsProcessed": 350,
+    "durationMs": 187,
+    "createdAt": "2026-05-25T11:28:12.421Z"
+  },
+  {
+    "id": "sync-sess-1779708670933",
+    "metaAccountId": "demo-cosmetics-id",
+    "status": "COMPLETED",
+    "rowsProcessed": 350,
+    "durationMs": 219,
+    "createdAt": "2026-05-25T11:31:10.933Z"
+  },
+  {
+    "id": "sync-sess-1779710110654",
+    "metaAccountId": "ma-direct-1779710110653",
+    "status": "FAILED",
+    "rowsProcessed": 0,
+    "durationMs": 831,
+    "createdAt": "2026-05-25T11:55:10.654Z",
+    "errorMessage": "(#100) Tried accessing nonexisting field (campaigns)"
+  },
+  {
+    "id": "sync-sess-1779710119271",
+    "metaAccountId": "demo-act-id",
+    "status": "COMPLETED",
+    "rowsProcessed": 350,
+    "durationMs": 197,
+    "createdAt": "2026-05-25T11:55:19.271Z"
+  },
+  {
+    "id": "sync-sess-1779710120476",
+    "metaAccountId": "demo-act-id",
+    "status": "COMPLETED",
+    "rowsProcessed": 350,
+    "durationMs": 214,
+    "createdAt": "2026-05-25T11:55:20.477Z"
+  },
+  {
+    "id": "sync-sess-1779710721802",
+    "metaAccountId": "ma-act_1684473322578378",
+    "status": "COMPLETED",
+    "rowsProcessed": 350,
+    "durationMs": 245,
+    "createdAt": "2026-05-25T12:05:21.802Z"
+  },
+  {
+    "id": "sync-sess-1779710735466",
+    "metaAccountId": "ma-direct-1779710110653",
+    "status": "FAILED",
+    "rowsProcessed": 0,
+    "durationMs": 370,
+    "createdAt": "2026-05-25T12:05:35.466Z",
+    "errorMessage": "Error validating access token: Session has expired on Monday, 25-May-26 05:00:00 PDT. The current time is Monday, 25-May-26 05:05:33 PDT."
+  },
+  {
+    "id": "sync-sess-1779710749437",
+    "metaAccountId": "ma-direct-1779710110653",
+    "status": "FAILED",
+    "rowsProcessed": 0,
+    "durationMs": 334,
+    "createdAt": "2026-05-25T12:05:49.437Z",
+    "errorMessage": "Error validating access token: Session has expired on Monday, 25-May-26 05:00:00 PDT. The current time is Monday, 25-May-26 05:05:47 PDT."
+  },
+  {
+    "id": "sync-sess-1779710771066",
+    "metaAccountId": "ma-direct-1779710110653",
+    "status": "COMPLETED",
+    "rowsProcessed": 350,
+    "durationMs": 757,
+    "createdAt": "2026-05-25T12:06:11.066Z"
+  },
+  {
+    "id": "sync-sess-1779710791021",
+    "metaAccountId": "ma-direct-1779710110653",
+    "status": "COMPLETED",
+    "rowsProcessed": 350,
+    "durationMs": 675,
+    "createdAt": "2026-05-25T12:06:31.021Z"
+  },
+  {
+    "id": "sync-sess-1779710794071",
+    "metaAccountId": "ma-direct-1779710110653",
+    "status": "COMPLETED",
+    "rowsProcessed": 350,
+    "durationMs": 518,
+    "createdAt": "2026-05-25T12:06:34.071Z"
+  },
+  {
+    "id": "sync-sess-1779710802548",
+    "metaAccountId": "ma-direct-1779710110653",
+    "status": "COMPLETED",
+    "rowsProcessed": 350,
+    "durationMs": 669,
+    "createdAt": "2026-05-25T12:06:42.548Z"
+  },
+  {
+    "id": "sync-sess-1779710811262",
+    "metaAccountId": "ma-direct-1779710110653",
+    "status": "COMPLETED",
+    "rowsProcessed": 350,
+    "durationMs": 536,
+    "createdAt": "2026-05-25T12:06:51.262Z"
+  },
+  {
+    "id": "sync-sess-1779710855443",
+    "metaAccountId": "ma-direct-1779710110653",
+    "status": "COMPLETED",
+    "rowsProcessed": 350,
+    "durationMs": 588,
+    "createdAt": "2026-05-25T12:07:35.443Z"
+  },
+  {
+    "id": "sync-sess-1779710856919",
+    "metaAccountId": "ma-direct-1779710110653",
+    "status": "COMPLETED",
+    "rowsProcessed": 350,
+    "durationMs": 496,
+    "createdAt": "2026-05-25T12:07:36.919Z"
+  },
+  {
+    "id": "sync-sess-1779710876669",
+    "metaAccountId": "ma-direct-1779710110653",
+    "status": "COMPLETED",
+    "rowsProcessed": 350,
+    "durationMs": 611,
+    "createdAt": "2026-05-25T12:07:56.669Z"
+  },
+  {
+    "id": "sync-sess-1779710880227",
+    "metaAccountId": "ma-direct-1779710110653",
+    "status": "COMPLETED",
+    "rowsProcessed": 350,
+    "durationMs": 504,
+    "createdAt": "2026-05-25T12:08:00.227Z"
+  },
+  {
+    "id": "sync-sess-1779710950874",
+    "metaAccountId": "ma-direct-1779710110653",
+    "status": "COMPLETED",
+    "rowsProcessed": 350,
+    "durationMs": 709,
+    "createdAt": "2026-05-25T12:09:10.874Z"
+  },
+  {
+    "id": "sync-sess-1779711166207",
+    "metaAccountId": "ma-direct-1779710110653",
+    "status": "COMPLETED",
+    "rowsProcessed": 350,
+    "durationMs": 1010,
+    "createdAt": "2026-05-25T12:12:46.207Z"
+  }
+]
