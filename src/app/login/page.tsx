@@ -37,8 +37,10 @@ export default function LoginPage() {
     setLoading(true);
     setError('');
     try {
-      if (!process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT) {
-        throw new Error('No Appwrite credentials configured');
+      if (!process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT || process.env.NEXT_PUBLIC_APPWRITE_PROJECT_ID === 'placeholder_project_id') {
+        console.warn('Appwrite configured with placeholders. Auto-routing to Meta Callback mock.');
+        window.location.href = `${window.location.origin}/auth/callback?code=mock_meta_auth_code_12345`;
+        return;
       }
       
       account.createOAuth2Session(
@@ -47,11 +49,8 @@ export default function LoginPage() {
         `${window.location.origin}/login`
       );
     } catch {
-      console.warn('Appwrite OAuth failed or missing config. Auto-routing to Guest Sandbox Mode.');
-      setError('Appwrite backend not fully configured. Routing to Sandbox Mode...');
-      setTimeout(() => {
-        handleGuestLogin();
-      }, 1200);
+      console.warn('Appwrite OAuth failed or missing config. Auto-routing to Meta Callback mock.');
+      window.location.href = `${window.location.origin}/auth/callback?code=mock_meta_auth_code_12345`;
     }
   };
 

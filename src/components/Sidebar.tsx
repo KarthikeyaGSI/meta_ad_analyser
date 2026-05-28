@@ -32,6 +32,7 @@ export default function Sidebar() {
     { name: 'Creatives', icon: Image, path: '/dashboard/creatives' },
     { name: 'Analytics', icon: BarChart3, path: '/dashboard/analytics' },
     { name: 'Leads Intelligence', icon: Users, path: '/dashboard/leads', badge: 'New' },
+    { name: 'Audience Insights', icon: Users, path: '/dashboard/audience', badge: 'New' },
     { name: 'AI Recommendations', icon: BrainCircuit, path: '/dashboard/ai-insights' },
     { name: 'AI Chat Analyst', icon: MessageSquare, path: '/dashboard/chat', badge: 'Beta' },
     { name: 'Settings', icon: Settings, path: '/dashboard/settings' },
