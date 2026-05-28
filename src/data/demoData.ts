@@ -1,8 +1,7 @@
 // src/data/demoData.ts
 
 export const demoAccounts = [
-  { id: 'act_1001', name: 'Sandbox Account A', platform: 'meta', status: 'ACTIVE' },
-  { id: 'act_1002', name: 'Demo E-commerce B', platform: 'meta', status: 'ACTIVE' },
+  { id: 'act_1001', name: 'Sandbox Account A', platform: 'meta', status: 'ACTIVE' }
 ];
 
 export const demoOverview = {

@@ -82,27 +82,65 @@ import {
   demoAiRecommendations
 } from '../data/demoData';
 
+import { MetaDirectApi } from './metaDirect';
+
 export const analyticsApi = {
-  getAccounts: () => safeFetch(() => apiClient.get('/accounts'), demoAccounts),
-  getOverview: (accountId: string, startDate: string, endDate: string) => 
-    safeFetch(() => apiClient.get(`/accounts/${accountId}/overview`, { params: { startDate, endDate } }), demoOverview),
-  getCharts: (accountId: string, startDate: string, endDate: string) => 
-    safeFetch(() => apiClient.get(`/accounts/${accountId}/charts`, { params: { startDate, endDate } }), demoCharts),
-  getCampaigns: (accountId: string, startDate: string, endDate: string, filters: any = {}) => 
-    safeFetch(() => apiClient.get(`/accounts/${accountId}/campaigns`, { params: { startDate, endDate, ...filters } }), demoCampaigns),
-  getAdsets: (accountId: string, startDate: string, endDate: string) => 
-    safeFetch(() => apiClient.get(`/accounts/${accountId}/adsets`, { params: { startDate, endDate } }), demoAdsets),
-  getCreatives: (accountId: string, startDate: string, endDate: string) => 
-    safeFetch(() => apiClient.get(`/accounts/${accountId}/creatives`, { params: { startDate, endDate } }), demoCreatives),
-  getBreakdowns: (accountId: string, startDate: string, endDate: string) => 
-    safeFetch(() => apiClient.get(`/accounts/${accountId}/breakdowns`, { params: { startDate, endDate } }), demoBreakdowns),
-  getRecommendations: (accountId: string) => 
-    safeFetch(() => apiClient.get(`/accounts/${accountId}/recommendations`), demoAiRecommendations),
+  getAccounts: async () => {
+    const res = await safeFetch(() => apiClient.get('/accounts'), demoAccounts);
+    if (typeof window !== 'undefined') {
+      const allKeys = Object.keys(localStorage);
+      const customAccountIds = allKeys
+        .filter(k => k.startsWith('meta_token_'))
+        .map(k => k.replace('meta_token_', ''));
+      
+      const activeStr = localStorage.getItem('ae_active_account');
+      if (activeStr) {
+        try {
+          const activeAct = JSON.parse(activeStr);
+          if (customAccountIds.includes(activeAct.id) && !res.data.find((a: any) => a.id === activeAct.id)) {
+            // Prepend the active custom account so it shows in lists
+            res.data = [activeAct, ...res.data];
+          }
+        } catch {
+          // Ignore parse error
+        }
+      }
+    }
+    return res;
+  },
+  getOverview: async (accountId: string, startDate: string, endDate: string) => {
+    if (MetaDirectApi.getToken(accountId)) return { data: await MetaDirectApi.getOverview(accountId, startDate, endDate) };
+    return safeFetch(() => apiClient.get(`/accounts/${accountId}/overview`, { params: { startDate, endDate } }), demoOverview);
+  },
+  getCharts: async (accountId: string, startDate: string, endDate: string) => {
+    if (MetaDirectApi.getToken(accountId)) return { data: await MetaDirectApi.getCharts(accountId, startDate, endDate) };
+    return safeFetch(() => apiClient.get(`/accounts/${accountId}/charts`, { params: { startDate, endDate } }), demoCharts);
+  },
+  getCampaigns: async (accountId: string, startDate: string, endDate: string, filters: any = {}) => {
+    if (MetaDirectApi.getToken(accountId)) return { data: await MetaDirectApi.getCampaigns(accountId, startDate, endDate) };
+    return safeFetch(() => apiClient.get(`/accounts/${accountId}/campaigns`, { params: { startDate, endDate, ...filters } }), demoCampaigns);
+  },
+  getAdsets: async (accountId: string, startDate: string, endDate: string) => {
+    if (MetaDirectApi.getToken(accountId)) return { data: await MetaDirectApi.getAdsets(accountId, startDate, endDate) };
+    return safeFetch(() => apiClient.get(`/accounts/${accountId}/adsets`, { params: { startDate, endDate } }), demoAdsets);
+  },
+  getCreatives: async (accountId: string, startDate: string, endDate: string) => {
+    if (MetaDirectApi.getToken(accountId)) return { data: await MetaDirectApi.getCreatives(accountId, startDate, endDate) };
+    return safeFetch(() => apiClient.get(`/accounts/${accountId}/creatives`, { params: { startDate, endDate } }), demoCreatives);
+  },
+  getBreakdowns: async (accountId: string, startDate: string, endDate: string) => {
+    if (MetaDirectApi.getToken(accountId)) return { data: await MetaDirectApi.getBreakdowns(accountId, startDate, endDate) };
+    return safeFetch(() => apiClient.get(`/accounts/${accountId}/breakdowns`, { params: { startDate, endDate } }), demoBreakdowns);
+  },
+  getRecommendations: async (accountId: string) => {
+    if (MetaDirectApi.getToken(accountId)) return { data: await MetaDirectApi.getRecommendations(accountId) };
+    return safeFetch(() => apiClient.get(`/accounts/${accountId}/recommendations`), demoAiRecommendations);
+  },
   triggerSync: (accountId: string) => 
     safeFetch(() => apiClient.post(`/accounts/${accountId}/sync`), { success: true }),
   connectDirectToken: (data: { adAccountId: string; accessToken: string; customAccountName?: string }) => 
     safeFetch(() => apiClient.post('/accounts/connect', data), { 
-      account: { id: data.adAccountId, name: data.customAccountName || 'Demo Account', actId: data.adAccountId },
+      account: { id: data.adAccountId, name: data.customAccountName || 'Direct Meta Account', actId: data.adAccountId },
       insightsWorking: true,
       accountId: data.adAccountId
     }),

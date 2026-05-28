@@ -107,12 +107,15 @@ export default function SettingsPage() {
       
       // Auto-set the newly connected account as the active workspace context
       if (account) {
-        // Enforce setting active account in Zustand (which internally disables isDemoMode if not a demo account ID)
+        // Enforce setting active account in Zustand
         setActiveAccount({
           id: account.id,
           name: account.name,
           actId: account.actId
         });
+        
+        // Save the direct token for this account to bypass backend
+        localStorage.setItem(`meta_token_${account.id}`, directToken.trim());
       }
 
       console.log("[Settings API Slot] sync complete: Settings update complete. Refreshing workspace dashboard logs...");
