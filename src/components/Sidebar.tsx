@@ -13,7 +13,8 @@ import {
   LogOut, 
   Gauge, 
   Sparkles,
-  MessageSquare
+  MessageSquare,
+  Users
 } from 'lucide-react';
 import { usePathname, useRouter } from 'next/navigation';
 import React from 'react';
@@ -30,7 +31,8 @@ export default function Sidebar() {
     { name: 'Ad Sets', icon: FolderLock, path: '/dashboard/adsets' },
     { name: 'Creatives', icon: Image, path: '/dashboard/creatives' },
     { name: 'Analytics', icon: BarChart3, path: '/dashboard/analytics' },
-    { name: 'AI Recommendations', icon: BrainCircuit, path: '/dashboard/ai-insights', badge: 'New' },
+    { name: 'Leads Intelligence', icon: Users, path: '/dashboard/leads', badge: 'New' },
+    { name: 'AI Recommendations', icon: BrainCircuit, path: '/dashboard/ai-insights' },
     { name: 'AI Chat Analyst', icon: MessageSquare, path: '/dashboard/chat', badge: 'Beta' },
     { name: 'Settings', icon: Settings, path: '/dashboard/settings' },
   ];

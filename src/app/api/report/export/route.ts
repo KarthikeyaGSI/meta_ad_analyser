@@ -1,5 +1,9 @@
+import chromium from '@sparticuz/chromium';
 import { NextResponse } from 'next/server';
 import puppeteer from 'puppeteer';
+import puppeteerCore from 'puppeteer-core';
+
+export const dynamic = 'force-dynamic';
 
 export async function GET(req: Request) {
   try {
@@ -10,14 +14,22 @@ export async function GET(req: Request) {
       return NextResponse.json({ error: 'Missing accountId' }, { status: 400 });
     }
 
-    // Connect to a headless browser and generate PDF
-    // Note: In Vercel serverless, you need `@sparticuz/chromium` to bundle chromium properly, 
-    // but for this prototype, we use local puppeteer which works in standard Node environments.
+    const isProduction = process.env.NODE_ENV === 'production';
+    let browser;
     
-    const browser = await puppeteer.launch({
-      headless: true,
-      args: ['--no-sandbox', '--disable-setuid-sandbox'],
-    });
+    if (isProduction) {
+      browser = await puppeteerCore.launch({
+        args: chromium.args,
+        defaultViewport: { width: 1280, height: 800 },
+        executablePath: await chromium.executablePath(),
+        headless: true,
+      });
+    } else {
+      browser = await puppeteer.launch({
+        headless: true,
+        args: ['--no-sandbox', '--disable-setuid-sandbox'],
+      });
+    }
     
     const page = await browser.newPage();
     
