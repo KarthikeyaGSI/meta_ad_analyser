@@ -195,7 +195,7 @@ export default function AnalyticsBreakdowns() {
               
               <div className="flex items-center gap-3">
                 <button
-                  onClick={() => window.print()}
+                  onClick={() => window.open(`/api/report/export?accountId=${activeAccount?.id}`, '_blank')}
                   className="px-4 py-2 rounded-xl bg-primary hover:bg-primary-hover text-white text-xs font-bold transition shadow-glow-primary btn-touch"
                 >
                   Print / Save PDF Report

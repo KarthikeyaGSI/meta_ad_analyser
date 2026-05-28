@@ -57,3 +57,29 @@ async function executeSync(job: SyncJob) {
   // If it fails due to rate limits or transient errors, we throw so it retries
   if (Math.random() < 0.2) throw new Error('Simulated transient Meta API error');
 }
+
+// Alerting Queue Logic
+const ALERT_QUEUE_KEY = 'meta:alert:queue';
+
+export async function enqueueAlertJob(accountId: string): Promise<string> {
+  const jobId = `alert_${Date.now()}_${Math.random().toString(36).substring(7)}`;
+  await redis.lpush(ALERT_QUEUE_KEY, JSON.stringify({ id: jobId, accountId }));
+  return jobId;
+}
+
+export async function processAlertQueue(batchSize = 5) {
+  for (let i = 0; i < batchSize; i++) {
+    const jobStr = await redis.rpop(ALERT_QUEUE_KEY);
+    if (!jobStr) break;
+    
+    const job = typeof jobStr === 'string' ? JSON.parse(jobStr) : jobStr;
+    try {
+      const { runAlertWorker } = await import('./alertWorker');
+      // For this implementation, the worker handles logic per account
+      await runAlertWorker(); 
+    } catch (err: any) {
+      console.error(`Alert Job ${job.id} failed:`, err);
+    }
+  }
+}
+

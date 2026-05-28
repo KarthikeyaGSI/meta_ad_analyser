@@ -1,9 +1,9 @@
-import { Client, Databases, Account } from 'appwrite';
+import { Client as ClientSDK, Databases as ClientDatabases, Account as ClientAccount } from 'appwrite';
 
 const MOCK_MODE = !process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT || !process.env.NEXT_PUBLIC_APPWRITE_PROJECT_ID;
 
-const client = new Client();
-
+// CLIENT SDK (for browser)
+const client = new ClientSDK();
 if (!MOCK_MODE) {
   client
     .setEndpoint(process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT!)
@@ -12,10 +12,9 @@ if (!MOCK_MODE) {
   console.warn('⚠️ APPWRITE ENV VARS MISSING. Running in MOCK mode.');
 }
 
-const realDatabases = new Databases(client);
-const realAccount = new Account(client);
+const realDatabases = new ClientDatabases(client);
+const realAccount = new ClientAccount(client);
 
-// Safe wrapper that falls back gracefully if Appwrite is unavailable
 export const safeDatabases = {
   listDocuments: async (databaseId: string, collectionId: string, queries?: any[]) => {
     if (MOCK_MODE) {
@@ -36,7 +35,7 @@ export const safeDatabases = {
       return await realDatabases.createDocument(databaseId, collectionId, documentId, data);
     } catch (error) {
       console.error('[Appwrite] createDocument failed:', error);
-      return { $id: documentId, ...data }; // Return mock success
+      return { $id: documentId, ...data }; 
     }
   }
 };
@@ -50,7 +49,7 @@ export const safeAccount = {
       return await realAccount.get();
     } catch (error) {
       console.error('[Appwrite] account.get failed:', error);
-      throw error; // Let the caller handle auth failures
+      throw error; 
     }
   }
 };

@@ -6,6 +6,10 @@ import { useStore } from '../../store/useStore';
 import { authApi } from '../../services/api';
 import { Sparkles, Facebook, ArrowRight, BrainCircuit, BarChart3, Rocket, ShieldCheck } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { Account, OAuthProvider } from 'appwrite';
+import { appwriteClient } from '../../server/appwrite/safeClient';
+
+const account = new Account(appwriteClient);
 
 export default function LoginPage() {
   const router = useRouter();
@@ -27,26 +31,26 @@ export default function LoginPage() {
     }
   };
 
-  // Triggers live Meta OAuth handshake redirection
+  // Triggers live Meta OAuth handshake redirection via Appwrite
   const handleMetaLogin = async () => {
     setLoading(true);
     setError('');
     try {
-      const res = await authApi.getMetaLoginUrl();
-      
-      // Safe UX Check: If no custom META_APP_ID is set, intercept redirect and load Sandbox Mode cleanly
-      if (res.data?.url && !res.data.url.includes('client_id=demo_app_id') && !res.data.url.includes('client_id=')) {
-        window.location.href = res.data.url;
-      } else {
-        console.warn('No custom META_APP_ID discovered in .env. Auto-routing to Guest Sandbox Mode.');
-        setError('No Meta App ID configured in .env. Routing to Sandbox Mode...');
-        setTimeout(() => {
-          handleGuestLogin();
-        }, 1200);
+      if (!process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT) {
+        throw new Error('No Appwrite credentials configured');
       }
+      
+      account.createOAuth2Session(
+        OAuthProvider.Facebook,
+        `${window.location.origin}/auth/callback`,
+        `${window.location.origin}/login`
+      );
     } catch (err) {
-      // Fallback bypass for direct testing
-      handleGuestLogin();
+      console.warn('Appwrite OAuth failed or missing config. Auto-routing to Guest Sandbox Mode.');
+      setError('Appwrite backend not fully configured. Routing to Sandbox Mode...');
+      setTimeout(() => {
+        handleGuestLogin();
+      }, 1200);
     }
   };
 
