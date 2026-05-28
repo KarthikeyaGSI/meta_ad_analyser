@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { useStore } from '../store/useStore';
-import { isSandboxMode } from '../lib/runtime';
+import { enableSandbox } from '../lib/runtime';
 import { demoData } from '../data/demoData';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
@@ -31,7 +31,7 @@ apiClient.interceptors.response.use(
   (response) => response,
   (error) => {
     // Skip redirect in sandbox mode, let safeFetch handle the mock fallback
-    if (isSandboxMode) return Promise.reject(error);
+    if (enableSandbox) return Promise.reject(error);
     
     if (error.response?.status === 401 || error.response?.status === 403) {
       useStore.getState().logout();
@@ -46,19 +46,12 @@ apiClient.interceptors.response.use(
 // ----------------------------------------------------
 // API REQUEST METHODS
 // ----------------------------------------------------
-export const authApi = {
-  register: (data: any) => apiClient.post('/auth/register', data),
-  login: (data: any) => apiClient.post('/auth/login', data),
-  guestLogin: () => apiClient.post('/auth/guest'),
-  getMetaLoginUrl: () => apiClient.get('/auth/meta/login'),
-  submitMetaCallback: (code: string, userId: string) => apiClient.post('/auth/meta/callback', { code, userId }),
-};
 
 async function safeFetch<T>(
   apiCall: () => Promise<{ data: T }>,
   demoFallback: T
 ): Promise<{ data: T }> {
-  if (isSandboxMode) {
+  if (enableSandbox) {
     return { data: demoFallback };
   }
   try {
@@ -70,22 +63,41 @@ async function safeFetch<T>(
   }
 }
 
+export const authApi = {
+  register: (data: any) => safeFetch(() => apiClient.post('/auth/register', data), { success: true, token: 'demo_token' }),
+  login: (data: any) => safeFetch(() => apiClient.post('/auth/login', data), { success: true, token: 'demo_token' }),
+  guestLogin: () => safeFetch(() => apiClient.post('/auth/guest'), { id: 'demo_user', name: 'Demo User', token: 'demo_token' }),
+  getMetaLoginUrl: () => safeFetch(() => apiClient.get('/auth/meta/login'), { url: '/dashboard' }),
+  submitMetaCallback: (code: string, userId: string) => safeFetch(() => apiClient.post('/auth/meta/callback', { code, userId }), { success: true }),
+};
+
+import {
+  demoAccounts,
+  demoOverview,
+  demoCharts,
+  demoCampaigns,
+  demoAdsets,
+  demoCreatives,
+  demoBreakdowns,
+  demoAiRecommendations
+} from '../data/demoData';
+
 export const analyticsApi = {
-  getAccounts: () => safeFetch(() => apiClient.get('/accounts'), demoData.accounts),
+  getAccounts: () => safeFetch(() => apiClient.get('/accounts'), demoAccounts),
   getOverview: (accountId: string, startDate: string, endDate: string) => 
-    safeFetch(() => apiClient.get(`/accounts/${accountId}/overview`, { params: { startDate, endDate } }), demoData.overview),
+    safeFetch(() => apiClient.get(`/accounts/${accountId}/overview`, { params: { startDate, endDate } }), demoOverview),
   getCharts: (accountId: string, startDate: string, endDate: string) => 
-    safeFetch(() => apiClient.get(`/accounts/${accountId}/charts`, { params: { startDate, endDate } }), demoData.charts),
+    safeFetch(() => apiClient.get(`/accounts/${accountId}/charts`, { params: { startDate, endDate } }), demoCharts),
   getCampaigns: (accountId: string, startDate: string, endDate: string, filters: any = {}) => 
-    safeFetch(() => apiClient.get(`/accounts/${accountId}/campaigns`, { params: { startDate, endDate, ...filters } }), demoData.campaigns),
+    safeFetch(() => apiClient.get(`/accounts/${accountId}/campaigns`, { params: { startDate, endDate, ...filters } }), demoCampaigns),
   getAdsets: (accountId: string, startDate: string, endDate: string) => 
-    safeFetch(() => apiClient.get(`/accounts/${accountId}/adsets`, { params: { startDate, endDate } }), demoData.adsets),
+    safeFetch(() => apiClient.get(`/accounts/${accountId}/adsets`, { params: { startDate, endDate } }), demoAdsets),
   getCreatives: (accountId: string, startDate: string, endDate: string) => 
-    safeFetch(() => apiClient.get(`/accounts/${accountId}/creatives`, { params: { startDate, endDate } }), demoData.creatives),
+    safeFetch(() => apiClient.get(`/accounts/${accountId}/creatives`, { params: { startDate, endDate } }), demoCreatives),
   getBreakdowns: (accountId: string, startDate: string, endDate: string) => 
-    safeFetch(() => apiClient.get(`/accounts/${accountId}/breakdowns`, { params: { startDate, endDate } }), demoData.breakdowns),
+    safeFetch(() => apiClient.get(`/accounts/${accountId}/breakdowns`, { params: { startDate, endDate } }), demoBreakdowns),
   getRecommendations: (accountId: string) => 
-    safeFetch(() => apiClient.get(`/accounts/${accountId}/recommendations`), demoData.recommendations),
+    safeFetch(() => apiClient.get(`/accounts/${accountId}/recommendations`), demoAiRecommendations),
   triggerSync: (accountId: string) => 
     safeFetch(() => apiClient.post(`/accounts/${accountId}/sync`), { success: true }),
   connectDirectToken: (data: { adAccountId: string; accessToken: string; customAccountName?: string }) => 

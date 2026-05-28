@@ -6,7 +6,7 @@ import { analyticsApi } from '../services/api';
 import { useQuery } from '@tanstack/react-query';
 import { RefreshCw, Calendar, ChevronDown, Check, Search, ShieldAlert, Sparkles } from 'lucide-react';
 import { useRouter, usePathname } from 'next/navigation';
-import { isSandboxMode } from '../lib/runtime';
+import { enableSandbox } from '../lib/runtime';
 
 export default function Navbar() {
   const router = useRouter();
@@ -170,21 +170,21 @@ export default function Navbar() {
       <div className="flex items-center gap-3">
         {/* Runtime Mode Badge */}
         <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border ${
-          isSandboxMode 
+          enableSandbox 
             ? 'bg-amber-500/10 border-amber-500/20 text-amber-500' 
             : 'bg-emerald-500/10 border-emerald-500/20 text-emerald-500'
         } text-[10px] font-bold uppercase tracking-widest`}>
-          {isSandboxMode ? <ShieldAlert className="w-3.5 h-3.5" /> : <Sparkles className="w-3.5 h-3.5" />}
-          {isSandboxMode ? 'Sandbox' : 'Live'}
+          {enableSandbox ? <ShieldAlert className="w-3.5 h-3.5" /> : <Sparkles className="w-3.5 h-3.5" />}
+          {enableSandbox ? 'Sandbox' : 'Live'}
         </div>
 
         {/* Sync Button */}
         <button
           onClick={handleSyncClick}
-          disabled={syncing || !activeAccount || isSandboxMode}
+          disabled={syncing || !activeAccount || enableSandbox}
           className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/[0.02] border border-white/[0.06] hover:bg-white/[0.06] hover:border-white/[0.1] transition text-xs font-bold text-white disabled:opacity-50 btn-touch"
         >
-          <RefreshCw className={`w-3 h-3 ${isSandboxMode ? 'text-muted' : 'text-primary'} ${syncing ? 'animate-spin' : ''}`} />
+          <RefreshCw className={`w-3 h-3 ${enableSandbox ? 'text-muted' : 'text-primary'} ${syncing ? 'animate-spin' : ''}`} />
           {syncing ? 'Syncing...' : 'Sync Meta'}
         </button>
 

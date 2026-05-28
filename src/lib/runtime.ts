@@ -12,4 +12,4 @@ export const hasMeta = Boolean(
 );
 
 // We define demo/sandbox mode strictly as lacking the core Appwrite database credentials
-export const isSandboxMode = !hasAppwrite;
+export const enableSandbox = !hasAppwrite;
