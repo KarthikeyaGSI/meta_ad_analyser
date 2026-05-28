@@ -46,7 +46,7 @@ export default function CreativesExplorer() {
             <div key={idx} className="glass-panel h-[460px] rounded-3xl animate-pulse"></div>
           ))}
         </div>
-      ) : creativeList.length === 0 ? (
+      ) : (creativeList || []).length === 0 ? (
         <div className="glass-panel p-16 rounded-3xl text-center text-muted">
           <div className="flex flex-col items-center justify-center gap-2">
             <AlertTriangle className="w-8 h-8 text-warning" />
@@ -55,7 +55,7 @@ export default function CreativesExplorer() {
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {creativeList.map((cr: any) => {
+          {(creativeList || []).map((cr: any) => {
             const colors = getFatigueColor(cr.fatigueScore);
             
             return (

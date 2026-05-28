@@ -169,7 +169,7 @@ export default function CampaignsExplorer() {
                     <td className="px-4 py-5" colSpan={7}><div className="h-4.5 bg-white/10 rounded w-full"></div></td>
                   </tr>
                 ))
-              ) : campaignList.length === 0 ? (
+              ) : (campaignList || []).length === 0 ? (
                 <tr>
                   <td colSpan={9} className="py-16 text-center text-muted">
                     <div className="flex flex-col items-center justify-center gap-2">
@@ -179,7 +179,7 @@ export default function CampaignsExplorer() {
                   </td>
                 </tr>
               ) : (
-                campaignList.map((camp: any) => {
+                (campaignList || []).map((camp: any) => {
                   const isActive = camp.status.toUpperCase() === 'ACTIVE';
                   
                   return (

@@ -144,8 +144,8 @@ export default function AiChatAnalyst() {
             cpa: overview?.cpa || 0,
             purchases: overview?.purchases || 0,
           },
-          campaignsList: campaigns.map((c: any) => ({ name: c.name, spend: c.spend, roas: c.roas, purchases: c.purchases, status: c.status })),
-          creativesList: creatives.map((cr: any) => ({ name: cr.name, spend: cr.spend, ctr: cr.ctr, roas: cr.roas, fatigueScore: cr.fatigueScore }))
+          campaignsList: (campaigns || []).map((c: any) => ({ name: c.name, spend: c.spend, roas: c.roas, purchases: c.purchases, status: c.status })),
+          creativesList: (creatives || []).map((cr: any) => ({ name: cr.name, spend: cr.spend, ctr: cr.ctr, roas: cr.roas, fatigueScore: cr.fatigueScore }))
         };
 
         const responseText = await queryGeminiApi(apiKey, userMessage, contextPayload);

@@ -88,7 +88,7 @@ export default function AiInsights() {
         </div>
       ) : (
         <div className="space-y-6">
-          {recommendations.map((rec: any) => {
+          {(recommendations || []).map((rec: any) => {
             const ui = getRecStyles(rec.type);
             const barColor = getConfBarColor(rec.confidence);
 

@@ -432,7 +432,7 @@ export default function DashboardOverview() {
             <div className="w-full h-full flex items-center justify-center">
               <div className="w-8 h-8 rounded-full border-2 border-primary/20 border-t-primary animate-spin"></div>
             </div>
-          ) : chartData.length === 0 ? (
+          ) : (chartData || []).length === 0 ? (
             <div className="w-full h-full flex flex-col items-center justify-center text-muted">
               <AlertTriangle className="w-8 h-8 mb-2 text-warning" />
               <span>No historical sync logs discovered in this range.</span>
@@ -519,7 +519,7 @@ export default function DashboardOverview() {
               ) : topCampaigns.length === 0 ? (
                 <div className="text-center py-8 text-xs text-muted">No active spenders discovered.</div>
               ) : (
-                topCampaigns.map((camp) => (
+                (topCampaigns || []).map((camp) => (
                   <div key={camp.id} className="flex items-center justify-between p-3 rounded-xl bg-white/[0.02] border border-white/[0.05] hover:bg-white/[0.04] transition">
                     <div className="flex-1 min-w-0 pr-4">
                       <p className="text-xs font-semibold text-white truncate">{camp.name}</p>
@@ -567,7 +567,7 @@ export default function DashboardOverview() {
               ) : worstCampaigns.length === 0 ? (
                 <div className="text-center py-8 text-xs text-muted">No low efficiency campaigns located.</div>
               ) : (
-                worstCampaigns.map((camp) => (
+                (worstCampaigns || []).map((camp) => (
                   <div key={camp.id} className="flex items-center justify-between p-3 rounded-xl bg-white/[0.02] border border-white/[0.05] hover:bg-white/[0.04] transition">
                     <div className="flex-1 min-w-0 pr-4">
                       <p className="text-xs font-semibold text-white truncate">{camp.name}</p>

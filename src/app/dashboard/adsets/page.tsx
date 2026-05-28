@@ -82,7 +82,7 @@ export default function AdsetsExplorer() {
                     </td>
                   </tr>
                 ))
-              ) : adsetList.length === 0 ? (
+              ) : (adsetList || []).length === 0 ? (
                 <tr>
                   <td colSpan={8} className="py-16 text-center text-muted">
                     <div className="flex flex-col items-center justify-center gap-2">
@@ -92,7 +92,7 @@ export default function AdsetsExplorer() {
                   </td>
                 </tr>
               ) : (
-                adsetList.map((as: any) => {
+                (adsetList || []).map((as: any) => {
                   const isActive = as.status.toUpperCase() === 'ACTIVE';
                   
                   return (

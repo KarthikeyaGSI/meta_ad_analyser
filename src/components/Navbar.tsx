@@ -38,7 +38,7 @@ export default function Navbar() {
 
   useEffect(() => {
     if (accountsData && accountsData.length > 0) {
-      const formatted = accountsData.map((a: any) => ({
+      const formatted = (accountsData || []).map((a: any) => ({
         id: a.id,
         name: a.name,
         actId: a.actId
@@ -133,7 +133,7 @@ export default function Navbar() {
                 Switch Ad Account
               </p>
               <div className="mt-1 space-y-0.5 max-h-60 overflow-y-auto">
-                {availableAccounts.map((acc) => {
+                {(availableAccounts || []).map((acc) => {
                   const selected = activeAccount?.id === acc.id;
                   return (
                     <button
