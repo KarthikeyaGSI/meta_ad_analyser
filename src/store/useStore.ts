@@ -10,7 +10,7 @@ export interface UserSession {
   token: string;
   id: string;
   name: string;
-  email: string;
+  email?: string;
 }
 
 export interface AdAccount {

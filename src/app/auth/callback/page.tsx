@@ -24,10 +24,10 @@ interface DebugState {
   oAuthSuccess: boolean;
   tokenReceived: boolean;
   accountsRetrieved: boolean;
-  accountVerified: boolean;
-  insightsWorking: boolean;
+  accountVerified?: boolean | null;
+  insightsWorking?: boolean | null;
   campaignCount: number;
-  hasSpendData: boolean;
+  hasSpendData?: boolean | null;
 }
 
 function AuthCallbackContent() {
@@ -100,11 +100,10 @@ function AuthCallbackContent() {
           ...prev, 
           tokenReceived: !!token,
           accountsRetrieved: true,
-          accountVerified: adAccountConnected,
-          insightsWorking: insightsWorking,
+          accountVerified: adAccountConnected ?? false,
+          insightsWorking: insightsWorking ?? false,
           campaignCount: campaignCount || 0,
-          hasSpendData: hasSpendData
-        }));
+          hasSpendData: hasSpendData ?? false        }));
 
         setStatusMsg('Verifying ad account metrics pacing...');
         setStatus('SYNCING');
