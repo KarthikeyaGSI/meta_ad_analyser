@@ -1,8 +1,5 @@
 import axios from 'axios';
 import { useStore } from '../store/useStore';
-import { enableSandbox } from '../lib/runtime';
-import { demoData } from '../data/demoData';
-
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
 
 export const apiClient = axios.create({
@@ -64,8 +61,8 @@ async function safeFetch<T>(
 }
 
 export const authApi = {
-  register: (data: any) => safeFetch(() => apiClient.post('/auth/register', data), { success: true, token: 'demo_token' }),
-  login: (data: any) => safeFetch(() => apiClient.post('/auth/login', data), { success: true, token: 'demo_token' }),
+  register: (data: Record<string, unknown>) => safeFetch(() => apiClient.post('/auth/register', data), { success: true, token: 'demo_token' }),
+  login: (data: Record<string, unknown>) => safeFetch(() => apiClient.post('/auth/login', data), { success: true, token: 'demo_token' }),
   guestLogin: () => safeFetch(() => apiClient.post('/auth/guest'), { id: 'demo_user', name: 'Demo User', token: 'demo_token' }),
   getMetaLoginUrl: () => safeFetch(() => apiClient.get('/auth/meta/login'), { url: '/dashboard' }),
   submitMetaCallback: (code: string, userId: string) => safeFetch(() => apiClient.post('/auth/meta/callback', { code, userId }), { success: true }),
@@ -81,6 +78,7 @@ import {
   demoBreakdowns,
   demoAiRecommendations
 } from '../data/demoData';
+import { enableSandbox } from '../lib/runtime';
 
 import { MetaDirectApi } from './metaDirect';
 
@@ -97,7 +95,7 @@ export const analyticsApi = {
       if (activeStr) {
         try {
           const activeAct = JSON.parse(activeStr);
-          if (customAccountIds.includes(activeAct.id) && !res.data.find((a: any) => a.id === activeAct.id)) {
+          if (customAccountIds.includes(activeAct.id) && !res.data.find((a: { id: string }) => a.id === activeAct.id)) {
             // Prepend the active custom account so it shows in lists
             res.data = [activeAct, ...res.data];
           }
@@ -116,7 +114,7 @@ export const analyticsApi = {
     if (MetaDirectApi.getToken(accountId)) return { data: await MetaDirectApi.getCharts(accountId, startDate, endDate) };
     return safeFetch(() => apiClient.get(`/accounts/${accountId}/charts`, { params: { startDate, endDate } }), demoCharts);
   },
-  getCampaigns: async (accountId: string, startDate: string, endDate: string, filters: any = {}) => {
+  getCampaigns: async (accountId: string, startDate: string, endDate: string, filters: Record<string, unknown> = {}) => {
     if (MetaDirectApi.getToken(accountId)) return { data: await MetaDirectApi.getCampaigns(accountId, startDate, endDate) };
     return safeFetch(() => apiClient.get(`/accounts/${accountId}/campaigns`, { params: { startDate, endDate, ...filters } }), demoCampaigns);
   },

@@ -11,14 +11,14 @@ export function sanitizeHtml(input: string): string {
     .replace(/'/g, '&#039;');
 }
 
-export function sanitizeObject(obj: any): any {
+export function sanitizeObject(obj: unknown): unknown {
   if (typeof obj === 'string') return sanitizeHtml(obj);
   if (Array.isArray(obj)) return obj.map(sanitizeObject);
   if (typeof obj === 'object' && obj !== null) {
-    const sanitized: any = {};
+    const sanitized: Record<string, unknown> = {};
     for (const key in obj) {
       if (Object.prototype.hasOwnProperty.call(obj, key)) {
-        sanitized[key] = sanitizeObject(obj[key]);
+        sanitized[key] = sanitizeObject((obj as Record<string, unknown>)[key]);
       }
     }
     return sanitized;

@@ -1,12 +1,12 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
-import { useStore } from '../../../store/useStore';
-import { analyticsApi } from '../../../services/api';
 import { useQuery } from '@tanstack/react-query';
-import { formatCurrency, formatPercent, formatNumber } from '../../../utils/formatters';
+import { BarChart3, AlertTriangle, Monitor, Smartphone, Layers3, Users2 } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
-import { BarChart3, AlertTriangle, Monitor, Smartphone, Tablet, Layers3, Users2 } from 'lucide-react';
+import { analyticsApi } from '../../../services/api';
+import { useStore } from '../../../store/useStore';
+import { formatCurrency, formatPercent, formatNumber } from '../../../utils/formatters';
 
 export default function AnalyticsBreakdowns() {
   const { activeAccount, dateRange, refreshTrigger } = useStore();
@@ -117,7 +117,7 @@ export default function AnalyticsBreakdowns() {
               {breakdowns.placements.length === 0 ? (
                 <div className="text-center py-8 text-xs text-muted">No placement logs.</div>
               ) : (
-                (breakdowns?.placements || []).map((pl: any, idx: number) => (
+                (breakdowns?.placements || []).map((pl: { name: string; spend: number; percentage: number }, idx: number) => (
                   <div key={idx} className="space-y-2">
                     <div className="flex justify-between items-center text-xs">
                       <span className="font-semibold text-white">{pl.name}</span>
@@ -155,7 +155,7 @@ export default function AnalyticsBreakdowns() {
               {breakdowns.devices.length === 0 ? (
                 <div className="text-center py-6 text-xs text-muted col-span-3">No device logs discovered.</div>
               ) : (
-                (breakdowns?.devices || []).map((dev: any, idx: number) => (
+                (breakdowns?.devices || []).map((dev: { name: string; percentage: number; spend: number }, idx: number) => (
                   <div 
                     key={idx} 
                     className="p-4.5 rounded-2xl bg-white/[0.015] border border-white/[0.05] hover:bg-white/[0.03] transition flex items-center gap-4"
@@ -230,7 +230,7 @@ export default function AnalyticsBreakdowns() {
               <div className="p-5 rounded-2xl bg-white/[0.015] border border-white/[0.05]">
                 <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider block">Audited Ad Spend</span>
                 <h3 className="text-2xl font-black text-white mt-2">
-                  {formatCurrency((breakdowns?.devices || []).reduce((s: number, d: any) => s + d.spend, 0) || 12480.50)}
+                  {formatCurrency((breakdowns?.devices || []).reduce((s: number, d: { spend: number }) => s + d.spend, 0) || 12480.50)}
                 </h3>
                 <p className="text-[8px] text-muted mt-1">Fully reconciled in database</p>
               </div>
@@ -238,7 +238,7 @@ export default function AnalyticsBreakdowns() {
               <div className="p-5 rounded-2xl bg-white/[0.015] border border-white/[0.05]">
                 <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider block">Attributed Revenue</span>
                 <h3 className="text-2xl font-black text-white mt-2">
-                  {formatCurrency(((breakdowns?.devices || []).reduce((s: number, d: any) => s + d.spend, 0) * 2.8) || 34945.40)}
+                  {formatCurrency(((breakdowns?.devices || []).reduce((s: number, d: { spend: number }) => s + d.spend, 0) * 2.8) || 34945.40)}
                 </h3>
                 <p className="text-[8px] text-success font-bold mt-1">+18.4% Pacing lift</p>
               </div>
@@ -252,7 +252,7 @@ export default function AnalyticsBreakdowns() {
               <div className="p-5 rounded-2xl bg-white/[0.015] border border-white/[0.05]">
                 <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider block">Reconciled Purchases</span>
                 <h3 className="text-2xl font-black text-white mt-2">
-                  {formatNumber((breakdowns?.demographics || []).reduce((s: number, d: any) => s + d.purchases, 0) || 410)}
+                  {formatNumber((breakdowns?.demographics || []).reduce((s: number, d: { purchases: number }) => s + d.purchases, 0) || 410)}
                 </h3>
                 <p className="text-[8px] text-muted mt-1">Verified pixel events</p>
               </div>
@@ -264,9 +264,9 @@ export default function AnalyticsBreakdowns() {
               <div className="space-y-4 p-6 rounded-2xl bg-white/[0.008] border border-white/[0.04]">
                 <h4 className="text-xs font-bold text-white uppercase tracking-wider border-b border-white/[0.06] pb-2">Placement Pacing Distribution</h4>
                 <div className="space-y-3.5">
-                  {(breakdowns?.placements || []).slice(0, 4).map((p: any, idx: number) => (
+                  {(breakdowns?.placements || []).slice(0, 4).map((p: { name: string; percentage: number; spend: number }, idx: number) => (
                     <div key={idx} className="flex justify-between items-center text-xs">
-                      <span className="text-slate-300 font-medium">{p.name}</span>
+                       <span className="text-slate-300 font-medium">{p.name}</span>
                       <span className="text-white font-bold">{p.percentage}% <span className="text-[10px] text-muted font-normal">({formatCurrency(p.spend)})</span></span>
                     </div>
                   ))}
@@ -277,7 +277,7 @@ export default function AnalyticsBreakdowns() {
               <div className="space-y-4 p-6 rounded-2xl bg-white/[0.008] border border-white/[0.04]">
                 <h4 className="text-xs font-bold text-white uppercase tracking-wider border-b border-white/[0.06] pb-2">Device Acquisition Shares</h4>
                 <div className="space-y-3.5">
-                  {(breakdowns?.devices || []).map((d: any, idx: number) => (
+                  {(breakdowns?.devices || []).map((d: { name: string; percentage: number; spend: number }, idx: number) => (
                     <div key={idx} className="flex justify-between items-center text-xs">
                       <span className="text-slate-300 font-medium">{d.name}</span>
                       <span className="text-white font-bold">{d.percentage}% <span className="text-[10px] text-muted font-normal">({formatCurrency(d.spend)})</span></span>

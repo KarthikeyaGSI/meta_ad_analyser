@@ -23,7 +23,7 @@ export async function POST(req: Request) {
           parameters: z.object({
             limit: z.number().optional().describe('Number of campaigns to fetch'),
           }),
-          // @ts-ignore - Bypass AI SDK strict typing for prototype
+          // @ts-expect-error - Bypass AI SDK strict typing for prototype
           execute: async ({ limit }: { limit?: number }) => {
             if (!accountId) return { error: 'No active account ID provided in chat context.' };
             const today = new Date().toISOString().split('T')[0];
@@ -31,16 +31,16 @@ export async function POST(req: Request) {
             try {
               const res = await analyticsApi.getCampaigns(accountId, lastWeek, today, { limit: limit || 10 });
               return res.data;
-            } catch (error) {
-              return { error: 'Failed to fetch campaigns' };
+            } catch (error: unknown) {
+              return { error: 'Failed to fetch campaigns', details: error };
             }
           },
         }),
       },
     });
 
-    // @ts-ignore - Bypass AI SDK strict typing for prototype
-    return result.toDataStreamResponse ? (result as any).toDataStreamResponse() : (result as any).toTextStreamResponse();
+    // @ts-expect-error - Bypass AI SDK strict typing for prototype
+    return result.toDataStreamResponse ? result.toDataStreamResponse() : result.toTextStreamResponse();
   } catch (error) {
     console.error('API Chat error:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });

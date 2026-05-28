@@ -1,22 +1,20 @@
 'use client';
 
-import React, { useEffect, useState, Suspense } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { useStore } from '../../../store/useStore';
-import { authApi } from '../../../services/api';
+import { motion } from 'framer-motion';
 import { 
   Sparkles, 
   Loader2, 
-  CheckCircle2, 
   AlertOctagon, 
   ShieldCheck, 
   Activity, 
   Terminal, 
   Check, 
-  X,
   Play
 } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { useRouter, useSearchParams } from 'next/navigation';
+import React, { useEffect, useState, Suspense } from 'react';
+import { authApi, analyticsApi } from '../../../services/api';
+import { useStore } from '../../../store/useStore';
 import { MetaAuthResponse } from '../../../types/auth';
 
 
@@ -115,33 +113,36 @@ function AuthCallbackContent() {
 
         // Set the targeted account as the active workspace
         if (accounts && accounts.length > 0) {
-          const matchedAcc = accounts.find((a: any) => a.actId.includes(TARGET_ACCOUNT_ID));
+          const matchedAcc = accounts.find((a: { id: string; name: string; actId: string }) => a.actId.includes(TARGET_ACCOUNT_ID));
+          
           if (matchedAcc) {
-            console.log("Live mode activated: Switched from guest sandbox to live API pacing.");
-            setActiveAccount({
-              id: matchedAcc.id,
-              name: matchedAcc.name,
-              actId: matchedAcc.actId
-            });
+            setActiveAccount(matchedAcc);
+            
+            // Check if it's new
+            const hasExistingData = await analyticsApi.getCampaigns(matchedAcc.id, '2023-01-01', '2023-12-31', { limit: 1 })
+              .catch(() => null);
+              
+            if (!hasExistingData?.data?.list?.length) {
+              await analyticsApi.triggerSync(matchedAcc.id);
+            }
           } else {
-            setActiveAccount({
-              id: accounts[0].id,
-              name: accounts[0].name,
-              actId: accounts[0].actId
-            });
+            setActiveAccount(accounts[0]);
           }
+          
+          triggerRefresh();
+          
+          setStatus('SUCCESS');
+          setStatusMsg('Meta Ads connection verified successfully.');
+          
+          setTimeout(() => {
+            router.push('/dashboard');
+          }, 1500);
+
+        } else {
+          throw new Error('Authentication failed');
         }
-
-        setStatus('SUCCESS');
-        setStatusMsg('Meta Ads connection verified successfully.');
-        triggerRefresh();
-
-        // Forward to overview dashboard after short success display
-        setTimeout(() => {
-          router.push('/dashboard');
-        }, 3000);
-
-      } catch (err: any) {
+      } catch (error: unknown) {
+        const err = error as { response?: { data?: { details?: string; reason?: string } } };
         console.error('[OAuth Callback] Target Account integration failed:', err);
         setStatus('ERROR');
         setErrorMsg(err.response?.data?.details || err.response?.data?.reason || 'Failed to exchange Meta tokens.');

@@ -1,12 +1,12 @@
 'use client';
 
-import React from 'react';
-import { useStore } from '../../../store/useStore';
-import { analyticsApi } from '../../../services/api';
 import { useQuery } from '@tanstack/react-query';
-import { formatCurrency, formatPercent, formatRoas } from '../../../utils/formatters';
-import { Image, AlertTriangle, Eye, Flame, ShieldAlert } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { Image as ImageIcon, AlertTriangle, Flame, ShieldAlert } from 'lucide-react';
+import React from 'react';
+import { analyticsApi } from '../../../services/api';
+import { useStore } from '../../../store/useStore';
+import { formatCurrency, formatPercent, formatRoas } from '../../../utils/formatters';
 
 export default function CreativesExplorer() {
   const { activeAccount, dateRange, refreshTrigger } = useStore();
@@ -34,7 +34,7 @@ export default function CreativesExplorer() {
       {/* HEADER SECTION */}
       <div>
         <h1 className="text-3xl font-extrabold text-white tracking-tight flex items-center gap-2">
-          Creatives Dashboard <Image className="w-5 h-5 text-primary" />
+          Creatives Dashboard <ImageIcon className="w-5 h-5 text-primary" />
         </h1>
         <p className="text-sm text-muted">Audit visual assets performance, copywriting hooks and audience saturation rates.</p>
       </div>
@@ -55,7 +55,7 @@ export default function CreativesExplorer() {
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {(creativeList || []).map((cr: any) => {
+          {(creativeList || []).map((cr: { id: string; name: string; format: string; spend: number; ctr: number; roas: number; fatigueScore: number; frequency: number; imageUrl?: string; callToActionType?: string; headline?: string; body?: string }) => {
             const colors = getFatigueColor(cr.fatigueScore);
             
             return (
@@ -68,6 +68,7 @@ export default function CreativesExplorer() {
               >
                 {/* 1. VISUAL PREVIEW HEADER */}
                 <div className="h-44 w-full relative overflow-hidden bg-black/40 border-b border-white/[0.06]">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={cr.imageUrl}
                     alt={cr.name}

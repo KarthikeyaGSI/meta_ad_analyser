@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
-import { runSyncWorker } from '../../../server/worker/syncWorker';
 import { enqueueSyncJob } from '../../../server/worker/queue';
+import { runSyncWorker } from '../../../server/worker/syncWorker';
 
 export async function POST(req: Request) {
   try {

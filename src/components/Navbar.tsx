@@ -1,12 +1,12 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
-import { useStore, DateRange } from '../store/useStore';
-import { analyticsApi } from '../services/api';
 import { useQuery } from '@tanstack/react-query';
-import { RefreshCw, Calendar, ChevronDown, Check, Search, ShieldAlert, Sparkles } from 'lucide-react';
+import { RefreshCw, Calendar, ChevronDown, Check, ShieldAlert, Sparkles } from 'lucide-react';
 import { useRouter, usePathname } from 'next/navigation';
+import React, { useEffect, useState } from 'react';
 import { enableSandbox } from '../lib/runtime';
+import { analyticsApi } from '../services/api';
+import { useStore } from '../store/useStore';
 
 export default function Navbar() {
   const router = useRouter();
@@ -38,10 +38,10 @@ export default function Navbar() {
 
   useEffect(() => {
     if (accountsData && accountsData.length > 0) {
-      const formatted = (accountsData || []).map((a: any) => ({
+      const formatted = (accountsData || []).map((a: { id: string; name: string; actId?: string }) => ({
         id: a.id,
         name: a.name,
-        actId: a.actId
+        actId: a.actId || ''
       }));
       
       // Prevent infinite rendering cascades by only updating when contents differ
@@ -56,7 +56,7 @@ export default function Navbar() {
         const urlParams = new URLSearchParams(window.location.search);
         const urlAccountId = urlParams.get('accountId');
         if (urlAccountId) {
-          const matched = formatted.find((a: any) => a.id === urlAccountId);
+          const matched = formatted.find((a: { id: string }) => a.id === urlAccountId);
           if (matched) {
             setActiveAccount(matched);
             return;
@@ -65,7 +65,7 @@ export default function Navbar() {
         setActiveAccount(formatted[0]);
       }
     }
-  }, [accountsData]);
+  }, [accountsData, activeAccount, availableAccounts, setActiveAccount, setAvailableAccounts]);
 
   // Date Range Quick Sets
   const dateOptions = [

@@ -1,17 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
-import { useStore } from '../../store/useStore';
-import { analyticsApi } from '../../services/api';
 import { useQuery } from '@tanstack/react-query';
-import MetricCard from '../../components/MetricCard';
-import { 
-  formatCurrency, 
-  formatPercent, 
-  formatRoas, 
-  formatNumber, 
-  formatCompact 
-} from '../../utils/formatters';
 import { 
   TrendingUp, 
   DollarSign, 
@@ -24,6 +13,7 @@ import {
   TrendingDown, 
   ArrowUpRight 
 } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
 import { 
   AreaChart, 
   Area, 
@@ -33,6 +23,16 @@ import {
   Tooltip, 
   ResponsiveContainer 
 } from 'recharts';
+import MetricCard from '../../components/MetricCard';
+import { analyticsApi } from '../../services/api';
+import { useStore } from '../../store/useStore';
+import { 
+  formatCurrency, 
+  formatPercent, 
+  formatRoas, 
+  formatNumber, 
+  formatCompact 
+} from '../../utils/formatters';
 
 export default function DashboardOverview() {
   const { 
@@ -108,10 +108,11 @@ export default function DashboardOverview() {
           setSyncStatus('COMPLETED');
           setLastSyncAt(new Date().toLocaleTimeString());
           triggerRefresh();
-        } catch (err: any) {
-          console.error("Sync failed: Live synchronization failed:", err);
+        } catch (err: unknown) {
+          const e = err as { response?: { data?: { message?: string } } };
+          console.error("Sync failed: Live synchronization failed:", e);
           setSyncStatus('FAILED');
-          setSyncError(err.response?.data?.message || 'Sync worker routine failed.');
+          setSyncError(e.response?.data?.message || 'Sync worker routine failed.');
         }
       }
     };
@@ -119,7 +120,7 @@ export default function DashboardOverview() {
     if (mounted && campaignsTable !== undefined) {
       autoSync();
     }
-  }, [activeAccount, isDemoMode, campaigns.length, campaignsTable, mounted]);
+  }, [activeAccount, isDemoMode, campaigns.length, campaignsTable, mounted, setLastSyncAt, setSyncStatus, syncStatus, triggerRefresh]);
   const topCampaigns = [...campaigns]
     .filter(c => c.spend > 0)
     .sort((a, b) => b.roas - a.roas)
@@ -214,10 +215,11 @@ export default function DashboardOverview() {
                   setSyncStatus('COMPLETED');
                   setLastSyncAt(new Date().toLocaleTimeString());
                   triggerRefresh();
-                } catch (err: any) {
-                  console.error("Sync failed: Live synchronization failed:", err);
+                } catch (err: unknown) {
+                  const e = err as { response?: { data?: { message?: string } } };
+                  console.error("Sync failed: Live synchronization failed:", e);
                   setSyncStatus('FAILED');
-                  setSyncError(err.response?.data?.message || 'Sync worker routine failed.');
+                  setSyncError(e.response?.data?.message || 'Sync worker routine failed.');
                 }
               }}
               className="w-full py-2 px-4 rounded-xl bg-primary hover:bg-primary-hover text-xs font-bold text-white transition flex items-center justify-center gap-1.5 shadow-glow-primary"
@@ -412,7 +414,7 @@ export default function DashboardOverview() {
               return (
                 <button
                   key={tab}
-                  onClick={() => setActiveChartTab(tab as any)}
+                  onClick={() => setActiveChartTab(tab as 'spend' | 'roas' | 'ctr' | 'purchases')}
                   className={`px-3 py-1 rounded-lg text-[10px] font-bold transition-all duration-300 btn-touch ${
                     selected 
                       ? 'bg-white/[0.06] text-white border border-white/[0.08] shadow-[0_2px_8px_rgba(0,0,0,0.2)]' 

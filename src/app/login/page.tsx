@@ -1,13 +1,13 @@
 'use client';
 
-import React, { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { useStore } from '../../store/useStore';
-import { authApi } from '../../services/api';
-import { Sparkles, Facebook, ArrowRight, BrainCircuit, BarChart3, Rocket, ShieldCheck } from 'lucide-react';
-import { motion } from 'framer-motion';
 import { Account, OAuthProvider } from 'appwrite';
+import { motion } from 'framer-motion';
+import { Sparkles, Facebook, ArrowRight, BrainCircuit, BarChart3, Rocket, ShieldCheck } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import React, { useState } from 'react';
 import { appwriteClient } from '../../server/appwrite/safeClient';
+import { authApi } from '../../services/api';
+import { useStore } from '../../store/useStore';
 
 const account = new Account(appwriteClient);
 
@@ -25,8 +25,9 @@ export default function LoginPage() {
       const res = await authApi.guestLogin();
       setUser(res.data);
       router.push('/dashboard');
-    } catch (err: any) {
-      setError(err.response?.data?.message || 'Demo Sandbox failed to boot.');
+    } catch (err: unknown) {
+      const e = err as { response?: { data?: { message?: string } } };
+      setError(e.response?.data?.message || 'Demo Sandbox failed to boot.');
       setLoading(false);
     }
   };
@@ -45,7 +46,7 @@ export default function LoginPage() {
         `${window.location.origin}/auth/callback`,
         `${window.location.origin}/login`
       );
-    } catch (err) {
+    } catch {
       console.warn('Appwrite OAuth failed or missing config. Auto-routing to Guest Sandbox Mode.');
       setError('Appwrite backend not fully configured. Routing to Sandbox Mode...');
       setTimeout(() => {

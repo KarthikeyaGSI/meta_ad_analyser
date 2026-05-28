@@ -3,7 +3,7 @@ import { useState, useCallback } from 'react';
 export interface ApiError {
   message: string;
   status?: number;
-  data?: any;
+  data?: unknown;
 }
 
 export function useApi<T>() {
@@ -11,18 +11,20 @@ export function useApi<T>() {
   const [error, setError] = useState<ApiError | null>(null);
   const [loading, setLoading] = useState(false);
 
-  const request = useCallback(async (fetchFn: () => Promise<any>) => {
+  const request = useCallback(async (fetchFn: () => Promise<{ data?: T } | T>) => {
     setLoading(true);
     setError(null);
     try {
       const response = await fetchFn();
-      setData(response.data ?? response);
-      return response.data ?? response;
-    } catch (err: any) {
+      const resolvedData = (response && typeof response === 'object' && 'data' in response ? response.data : response) as T;
+      setData(resolvedData);
+      return resolvedData;
+    } catch (err: unknown) {
+      const e = err as { response?: { data?: { message?: string }, status?: number }, message?: string };
       const apiError: ApiError = {
-        message: err?.response?.data?.message || err?.message || 'An unknown error occurred',
-        status: err?.response?.status,
-        data: err?.response?.data,
+        message: e?.response?.data?.message || e?.message || 'An unknown error occurred',
+        status: e?.response?.status,
+        data: e?.response?.data,
       };
       setError(apiError);
       return null;

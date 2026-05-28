@@ -1,21 +1,22 @@
 'use client';
 
+import { useChat } from '@ai-sdk/react';
+import { Send, Bot, User, ArrowRight, BrainCircuit, MessageSquare, AlertTriangle } from 'lucide-react';
 import React, { useRef, useEffect } from 'react';
 import { useStore } from '../../../store/useStore';
-import { useChat } from '@ai-sdk/react';
-import { Sparkles, Send, Bot, User, ArrowRight, BrainCircuit, MessageSquare, AlertTriangle } from 'lucide-react';
-import { motion } from 'framer-motion';
 
 export default function AiChatAnalyst() {
   const { activeAccount } = useStore();
   const chatEndRef = useRef<HTMLDivElement>(null);
 
-  const { messages, input, handleInputChange, handleSubmit, isLoading, error } = useChat(({
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const chatOptions: any = {
     api: '/api/chat',
-    body: {
-      accountId: activeAccount?.id
-    }
-  } as any)) as any;
+    body: { accountId: activeAccount?.id }
+  };
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const { messages, input, handleInputChange, handleSubmit, isLoading, error } = useChat(chatOptions) as any;
 
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -24,7 +25,7 @@ export default function AiChatAnalyst() {
   const handleQuickPrompt = (promptText: string) => {
     // A bit hacky but we simulate a submit by manually constructing the fake event for useChat
     const fakeEvent = { preventDefault: () => {} } as React.FormEvent<HTMLFormElement>;
-    handleInputChange({ target: { value: promptText } } as any);
+    handleInputChange({ target: { value: promptText } } as unknown as React.ChangeEvent<HTMLInputElement>);
     setTimeout(() => handleSubmit(fakeEvent), 50);
   };
 
@@ -87,7 +88,7 @@ export default function AiChatAnalyst() {
               </div>
             )}
             
-            {messages.map((msg: any, index: number) => {
+            {messages.map((msg: { role: string; content: string }, index: number) => {
               const isAi = msg.role === 'assistant';
               return (
                 <div key={index} className={`flex gap-3.5 ${isAi ? 'justify-start' : 'justify-end'}`}>

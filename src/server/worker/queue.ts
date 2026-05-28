@@ -38,11 +38,12 @@ export async function processSyncQueue(batchSize = 10) {
     const job = typeof jobStr === 'string' ? JSON.parse(jobStr) : jobStr;
     try {
       await executeSync(job);
-    } catch (err: any) {
-      console.error(`Job ${job.id} failed:`, err);
+    } catch (err: unknown) {
+      const error = err as Error;
+      console.error(`Job ${job.id} failed:`, error);
       if (job.retryCount < MAX_RETRIES) {
         job.retryCount++;
-        job.lastError = err.message || 'Unknown error';
+        job.lastError = error.message || 'Unknown error';
         await redis.lpush(QUEUE_KEY, JSON.stringify(job)); // Re-queue
       } else {
         await redis.lpush('meta:sync:deadletter', JSON.stringify(job));
@@ -77,8 +78,9 @@ export async function processAlertQueue(batchSize = 5) {
       const { runAlertWorker } = await import('./alertWorker');
       // For this implementation, the worker handles logic per account
       await runAlertWorker(); 
-    } catch (err: any) {
-      console.error(`Alert Job ${job.id} failed:`, err);
+    } catch (err: unknown) {
+      const error = err as Error;
+      console.error(`Alert Job ${job.id} failed:`, error);
     }
   }
 }

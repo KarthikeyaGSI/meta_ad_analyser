@@ -1,8 +1,6 @@
 'use client';
 
-import React from 'react';
-import { usePathname, useRouter } from 'next/navigation';
-import { useStore } from '../store/useStore';
+import { motion } from 'framer-motion';
 import { 
   BarChart3, 
   Layers, 
@@ -17,7 +15,9 @@ import {
   Sparkles,
   MessageSquare
 } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { usePathname, useRouter } from 'next/navigation';
+import React from 'react';
+import { useStore } from '../store/useStore';
 
 export default function Sidebar() {
   const pathname = usePathname();

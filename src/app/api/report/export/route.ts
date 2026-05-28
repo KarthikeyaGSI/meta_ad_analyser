@@ -40,15 +40,16 @@ export async function GET(req: Request) {
     await browser.close();
 
     // Return the PDF buffer to the client
-    return new NextResponse(pdfBuffer as any, {
+    return new NextResponse(pdfBuffer as unknown as BodyInit, {
       headers: {
         'Content-Type': 'application/pdf',
         'Content-Disposition': `attachment; filename="aetheris_report_${accountId}.pdf"`,
       },
     });
 
-  } catch (error: any) {
-    console.error('PDF Generation Error:', error);
+  } catch (error: unknown) {
+    const e = error as Error;
+    console.error('Export Error:', e);
     return NextResponse.json({ error: 'Failed to generate PDF' }, { status: 500 });
   }
 }

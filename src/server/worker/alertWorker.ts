@@ -15,7 +15,7 @@ export async function runAlertWorker() {
       const res = await analyticsApi.getCampaigns(accountId, lastWeek, today, { limit: 50 });
       const campaigns = res.data?.list || [];
       
-      const bleedingCampaigns = campaigns.filter((c: any) => c.spend > 50 && c.roas < 1.5);
+      const bleedingCampaigns = campaigns.filter((c: CampaignData) => c.spend > 50 && c.roas < 1.5);
       
       if (bleedingCampaigns.length > 0) {
         await dispatchAlert(accountId, bleedingCampaigns);
@@ -28,7 +28,13 @@ export async function runAlertWorker() {
   }
 }
 
-async function dispatchAlert(accountId: string, bleedingCampaigns: any[]) {
+interface CampaignData {
+  name: string;
+  spend: number;
+  roas: number;
+}
+
+async function dispatchAlert(accountId: string, bleedingCampaigns: CampaignData[]) {
   const slackWebhookUrl = process.env.SLACK_WEBHOOK_URL;
   if (!slackWebhookUrl) {
     console.log('[AlertWorker] No Slack webhook configured. Skipping alert for account:', accountId);

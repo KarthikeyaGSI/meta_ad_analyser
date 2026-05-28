@@ -16,7 +16,7 @@ const realDatabases = new ClientDatabases(client);
 const realAccount = new ClientAccount(client);
 
 export const safeDatabases = {
-  listDocuments: async (databaseId: string, collectionId: string, queries?: any[]) => {
+  listDocuments: async (databaseId: string, collectionId: string, queries?: string[]) => {
     if (MOCK_MODE) {
       return { total: 0, documents: [] };
     }
@@ -27,7 +27,7 @@ export const safeDatabases = {
       return { total: 0, documents: [] };
     }
   },
-  createDocument: async (databaseId: string, collectionId: string, documentId: string, data: any) => {
+  createDocument: async (databaseId: string, collectionId: string, documentId: string, data: Record<string, unknown>) => {
     if (MOCK_MODE) {
       return { $id: documentId, ...data };
     }

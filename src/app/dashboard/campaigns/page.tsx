@@ -1,11 +1,11 @@
 'use client';
 
-import React, { useState } from 'react';
-import { useStore } from '../../../store/useStore';
-import { analyticsApi } from '../../../services/api';
 import { useQuery } from '@tanstack/react-query';
-import { formatCurrency, formatPercent, formatRoas, formatNumber } from '../../../utils/formatters';
 import { Search, ChevronUp, ChevronDown, Download, AlertTriangle, Play, Pause, Layers } from 'lucide-react';
+import React, { useState } from 'react';
+import { analyticsApi } from '../../../services/api';
+import { useStore } from '../../../store/useStore';
+import { formatCurrency, formatPercent, formatRoas, formatNumber } from '../../../utils/formatters';
 
 export default function CampaignsExplorer() {
   const { activeAccount, dateRange, refreshTrigger } = useStore();
@@ -179,7 +179,7 @@ export default function CampaignsExplorer() {
                   </td>
                 </tr>
               ) : (
-                (campaignList || []).map((camp: any) => {
+                (campaignList || []).map((camp: { id: string; name: string; status: string; spend: number; roas: number; purchases: number; cpa: number; campaignId?: string; ctr?: number; cpc?: number; impressions?: number }) => {
                   const isActive = camp.status.toUpperCase() === 'ACTIVE';
                   
                   return (
@@ -219,22 +219,22 @@ export default function CampaignsExplorer() {
 
                       {/* CTR */}
                       <td className="px-4 py-4.5 text-xs text-white font-semibold text-right">
-                        {formatPercent(camp.ctr)}
+                        {formatPercent(camp.ctr || 0)}
                       </td>
 
                       {/* CPC */}
                       <td className="px-4 py-4.5 text-xs text-white font-medium text-right">
-                        {formatCurrency(camp.cpc)}
+                        {formatCurrency(camp.cpc || 0)}
                       </td>
 
                       {/* CPA */}
                       <td className="px-4 py-4.5 text-xs text-white font-medium text-right">
-                        {formatCurrency(camp.cpa)}
+                        {formatCurrency(camp.cpa || 0)}
                       </td>
 
                       {/* Impressions */}
                       <td className="px-4 py-4.5 text-xs text-muted font-medium text-right">
-                        {formatNumber(camp.impressions)}
+                        {formatNumber(camp.impressions || 0)}
                       </td>
                     </tr>
                   );

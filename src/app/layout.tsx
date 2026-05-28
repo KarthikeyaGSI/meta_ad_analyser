@@ -1,5 +1,6 @@
 import React from 'react';
 import './globals.css';
+import { ErrorBoundary } from '../client/components/ErrorBoundary';
 import Providers from './providers';
 
 export const metadata = {
@@ -22,7 +23,6 @@ export const metadata = {
   },
 };
 
-import { ErrorBoundary } from '../client/components/ErrorBoundary';
 
 export default function RootLayout({
   children,

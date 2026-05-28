@@ -1,10 +1,33 @@
+interface MetaGraphAction {
+  action_type: string;
+  value: string;
+}
+
+interface MetaGraphRow {
+  spend?: string;
+  impressions?: string;
+  clicks?: string;
+  ctr?: string;
+  cpc?: string;
+  cpm?: string;
+  actions?: MetaGraphAction[];
+  action_values?: MetaGraphAction[];
+  campaign_id?: string;
+  campaign_name?: string;
+  adset_id?: string;
+  adset_name?: string;
+  ad_id?: string;
+  ad_name?: string;
+  date_start?: string;
+}
+
 export class MetaDirectApi {
   static getToken(accountId: string): string | null {
     if (typeof window === 'undefined') return null;
     return localStorage.getItem(`meta_token_${accountId}`);
   }
 
-  static async fetchGraph(accountId: string, endpoint: string, params: Record<string, any> = {}) {
+  static async fetchGraph(accountId: string, endpoint: string, params: Record<string, unknown> = {}) {
     const token = this.getToken(accountId);
     if (!token) throw new Error('No direct token found');
     
@@ -42,10 +65,10 @@ export class MetaDirectApi {
     const cpm = parseFloat(row.cpm || '0');
     
     // Parse purchases from actions
-    const purchasesAction = (row.actions || []).find((a: any) => a.action_type === 'purchase');
+    const purchasesAction = (row.actions || []).find((a: MetaGraphAction) => a.action_type === 'purchase');
     const purchases = purchasesAction ? parseInt(purchasesAction.value) : 0;
     
-    const revenueAction = (row.action_values || []).find((a: any) => a.action_type === 'purchase');
+    const revenueAction = (row.action_values || []).find((a: MetaGraphAction) => a.action_type === 'purchase');
     const revenue = revenueAction ? parseFloat(revenueAction.value) : 0;
     
     const roas = spend > 0 ? (revenue / spend) : 0;
@@ -76,11 +99,11 @@ export class MetaDirectApi {
       limit: 50
     });
 
-    const list = (data.data || []).map((row: any) => {
+    const list = (data.data || []).map((row: MetaGraphRow) => {
       const spend = parseFloat(row.spend || '0');
-      const purchasesAction = (row.actions || []).find((a: any) => a.action_type === 'purchase');
+      const purchasesAction = (row.actions || []).find((a: MetaGraphAction) => a.action_type === 'purchase');
       const purchases = purchasesAction ? parseInt(purchasesAction.value) : 0;
-      const revenueAction = (row.action_values || []).find((a: any) => a.action_type === 'purchase');
+      const revenueAction = (row.action_values || []).find((a: MetaGraphAction) => a.action_type === 'purchase');
       const revenue = revenueAction ? parseFloat(revenueAction.value) : 0;
       const roas = spend > 0 ? (revenue / spend) : 0;
       const cpa = purchases > 0 ? (spend / purchases) : 0;
@@ -108,11 +131,11 @@ export class MetaDirectApi {
       limit: 20
     });
 
-    return (data.data || []).map((row: any) => {
+    return (data.data || []).map((row: MetaGraphRow) => {
       const spend = parseFloat(row.spend || '0');
-      const purchasesAction = (row.actions || []).find((a: any) => a.action_type === 'purchase');
+      const purchasesAction = (row.actions || []).find((a: MetaGraphAction) => a.action_type === 'purchase');
       const purchases = purchasesAction ? parseInt(purchasesAction.value) : 0;
-      const revenueAction = (row.action_values || []).find((a: any) => a.action_type === 'purchase');
+      const revenueAction = (row.action_values || []).find((a: MetaGraphAction) => a.action_type === 'purchase');
       const revenue = revenueAction ? parseFloat(revenueAction.value) : 0;
 
       return {
@@ -134,12 +157,12 @@ export class MetaDirectApi {
       level: 'account'
     });
 
-    return (data.data || []).map((row: any) => {
+    return (data.data || []).map((row: MetaGraphRow) => {
       const spend = parseFloat(row.spend || '0');
       const ctr = parseFloat(row.ctr || '0');
-      const purchasesAction = (row.actions || []).find((a: any) => a.action_type === 'purchase');
+      const purchasesAction = (row.actions || []).find((a: MetaGraphAction) => a.action_type === 'purchase');
       const purchases = purchasesAction ? parseInt(purchasesAction.value) : 0;
-      const revenueAction = (row.action_values || []).find((a: any) => a.action_type === 'purchase');
+      const revenueAction = (row.action_values || []).find((a: MetaGraphAction) => a.action_type === 'purchase');
       const revenue = revenueAction ? parseFloat(revenueAction.value) : 0;
 
       return {
@@ -160,10 +183,10 @@ export class MetaDirectApi {
       limit: 20
     });
 
-    return (data.data || []).map((row: any) => {
+    return (data.data || []).map((row: MetaGraphRow) => {
       const spend = parseFloat(row.spend || '0');
       const ctr = parseFloat(row.ctr || '0');
-      const revenueAction = (row.action_values || []).find((a: any) => a.action_type === 'purchase');
+      const revenueAction = (row.action_values || []).find((a: MetaGraphAction) => a.action_type === 'purchase');
       const revenue = revenueAction ? parseFloat(revenueAction.value) : 0;
 
       return {

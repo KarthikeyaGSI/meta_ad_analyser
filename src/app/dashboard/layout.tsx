@@ -1,11 +1,11 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
-import { useRouter, usePathname } from 'next/navigation';
-import { useStore } from '../../store/useStore';
-import Sidebar from '../../components/Sidebar';
-import Navbar from '../../components/Navbar';
 import { motion } from 'framer-motion';
+import { useRouter, usePathname } from 'next/navigation';
+import React, { useEffect, useState } from 'react';
+import Navbar from '../../components/Navbar';
+import Sidebar from '../../components/Sidebar';
+import { useStore } from '../../store/useStore';
 
 export default function DashboardLayout({
   children,

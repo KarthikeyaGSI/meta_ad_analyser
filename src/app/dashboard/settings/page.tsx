@@ -1,8 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
-import { useStore } from '../../../store/useStore';
-import { analyticsApi, authApi } from '../../../services/api';
+import { useQuery } from '@tanstack/react-query';
 import { 
   Settings, 
   Slack, 
@@ -11,14 +9,15 @@ import {
   Globe, 
   Paintbrush, 
   RefreshCw, 
-  Key,
   Check,
   ShieldAlert,
   ArrowRight,
   Sparkles,
   Facebook
 } from 'lucide-react';
-import { useQuery } from '@tanstack/react-query';
+import React, { useState } from 'react';
+import { analyticsApi, authApi } from '../../../services/api';
+import { useStore } from '../../../store/useStore';
 
 export default function SettingsPage() {
   const { setActiveAccount, triggerRefresh, activeAccount, brandColor, setBrandColor } = useStore();
@@ -52,7 +51,7 @@ export default function SettingsPage() {
           window.location.href = '/auth/callback?code=mock_code_1077709497594167';
         }, 1500);
       }
-    } catch (err) {
+    } catch {
       setErrorMsg('Failed to connect via Meta OAuth. Redirecting to callback simulator...');
       setTimeout(() => {
         window.location.href = '/auth/callback?code=mock_code_1077709497594167';
@@ -124,9 +123,10 @@ export default function SettingsPage() {
       await refetchAccounts();
       triggerRefresh();
 
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('[Settings API Slot] Connection failed:', err);
-      setErrorMsg(err.response?.data?.message || err.response?.data?.details || 'Connection handshake failed. Verify token status.');
+      const e = err as { response?: { data?: { message?: string, details?: string } } };
+      setErrorMsg(e.response?.data?.message || e.response?.data?.details || 'Connection handshake failed. Verify token status.');
     } finally {
       setConnecting(false);
     }
@@ -190,7 +190,7 @@ export default function SettingsPage() {
                   </div>
                   <div>
                     <h4 className="text-sm font-semibold text-white">WhatsApp Anomaly Broadcasts</h4>
-                    <p className="text-[11px] text-muted">Receive high-priority WhatsApp alerts when a campaign's ROAS falls below target levels.</p>
+                    <p className="text-[11px] text-muted">Receive high-priority WhatsApp alerts when a campaign&apos;s ROAS falls below target levels.</p>
                   </div>
                 </div>
                 {/* Switch */}
@@ -265,7 +265,7 @@ export default function SettingsPage() {
                       <button
                         key={colorObj.key}
                         type="button"
-                        onClick={() => setBrandColor(colorObj.key as any)}
+                        onClick={() => setBrandColor(colorObj.key as 'indigo' | 'violet' | 'emerald' | 'ocean' | 'obsidian')}
                         className={`flex items-center gap-2 px-3.5 py-2 rounded-xl border text-[10px] font-bold transition duration-300 btn-touch ${
                           active 
                             ? `${colorObj.border} bg-white/[0.04] text-white shadow-[0_4px_16px_rgba(0,0,0,0.15)]` 

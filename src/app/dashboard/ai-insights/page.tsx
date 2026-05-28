@@ -1,11 +1,11 @@
 'use client';
 
-import React from 'react';
-import { useStore } from '../../../store/useStore';
-import { analyticsApi } from '../../../services/api';
 import { useQuery } from '@tanstack/react-query';
-import { BrainCircuit, AlertTriangle, AlertOctagon, TrendingUp, HelpCircle, CheckCircle2 } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { BrainCircuit, AlertTriangle, AlertOctagon, TrendingUp, HelpCircle, CheckCircle2 } from 'lucide-react';
+import React from 'react';
+import { analyticsApi } from '../../../services/api';
+import { useStore } from '../../../store/useStore';
 
 export default function AiInsights() {
   const { activeAccount, refreshTrigger } = useStore();
@@ -88,9 +88,9 @@ export default function AiInsights() {
         </div>
       ) : (
         <div className="space-y-6">
-          {(recommendations || []).map((rec: any) => {
+          {(recommendations || []).map((rec: { id: string; type: string; title: string; description: string; priority: string; impact: string; confidence?: number; campaignName?: string; metric?: string; value?: string; actionableStep?: string }) => {
             const ui = getRecStyles(rec.type);
-            const barColor = getConfBarColor(rec.confidence);
+            const barColor = getConfBarColor(rec.confidence || 0);
 
             return (
               <motion.div

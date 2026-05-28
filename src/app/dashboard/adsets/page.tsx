@@ -1,11 +1,11 @@
 'use client';
 
-import React from 'react';
-import { useStore } from '../../../store/useStore';
-import { analyticsApi } from '../../../services/api';
 import { useQuery } from '@tanstack/react-query';
-import { formatCurrency, formatRoas, formatPercent, formatNumber } from '../../../utils/formatters';
 import { FolderLock, AlertTriangle, Users, Play, Pause } from 'lucide-react';
+import React from 'react';
+import { analyticsApi } from '../../../services/api';
+import { useStore } from '../../../store/useStore';
+import { formatCurrency, formatRoas, formatNumber } from '../../../utils/formatters';
 
 export default function AdsetsExplorer() {
   const { activeAccount, dateRange, refreshTrigger } = useStore();
@@ -22,7 +22,7 @@ export default function AdsetsExplorer() {
   });
 
   // targeting JSON parser
-  const parseTargeting = (targeting: any): string => {
+  const parseTargeting = (targeting: { custom_audiences?: string[]; interests?: string[]; age_min?: number; age_max?: number; gender?: string } | undefined | null): string => {
     if (!targeting) return 'Broad Audience';
     
     const parts = [];
@@ -92,7 +92,7 @@ export default function AdsetsExplorer() {
                   </td>
                 </tr>
               ) : (
-                (adsetList || []).map((as: any) => {
+                (adsetList || []).map((as: { id: string; name: string; adsetId?: string; status: string; budget: number; spend: number; cpc: number; roas: number; purchases: number; conversions: number; targeting?: { custom_audiences?: string[]; interests?: string[]; age_min?: number; age_max?: number; gender?: string } | null }) => {
                   const isActive = as.status.toUpperCase() === 'ACTIVE';
                   
                   return (
