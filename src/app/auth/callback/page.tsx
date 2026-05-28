@@ -17,6 +17,8 @@ import {
   Play
 } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { MetaAuthResponse } from '../../../types/auth';
+
 
 interface DebugState {
   oAuthSuccess: boolean;
@@ -80,15 +82,16 @@ function AuthCallbackContent() {
         const res = await authApi.submitMetaCallback(code, userId);
         
         // Expose debug details from backend response
-        const { 
-          token, 
-          user, 
-          accounts, 
-          adAccountConnected, 
-          insightsWorking, 
-          campaignCount, 
-          hasSpendData 
-        } = res.data;
+        const data: MetaAuthResponse = res.data;
+        const {
+          token,
+          user,
+          accounts = [],
+          adAccountConnected,
+          insightsWorking,
+          campaignCount = 0,
+          hasSpendData = false,
+        } = data;
 
         console.log("Meta accounts fetched:", accounts);
 
