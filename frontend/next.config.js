@@ -6,7 +6,6 @@ const nextConfig = {
   images: {
     domains: ['images.unsplash.com'],
   },
-  outputFileTracingRoot: path.join(__dirname, '..'),
 };
 
 module.exports = nextConfig;
