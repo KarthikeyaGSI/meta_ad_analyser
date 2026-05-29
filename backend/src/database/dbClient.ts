@@ -245,6 +245,26 @@ export const db = {
     }
     syncSessionsStore.upsert(session);
   },
+  // SYNC LOG METHODS
+  async createSyncLog(entry: {
+    metaAccountId: string;
+    status: string;
+    rowsProcessed: number;
+    durationMs?: number;
+    errorMessage?: string;
+    createdAt?: string;
+  }): Promise<void> {
+    const log = {
+      id: `sync_${Date.now()}`,
+      metaAccountId: entry.metaAccountId,
+      status: entry.status,
+      rowsProcessed: entry.rowsProcessed,
+      durationMs: entry.durationMs ?? 0,
+      errorMessage: entry.errorMessage,
+      createdAt: entry.createdAt ?? new Date().toISOString(),
+    };
+    await this.upsertSyncSession(log as any);
+  },
   // USER METHODS
   async getUserByEmail(email: string): Promise<User | undefined> {
     if (pgPool) {

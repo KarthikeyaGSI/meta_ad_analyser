@@ -1,10 +1,10 @@
 import { Response } from 'express';
-import { AuthenticatedRequest } from '../middleware/auth';
 import { db, Campaign, Adset, DailyInsight } from '../database/dbClient';
-import { MetaApiService } from '../services/metaService';
+import { AuthenticatedRequest } from '../middleware/auth';
 import { AiRecommendationEngine } from '../services/aiRecommendations';
-import { encrypt, decrypt } from '../utils/crypto';
+import { MetaApiService } from '../services/metaService';
 import { syncQueue } from '../services/syncQueue';
+import { encrypt, decrypt } from '../utils/crypto';
 
 /**
  * Gets connected ad accounts
@@ -226,8 +226,8 @@ export const getCampaignsTable = async (req: AuthenticatedRequest, res: Response
 
     // Server-side Sorting
     list.sort((a: any, b: any) => {
-      let valA = a[sortBy];
-      let valB = b[sortBy];
+      const valA = a[sortBy];
+      const valB = b[sortBy];
 
       if (typeof valA === 'string') {
         return sortOrder === 'asc' ? valA.localeCompare(valB) : valB.localeCompare(valA);

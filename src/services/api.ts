@@ -1,4 +1,6 @@
 import axios from 'axios';
+import { demoAccounts, demoOverview, demoCharts, demoCampaigns, demoAdsets, demoCreatives, demoBreakdowns, demoAiRecommendations } from '../data/demoData';
+import { enableSandbox } from '../lib/runtime';
 import { useStore } from '../store/useStore';
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
 
@@ -60,17 +62,6 @@ async function safeFetch<T>(
   }
 }
 
-import {
-  demoAccounts,
-  demoOverview,
-  demoCharts,
-  demoCampaigns,
-  demoAdsets,
-  demoCreatives,
-  demoBreakdowns,
-  demoAiRecommendations
-} from '../data/demoData';
-import { enableSandbox } from '../lib/runtime';
 import {
   mapCampaignDocument,
   mapCreativeDocument,

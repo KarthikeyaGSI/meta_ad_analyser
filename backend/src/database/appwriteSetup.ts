@@ -1,6 +1,6 @@
-import { Client, Databases } from 'node-appwrite';
-import dotenv from 'dotenv';
 import path from 'path';
+import dotenv from 'dotenv';
+import { Client, Databases } from 'node-appwrite';
 
 // Load environmental variables
 dotenv.config({ path: path.join(__dirname, '../../.env') });

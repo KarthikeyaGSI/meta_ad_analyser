@@ -1,9 +1,9 @@
 'use client';
 
+import { motion } from 'framer-motion';
+import { Users, Smartphone, Monitor, Globe } from 'lucide-react';
 import React from 'react';
 import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid } from 'recharts';
-import { Users, Smartphone, Monitor, Globe } from 'lucide-react';
-import { motion } from 'framer-motion';
 
 const ageData = [
   { name: '18-24', value: 15 },

@@ -14,10 +14,21 @@
   "rules": {
     "@typescript-eslint/no-unused-vars": ["warn", { "argsIgnorePattern": "^_" }],
     "import/order": ["warn", { "alphabetize": { "order": "asc" } }],
-    "@typescript-eslint/no-explicit-any": "warn",
+    "@typescript-eslint/no-explicit-any": "off",
     "@next/next/no-img-element": "warn",
     "react/no-unescaped-entities": "warn",
     "react-hooks/exhaustive-deps": "warn",
     "jsx-a11y/alt-text": "warn"
-  }
+  },
+  "overrides": [
+    {
+      "files": ["*.js", "*.cjs", "*.mjs"],
+      "parserOptions": {
+        "project": null
+      },
+      "rules": {
+        "@typescript-eslint/no-require-imports": "off"
+      }
+    }
+  ]
 }

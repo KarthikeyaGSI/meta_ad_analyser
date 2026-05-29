@@ -1,6 +1,6 @@
-import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import express, { Request, Response, NextFunction } from 'express';
 import apiRouter from './routes/api';
 
 // Load variables

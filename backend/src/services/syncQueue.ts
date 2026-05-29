@@ -1,6 +1,6 @@
 import { db } from '../database/dbClient';
-import { MetaApiService } from './metaService';
 import { decrypt } from '../utils/crypto';
+import { MetaApiService } from './metaService';
 
 interface QueueJob {
   accountId: string;
