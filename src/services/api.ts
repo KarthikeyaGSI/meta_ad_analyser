@@ -46,7 +46,7 @@ apiClient.interceptors.response.use(
 // API REQUEST METHODS
 // ----------------------------------------------------
 
-async function safeFetch<T>(
+export async function safeFetch<T>(
   apiCall: () => Promise<{ data: T }>,
   demoFallback: T
 ): Promise<{ data: T }> {

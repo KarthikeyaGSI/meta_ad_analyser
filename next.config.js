@@ -11,6 +11,14 @@ const nextConfig = {
       },
     ],
   },
+  webpack: (config) => {
+    // Exclude the backend folder from being processed by webpack/Turbopack
+    config.module.rules.push({
+      test: /\\.(js|tsx?)$/,
+      exclude: /backend/,
+    });
+    return config;
+  },
 };
 
 module.exports = nextConfig;
