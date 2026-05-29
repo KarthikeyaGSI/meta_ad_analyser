@@ -30,6 +30,8 @@ router.get('/accounts/:id/creatives', analytics.getCreativesPerformance);
 router.get('/accounts/:id/breakdowns', analytics.getBreakdowns);
 router.get('/accounts/:id/recommendations', analytics.getRecommendations);
 router.post('/accounts/:id/sync', analytics.syncAccountManual);
+router.post('/accounts/:id/rules/execute', analytics.executeAutopilotRule);
 router.get('/accounts/:id/export', analytics.exportCampaignsCsv);
+
 
 export default router;
