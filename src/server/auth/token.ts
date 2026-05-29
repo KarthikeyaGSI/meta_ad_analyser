@@ -37,7 +37,7 @@ export async function decryptToken(encryptedText: string): Promise<string | null
 
 export async function setAuthCookie(token: string) {
   const encrypted = await encryptToken(token);
-  cookies().set({
+  (cookies() as any).set({
     name: 'meta_access_token',
     value: encrypted,
     httpOnly: true,
@@ -49,11 +49,11 @@ export async function setAuthCookie(token: string) {
 }
 
 export async function getAuthCookie(): Promise<string | null> {
-  const cookie = cookies().get('meta_access_token');
+  const cookie = (cookies() as any).get('meta_access_token');
   if (!cookie?.value) return null;
   return await decryptToken(cookie.value);
 }
 
 export function clearAuthCookie() {
-  cookies().delete('meta_access_token');
+  (cookies() as any).delete('meta_access_token');
 }

@@ -14,7 +14,7 @@
     "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "jsx": "preserve",
+    "jsx": "react-jsx",
     "incremental": true,
     "plugins": [
       {
@@ -39,7 +39,8 @@
     "next.config.js",
     "tailwind.config.js",
     "jest.config.js",
-    "fix-maps.js"
+    "fix-maps.js",
+    ".next/dev/types/**/*.ts"
   ],
   "exclude": [
     "node_modules"
