@@ -11,6 +11,8 @@ const nextConfig = {
       },
     ],
   },
+  // Empty Turbopack config to silence Turbopack+webpack conflict
+  turbopack: {},
   webpack: (config) => {
     // Exclude the backend folder from being processed by webpack/Turbopack
     config.module.rules.push({
