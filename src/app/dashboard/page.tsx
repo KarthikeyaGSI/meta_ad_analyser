@@ -334,7 +334,7 @@ export default function DashboardOverview() {
       </div>
 
       {/* KPI METRIC CARDS */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+      <div id="tour-scale-radar" className="grid grid-cols-2 lg:grid-cols-4 gap-6">
         <MetricCard
           title="Ad Spend"
           value={overviewLoading ? '...' : formatCurrency(overview?.spend || 0)}

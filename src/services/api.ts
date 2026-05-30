@@ -221,6 +221,8 @@ export const analyticsApi = {
   },
   triggerSync: (accountId: string) => 
     safeFetch(() => apiClient.post(`/accounts/${accountId}/sync`), { success: true }),
+  triggerMockWebhook: (accountId: string) =>
+    safeFetch(() => apiClient.post(`/webhooks/mock`, { accountId }), { success: true }),
   connectDirectToken: (data: { adAccountId: string; accessToken: string; customAccountName?: string }) => 
     safeFetch(() => apiClient.post('/accounts/connect', data), { 
       account: { id: data.adAccountId, name: data.customAccountName || 'Direct Meta Account', actId: data.adAccountId },

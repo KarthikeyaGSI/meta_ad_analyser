@@ -197,6 +197,7 @@ export default function Navbar() {
 
         {/* Sync Button */}
         <button
+          id="tour-connect-btn"
           onClick={handleSyncClick}
           disabled={syncing || !activeAccount || enableSandbox}
           className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/[0.02] border border-white/[0.06] hover:bg-white/[0.06] hover:border-white/[0.1] transition text-xs font-bold text-white disabled:opacity-50 btn-touch"

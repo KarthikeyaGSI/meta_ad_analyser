@@ -72,6 +72,7 @@ export default function Sidebar() {
 
   return (
     <motion.aside
+      id="tour-sidebar"
       initial={false}
       animate={{ width: collapsed ? 80 : 260 }}
       transition={{ duration: 0.4, cubicBezier: [0.16, 1, 0.3, 1] }}

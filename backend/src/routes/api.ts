@@ -3,15 +3,18 @@ import * as analytics from '../controllers/analyticsController';
 import * as auth from '../controllers/authController';
 import * as subscription from '../controllers/subscriptionController';
 import * as admin from '../controllers/adminController';
+import * as webhooks from '../controllers/webhookController';
 import { authenticateToken } from '../middleware/auth';
+import { ipRateLimiter } from '../middleware/ipRateLimiter';
 
 const router = Router();
 
 // ----------------------------------------------------
+// ----------------------------------------------------
 // AUTHENTICATION ROUTES
 // ----------------------------------------------------
-router.post('/auth/register', auth.register);
-router.post('/auth/login', auth.login);
+router.post('/auth/register', ipRateLimiter, auth.register);
+router.post('/auth/login', ipRateLimiter, auth.login);
 router.post('/auth/guest', auth.guestLogin); // Guest demo bypass login
 router.get('/auth/meta/login', auth.getMetaLoginUrl); // Meta OAuth URL
 router.post('/auth/meta/callback', auth.metaCallback); // Meta OAuth Callback receiver
@@ -24,9 +27,17 @@ router.get('/admin/users', authenticateToken, admin.getUsers);
 router.post('/admin/revoke', authenticateToken, admin.revokeAccess);
 
 // ----------------------------------------------------
+// WEBHOOK ROUTES
+// ----------------------------------------------------
+router.get('/webhooks/meta', webhooks.verifyMetaWebhook);
+router.post('/webhooks/meta', webhooks.handleMetaWebhook);
+router.post('/webhooks/mock', webhooks.triggerMockWebhook);
+
+// ----------------------------------------------------
+// ----------------------------------------------------
 // ANALYTICS & INSIGHTS ROUTES (Secured via JWT tokens)
 // ----------------------------------------------------
-router.use('/accounts', authenticateToken);
+router.use('/accounts', authenticateToken, ipRateLimiter);
 
 router.get('/accounts', analytics.getAccounts);
 router.post('/accounts/connect', analytics.connectDirectToken); // Multi-stage Meta direct connection

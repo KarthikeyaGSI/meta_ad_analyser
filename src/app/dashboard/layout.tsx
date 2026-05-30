@@ -5,6 +5,7 @@ import { useRouter, usePathname } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import Navbar from '../../components/Navbar';
 import Sidebar from '../../components/Sidebar';
+import ProductTour from '../../components/ProductTour';
 import { useStore } from '../../store/useStore';
 
 export default function DashboardLayout({
@@ -101,6 +102,8 @@ export default function DashboardLayout({
           {children}
         </motion.div>
       </motion.main>
+      
+      {pathname !== '/dashboard/welcome' && <ProductTour />}
     </div>
   );
 }
