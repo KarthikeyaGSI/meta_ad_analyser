@@ -9,7 +9,7 @@ dotenv.config({ path: path.join(__dirname, '../../.env') });
 // ---------------------------------------------------------------------------
 // Types (unchanged)
 // ---------------------------------------------------------------------------
-export interface User { id: string; email: string; passwordHash: string; name: string; createdAt: string; updatedAt: string; knownIps?: string[]; lockoutUntil?: string | null; }
+export interface User { id: string; email: string; passwordHash: string; name: string; createdAt: string; updatedAt: string; knownIps?: string[]; lockoutUntil?: string | null; premiumUntil?: string | null; role?: 'user' | 'admin'; }
 export interface MetaAccount { id: string; userId: string; actId: string; name: string; accessToken: string; status: string; currency: string; timezone: string; lastSyncedAt: string; }
 export interface Campaign { id: string; metaAccountId: string; campaignId: string; name: string; status: string; objective: string; buyingType: string; budget: number; createdTime: string; }
 export interface Adset { id: string; campaignId: string; adsetId: string; name: string; status: string; targeting: any; budget: number; }
@@ -125,11 +125,21 @@ export const db = {
     if (appwriteDb) {
       const doc = await safeAppwrite(appwriteDb.getDocument(DATABASE_ID, 'users', id));
       if (doc) {
-        return { id: doc.$id, email: doc.email, passwordHash: doc.passwordHash, name: doc.name, createdAt: doc.createdAt, updatedAt: doc.updatedAt, knownIps: doc.knownIps, lockoutUntil: doc.lockoutUntil };
+        return { id: doc.$id, email: doc.email, passwordHash: doc.passwordHash, name: doc.name, createdAt: doc.createdAt, updatedAt: doc.updatedAt, knownIps: doc.knownIps, lockoutUntil: doc.lockoutUntil, premiumUntil: doc.premiumUntil, role: doc.role };
       }
       return undefined;
     }
     return usersStore.findOne(u => u.id === id);
+  },
+  async getAllUsers(): Promise<User[]> {
+    if (appwriteDb) {
+      const res = await safeAppwrite(appwriteDb.listDocuments(DATABASE_ID, 'users'));
+      if (res && res.documents) {
+        return res.documents.map(doc => ({ id: doc.$id, email: doc.email, passwordHash: doc.passwordHash, name: doc.name, createdAt: doc.createdAt, updatedAt: doc.updatedAt, knownIps: doc.knownIps, lockoutUntil: doc.lockoutUntil, premiumUntil: doc.premiumUntil, role: doc.role }));
+      }
+      return [];
+    }
+    return usersStore.find(() => true);
   },
   async createUser(user: User): Promise<User> {
     if (appwriteDb) {
@@ -139,6 +149,8 @@ export const db = {
         name: user.name,
         createdAt: user.createdAt,
         updatedAt: user.updatedAt,
+        role: user.role || 'user',
+        premiumUntil: user.premiumUntil || null,
       }));
       return user;
     }
@@ -154,6 +166,8 @@ export const db = {
         updatedAt: user.updatedAt,
         knownIps: user.knownIps,
         lockoutUntil: user.lockoutUntil,
+        premiumUntil: user.premiumUntil,
+        role: user.role,
       }));
       return user;
     }

@@ -2,6 +2,9 @@ import React from 'react';
 import './globals.css';
 import { ErrorBoundary } from '../client/components/ErrorBoundary';
 import Providers from './providers';
+import { Outfit } from 'next/font/google';
+
+const outfit = Outfit({ subsets: ['latin'], variable: '--font-outfit' });
 
 export const metadata = {
   title: 'Vero - Meta Ads Analytics SaaS',
@@ -30,8 +33,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body>
+    <html lang="en" className={`${outfit.variable}`}>
+      <body className="font-sans">
         <Providers>
           <ErrorBoundary>
             {children}

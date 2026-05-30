@@ -2,6 +2,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Sparkles, X, Lock, KeyRound, CheckCircle2 } from 'lucide-react';
 import React, { useState } from 'react';
 import { useStore } from '../store/useStore';
+import { apiClient } from '../services/api';
 
 interface UpgradeModalProps {
   isOpen: boolean;
@@ -10,8 +11,9 @@ interface UpgradeModalProps {
 }
 
 export default function UpgradeModal({ isOpen, onClose, featureName = 'Premium Feature' }: UpgradeModalProps) {
-  const { unlockPremium, brandColor } = useStore();
+  const { setPremium, brandColor } = useStore();
   const [code, setCode] = useState('');
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
   const [success, setSuccess] = useState(false);
 
@@ -26,12 +28,14 @@ export default function UpgradeModal({ isOpen, onClose, featureName = 'Premium F
 
   const color = themeColors[brandColor] || themeColors.orange;
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!code.trim()) return;
 
-    const isValid = unlockPremium(code);
-    if (isValid) {
+    setLoading(true);
+    try {
+      await apiClient.post('/activate-key', { code: code.trim() });
+      setPremium(true);
       setSuccess(true);
       setError(false);
       setTimeout(() => {
@@ -39,9 +43,11 @@ export default function UpgradeModal({ isOpen, onClose, featureName = 'Premium F
         setSuccess(false);
         setCode('');
       }, 2000);
-    } else {
+    } catch (err) {
       setError(true);
       setTimeout(() => setError(false), 3000);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -113,10 +119,11 @@ export default function UpgradeModal({ isOpen, onClose, featureName = 'Premium F
                   
                   <button
                     type="submit"
-                    className={`w-full py-3 rounded-xl bg-gradient-to-r ${color.from} ${color.to} text-white font-bold text-sm shadow-lg hover:shadow-xl transition-all active:scale-[0.98] flex items-center justify-center gap-2`}
+                    disabled={loading}
+                    className={`w-full py-3 rounded-xl bg-gradient-to-r ${color.from} ${color.to} text-white font-bold text-sm shadow-lg hover:shadow-xl transition-all active:scale-[0.98] flex items-center justify-center gap-2 disabled:opacity-50`}
                   >
                     <Sparkles className="w-4 h-4" />
-                    Unlock Premium
+                    {loading ? 'Activating...' : 'Unlock Premium'}
                   </button>
                 </form>
               )}

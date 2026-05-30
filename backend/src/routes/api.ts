@@ -1,6 +1,8 @@
 import { Router } from 'express';
 import * as analytics from '../controllers/analyticsController';
 import * as auth from '../controllers/authController';
+import * as subscription from '../controllers/subscriptionController';
+import * as admin from '../controllers/adminController';
 import { authenticateToken } from '../middleware/auth';
 
 const router = Router();
@@ -13,6 +15,13 @@ router.post('/auth/login', auth.login);
 router.post('/auth/guest', auth.guestLogin); // Guest demo bypass login
 router.get('/auth/meta/login', auth.getMetaLoginUrl); // Meta OAuth URL
 router.post('/auth/meta/callback', auth.metaCallback); // Meta OAuth Callback receiver
+
+// ----------------------------------------------------
+// SUBSCRIPTION & ADMIN ROUTES
+// ----------------------------------------------------
+router.post('/activate-key', authenticateToken, subscription.activateSubscription);
+router.get('/admin/users', authenticateToken, admin.getUsers);
+router.post('/admin/revoke', authenticateToken, admin.revokeAccess);
 
 // ----------------------------------------------------
 // ANALYTICS & INSIGHTS ROUTES (Secured via JWT tokens)

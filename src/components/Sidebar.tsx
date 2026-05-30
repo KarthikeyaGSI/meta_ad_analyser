@@ -30,6 +30,15 @@ export default function Sidebar() {
   const [upgradeModalOpen, setUpgradeModalOpen] = useState(false);
   const [upgradeFeatureName, setUpgradeFeatureName] = useState('');
 
+  const handleSupportClick = () => {
+    if (!isPremium) {
+      setUpgradeFeatureName('Priority Support');
+      setUpgradeModalOpen(true);
+    } else {
+      window.location.href = 'mailto:business.marketingko@gmail.com?subject=Priority Support Request';
+    }
+  };
+
   type MenuItem = { name: string; icon: any; path: string; premium?: boolean; badge?: string };
 
   const menuItems: MenuItem[] = [
@@ -146,16 +155,34 @@ export default function Sidebar() {
           })}
         </nav>
 
-        {/* CTA UPGRADE BUTTON */}
+        {/* PRIORITY SUPPORT */}
         {!collapsed && (
+          <div className="px-4 mt-4">
+            <button 
+              onClick={handleSupportClick}
+              className={`w-full py-2.5 rounded-xl text-[10px] font-bold shadow-sm transition-all flex items-center justify-center gap-2 ${
+                isPremium 
+                  ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 hover:bg-emerald-500/20' 
+                  : 'bg-white/5 text-muted border border-white/10 hover:text-white hover:bg-white/10'
+              }`}
+            >
+              <MessageSquare className="w-3.5 h-3.5" />
+              PRIORITY SUPPORT
+              {!isPremium && <FolderLock className="w-3 h-3 ml-1 text-primary" />}
+            </button>
+          </div>
+        )}
+
+        {/* CTA UPGRADE BUTTON */}
+        {!collapsed && !isPremium && (
           <div className="px-4 mb-4 mt-2">
-            <a 
-              href="mailto:business.marketingko@gmail.com?subject=Upgrade to Pro Tier"
+            <button 
+              onClick={() => { setUpgradeFeatureName('All Premium Features'); setUpgradeModalOpen(true); }}
               className="w-full py-2.5 rounded-xl bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-400 hover:to-orange-500 text-white text-[10px] font-bold shadow-glow-primary transition-all flex items-center justify-center gap-2"
             >
               <Crown className="w-3.5 h-3.5" />
               UPGRADE FEATURES
-            </a>
+            </button>
           </div>
         )}
       </div>

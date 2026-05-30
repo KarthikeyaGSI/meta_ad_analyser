@@ -5,9 +5,10 @@ import { motion } from 'framer-motion';
 import { Sparkles, Facebook, ArrowRight, BrainCircuit, BarChart3, Rocket, ShieldCheck, Mail, Apple } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
-import { appwriteClient } from '../../server/appwrite/safeClient';
-import { authApi } from '../../services/api';
 import { useStore } from '../../store/useStore';
+import { authApi } from '../../services/api';
+import NeumorphismButton from '../../components/NeumorphismButton';
+import { appwriteClient } from '../../server/appwrite/safeClient';
 
 const account = new Account(appwriteClient);
 
@@ -37,25 +38,45 @@ export default function LoginPage() {
     }
   };
 
-  // Triggers live Meta OAuth handshake redirection via Appwrite
-  const handleMetaLogin = async () => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  const validateEmail = (email: string) => {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  };
+
+  const handleEmailLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!validateEmail(email)) {
+      setError('Please enter a valid email address.');
+      return;
+    }
     setLoading(true);
     setError('');
     try {
-      if (!process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT || process.env.NEXT_PUBLIC_APPWRITE_PROJECT_ID === 'placeholder_project_id') {
-        console.warn('Appwrite configured with placeholders. Auto-routing to Meta Callback mock.');
-        window.location.href = `${window.location.origin}/auth/callback?code=mock_meta_auth_code_12345`;
-        return;
+      // First try to login
+      try {
+        const res = await authApi.login({ email, password });
+        setUser(res.data);
+        router.push('/dashboard/onboarding');
+      } catch (loginErr: any) {
+        // If login fails, try to register
+        if (loginErr.response?.status === 401 || loginErr.response?.status === 404) {
+          const regRes = await authApi.register({ email, password, name: email.split('@')[0] });
+          setUser(regRes.data);
+          router.push('/dashboard/onboarding');
+        } else {
+          throw loginErr;
+        }
       }
-      
-      account.createOAuth2Session(
-        OAuthProvider.Facebook,
-        `${window.location.origin}/auth/callback`,
-        `${window.location.origin}/login`
-      );
-    } catch {
-      console.warn('Appwrite OAuth failed or missing config. Auto-routing to Meta Callback mock.');
-      window.location.href = `${window.location.origin}/auth/callback?code=mock_meta_auth_code_12345`;
+    } catch (err: any) {
+      if (err.response?.status === 403) {
+        setError(err.response.data?.message || 'Account temporarily suspended due to security lockout.');
+      } else {
+        setError('Login failed. Please check credentials.');
+      }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -164,17 +185,45 @@ export default function LoginPage() {
             </div>
           )}
 
-          <div className="space-y-3.5">
-            {/* Meta OAuth login button */}
-            <button
-              onClick={handleMetaLogin}
+          <form onSubmit={handleEmailLogin} className="space-y-4 mb-6">
+            <div>
+              <label className="block text-xs font-bold text-slate-400 mb-1">Email Address</label>
+              <input
+                type="email"
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="w-full px-4 py-3 bg-black/40 border border-white/10 rounded-xl text-white focus:border-primary focus:outline-none transition-colors text-sm"
+                placeholder="admin@vero.co"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-bold text-slate-400 mb-1">Password</label>
+              <input
+                type="password"
+                required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full px-4 py-3 bg-black/40 border border-white/10 rounded-xl text-white focus:border-primary focus:outline-none transition-colors text-sm"
+                placeholder="••••••••"
+              />
+            </div>
+            <NeumorphismButton
+              type="submit"
               disabled={loading}
-              className="w-full py-3.5 px-4 rounded-xl font-bold bg-[#1877F2] hover:bg-[#166FE5] text-white transition-all flex items-center justify-center gap-2.5 shadow-lg shadow-blue-500/10 btn-touch disabled:opacity-50"
+              className="w-full"
             >
-              <Facebook className="w-5 h-5 fill-current" />
-              {loading ? 'Initializing...' : 'Continue with Facebook / Meta'}
-            </button>
+              {loading ? 'Authenticating...' : 'Sign In with Email'}
+            </NeumorphismButton>
+          </form>
 
+          <div className="flex items-center justify-between my-4">
+            <div className="h-[1px] bg-white/[0.08] flex-1"></div>
+            <span className="text-[10px] text-muted uppercase font-bold tracking-wider px-3">or continue with</span>
+            <div className="h-[1px] bg-white/[0.08] flex-1"></div>
+          </div>
+
+          <div className="space-y-3.5">
             {/* Google OAuth login button */}
             <button
               onClick={() => handleOAuthLogin('Google')}
@@ -188,16 +237,6 @@ export default function LoginPage() {
                 <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
               </svg>
               {loading ? 'Initializing...' : 'Continue with Google'}
-            </button>
-
-            {/* Apple OAuth login button */}
-            <button
-              onClick={() => handleOAuthLogin('Apple')}
-              disabled={loading}
-              className="w-full py-3.5 px-4 rounded-xl font-bold bg-black border border-white/20 hover:bg-white/10 text-white transition-all flex items-center justify-center gap-2.5 shadow-lg btn-touch disabled:opacity-50"
-            >
-              <Apple className="w-5 h-5 fill-current" />
-              {loading ? 'Initializing...' : 'Continue with Apple'}
             </button>
 
             <div className="flex items-center justify-between my-6">
@@ -217,9 +256,26 @@ export default function LoginPage() {
             </button>
           </div>
 
-          <p className="text-[10px] text-muted text-center leading-normal mt-6">
-            Vero does not expose your long-lived access tokens to the frontend. Credentials are encrypted and isolated on our secure node.
-          </p>
+          <div className="mt-6 space-y-2 text-center">
+            <p className="text-[10px] text-muted leading-normal">
+              Vero does not expose your long-lived access tokens to the frontend. Credentials are encrypted and isolated on our secure node.
+            </p>
+            <div className="flex flex-col items-center justify-center gap-2 text-[10px] text-white/40">
+              <div className="flex gap-4">
+                <a href="/" className="hover:text-primary transition-colors">Home Page</a>
+                <span>•</span>
+                <a href="/privacy-policy" className="hover:text-primary transition-colors">Privacy Policy</a>
+                <span>•</span>
+                <a href="/terms-of-condition" className="hover:text-primary transition-colors">Terms of Condition</a>
+              </div>
+              <div className="flex gap-3 mt-1 pt-1 border-t border-white/10">
+                <span className="opacity-60">Connect with Founder:</span>
+                <a href="https://marketingko.vercel.app/" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">MarketingKO</a>
+                <a href="https://linktr.ee/karthikeyathallapally" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">Linktree</a>
+                <a href="https://www.youtube.com/@karthikeyathallapally" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">YouTube</a>
+              </div>
+            </div>
+          </div>
         </motion.div>
 
       </div>

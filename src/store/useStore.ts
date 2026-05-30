@@ -55,7 +55,7 @@ interface VeroState {
 
   // Premium Features
   isPremium: boolean;
-  unlockPremium: (code: string) => boolean;
+  setPremium: (val: boolean) => void;
 
   // Refresh Trigger
   refreshTrigger: number;
@@ -159,14 +159,9 @@ export const useStore = create<VeroState>((set) => ({
 
   // Premium Features
   isPremium: getSafeLocalItem('ae_is_premium') || false,
-  unlockPremium: (code: string) => {
-    const validCodes = ['VERO_VIP_2026', 'karthikeyathallapally', 'marketingko'];
-    if (validCodes.includes(code.trim())) {
-      localStorage.setItem('ae_is_premium', 'true');
-      set({ isPremium: true });
-      return true;
-    }
-    return false;
+  setPremium: (val: boolean) => {
+    localStorage.setItem('ae_is_premium', JSON.stringify(val));
+    set({ isPremium: val });
   },
 
   // Global Refresh Signal
