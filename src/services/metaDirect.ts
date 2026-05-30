@@ -27,6 +27,15 @@ export class MetaDirectApi {
     return localStorage.getItem(`meta_token_${accountId}`);
   }
 
+
+  static async pauseCampaign(accountId: string, campaignId: string): Promise<any> {
+    throw new Error('Not implemented on frontend MetaDirectApi');
+  }
+
+  static async scaleBudget(accountId: string, campaignId: string, percentage: number): Promise<any> {
+    throw new Error('Not implemented on frontend MetaDirectApi');
+  }
+
   static async fetchGraph(accountId: string, endpoint: string, params: Record<string, unknown> = {}) {
     const token = this.getToken(accountId);
     if (!token) throw new Error('No direct token found');
