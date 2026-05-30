@@ -83,7 +83,21 @@ export default function SettingsPage() {
     setSuccessMsg('');
 
     try {
-      console.log("[Settings API Slot] Meta validation: Posting credentials to backend connect routine...");
+      console.log("[Settings API Slot] Meta validation: Verifying token directly with Facebook Graph API...");
+      
+      const actId = directActId.trim();
+      const token = directToken.trim();
+      const formattedActId = actId.startsWith('act_') ? actId : `act_${actId}`;
+
+      const testUrl = `https://graph.facebook.com/v19.0/${formattedActId}/insights?fields=spend&date_preset=last_30d&access_token=${token}`;
+      const testRes = await fetch(testUrl);
+      const testData = await testRes.json();
+      
+      if (testData.error) {
+         throw new Error(testData.error.message || 'Invalid API Token or Ad Account ID.');
+      }
+
+      console.log("[Settings API Slot] Meta validation: Validated successfully. Posting to backend...");
       
       const res = await analyticsApi.connectDirectToken({
         adAccountId: directActId.trim(),
