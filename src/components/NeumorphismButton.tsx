@@ -1,7 +1,7 @@
-import { motion } from 'framer-motion';
+import { motion, HTMLMotionProps } from 'framer-motion';
 import React from 'react';
 
-interface NeumorphismButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+interface NeumorphismButtonProps extends HTMLMotionProps<"button"> {
   children: React.ReactNode;
   active?: boolean;
   className?: string;

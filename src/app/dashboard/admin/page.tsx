@@ -29,7 +29,7 @@ export default function AdminDashboard() {
   };
 
   const handleRevoke = async (targetUserId: string) => {
-    if (!window.confirm('Are you sure you want to revoke this user\\'s premium access?')) return;
+    if (!window.confirm("Are you sure you want to revoke this user's premium access?")) return;
     try {
       await apiClient.post('/admin/revoke', { targetUserId });
       fetchUsers();

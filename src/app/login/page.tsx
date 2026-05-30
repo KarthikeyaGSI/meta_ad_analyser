@@ -57,13 +57,25 @@ export default function LoginPage() {
       // First try to login
       try {
         const res = await authApi.login({ email, password });
-        setUser(res.data);
+        const resData = res.data as any;
+        setUser({
+          token: resData.token,
+          id: resData.user?.id || 'user_id',
+          name: resData.user?.name || email.split('@')[0],
+          email: email
+        });
         router.push('/dashboard/onboarding');
       } catch (loginErr: any) {
         // If login fails, try to register
         if (loginErr.response?.status === 401 || loginErr.response?.status === 404) {
           const regRes = await authApi.register({ email, password, name: email.split('@')[0] });
-          setUser(regRes.data);
+          const regResData = regRes.data as any;
+          setUser({
+            token: regResData.token,
+            id: regResData.user?.id || 'user_id',
+            name: regResData.user?.name || email.split('@')[0],
+            email: email
+          });
           router.push('/dashboard/onboarding');
         } else {
           throw loginErr;
