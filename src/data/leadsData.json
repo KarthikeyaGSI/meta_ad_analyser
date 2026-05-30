@@ -1,0 +1,47 @@
+[
+  {
+    "id": "L-1001",
+    "name": "Arjun Reddy",
+    "region": "Hyderabad",
+    "campaign": "Luxury Villas Q3",
+    "cost": 12.50,
+    "status": "Qualified",
+    "date": "2023-10-15"
+  },
+  {
+    "id": "L-1002",
+    "name": "Priya Sharma",
+    "region": "Warangal",
+    "campaign": "Affordable Plots",
+    "cost": 5.20,
+    "status": "Contacted",
+    "date": "2023-10-16"
+  },
+  {
+    "id": "L-1003",
+    "name": "Rahul Kumar",
+    "region": "Karimnagar",
+    "campaign": "Affordable Plots",
+    "cost": 4.80,
+    "status": "New",
+    "date": "2023-10-17"
+  },
+  {
+    "id": "L-1004",
+    "name": "Sneha Patel",
+    "region": "Hyderabad",
+    "campaign": "Luxury Villas Q3",
+    "cost": 15.00,
+    "status": "Converted",
+    "date": "2023-10-18"
+  },
+  {
+    "id": "L-1005",
+    "name": "Vikram Singh",
+    "region": "Nizamabad",
+    "campaign": "Commercial Spaces",
+    "cost": 22.10,
+    "status": "Lost",
+    "date": "2023-10-19"
+  }
+]
