@@ -17,7 +17,7 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  // Triggers instant Aetheris JSON-DB Sandbox loading
+  // Triggers instant Vero JSON-DB Sandbox loading
   const handleGuestLogin = async () => {
     setLoading(true);
     setError('');
@@ -81,13 +81,13 @@ export default function LoginPage() {
             className="text-4xl md:text-5xl lg:text-6xl font-black text-white leading-[1.08] tracking-tight"
           >
             Auditing Meta Spend. <br/>
-            <span className="bg-gradient-to-r from-primary via-indigo-400 to-success bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-primary via-orange-400 to-success bg-clip-text text-transparent">
               Scaling ROAS.
             </span>
           </motion.h1>
 
           <p className="text-muted text-base md:text-lg leading-relaxed max-w-md">
-            Aetheris connects with your ad accounts to isolate audience ad fatigue, spot auction CPM spikes, and surface high-performing scaling opportunities using deterministic logic.
+            Vero connects with your ad accounts to isolate audience ad fatigue, spot auction CPM spikes, and surface high-performing scaling opportunities using deterministic logic.
           </p>
 
           {/* SaaS Moat points */}
@@ -107,7 +107,7 @@ export default function LoginPage() {
               </div>
             </div>
             <div className="flex gap-2.5 items-start">
-              <Rocket className="w-5 h-5 text-indigo-400 mt-0.5" />
+              <Rocket className="w-5 h-5 text-orange-400 mt-0.5" />
               <div>
                 <h4 className="text-sm font-semibold text-white">Scale Radar</h4>
                 <p className="text-[11px] text-muted">Incrementally scale 20% budget</p>
@@ -132,10 +132,10 @@ export default function LoginPage() {
         >
           {/* Subtle logo inside the card */}
           <div className="flex items-center gap-2 mb-6">
-            <div className="w-6 h-6 rounded bg-gradient-to-tr from-primary to-indigo-400 flex items-center justify-center">
+            <div className="w-6 h-6 rounded bg-gradient-to-tr from-primary to-orange-400 flex items-center justify-center">
               <Sparkles className="w-3.5 h-3.5 text-white" />
             </div>
-            <span className="font-extrabold text-sm tracking-widest text-white">AETHERIS</span>
+            <span className="font-extrabold text-sm tracking-widest text-white">VERO</span>
           </div>
 
           <h2 className="text-2xl font-bold text-white tracking-tight mb-2">Connect Your Account</h2>
@@ -178,7 +178,7 @@ export default function LoginPage() {
           </div>
 
           <p className="text-[10px] text-muted text-center leading-normal mt-6">
-            Aetheris does not expose your long-lived access tokens to the frontend. Credentials are encrypted and isolated on our secure node.
+            Vero does not expose your long-lived access tokens to the frontend. Credentials are encrypted and isolated on our secure node.
           </p>
         </motion.div>
 

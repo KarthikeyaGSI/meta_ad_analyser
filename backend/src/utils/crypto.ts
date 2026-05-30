@@ -9,7 +9,7 @@ const IV_LENGTH = 16;
 export function encrypt(text: string): string {
   if (!text) return '';
   try {
-    const key = crypto.scryptSync(process.env.JWT_SECRET || 'aetheris_fallback_key_2026', 'salt', 32);
+    const key = crypto.scryptSync(process.env.JWT_SECRET || 'vero_fallback_key_2026', 'salt', 32);
     const iv = crypto.randomBytes(IV_LENGTH);
     const cipher = crypto.createCipheriv(ALGORITHM, key, iv);
     
@@ -36,7 +36,7 @@ export function decrypt(encryptedText: string): string {
     }
     
     const [ivHex, encrypted] = encryptedText.split(':');
-    const key = crypto.scryptSync(process.env.JWT_SECRET || 'aetheris_fallback_key_2026', 'salt', 32);
+    const key = crypto.scryptSync(process.env.JWT_SECRET || 'vero_fallback_key_2026', 'salt', 32);
     const iv = Buffer.from(ivHex, 'hex');
     const decipher = crypto.createDecipheriv(ALGORITHM, key, iv);
     

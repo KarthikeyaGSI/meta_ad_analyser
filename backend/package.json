@@ -1,7 +1,7 @@
 {
-  "name": "aetheris-backend",
+  "name": "vero-backend",
   "version": "1.0.0",
-  "description": "Production-grade backend for Aetheris Ads Analytics SaaS platform",
+  "description": "Production-grade backend for Vero Ads Analytics SaaS platform",
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc",

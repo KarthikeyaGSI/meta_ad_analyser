@@ -14,7 +14,9 @@ import {
   Gauge, 
   Sparkles,
   MessageSquare,
-  Users
+  Users,
+  Network,
+  Crown
 } from 'lucide-react';
 import { usePathname, useRouter } from 'next/navigation';
 import React from 'react';
@@ -54,12 +56,12 @@ export default function Sidebar() {
         {/* LOGO AREA */}
         <div className="h-16 flex items-center justify-between px-6 border-b border-white/[0.04] shrink-0">
           <div className="flex items-center gap-3 overflow-hidden">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-primary to-indigo-400 flex items-center justify-center shadow-glow-primary">
+            <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-primary to-orange-400 flex items-center justify-center shadow-glow-primary">
               <Sparkles className="w-4 h-4 text-white" />
             </div>
             {!collapsed && (
               <span className="font-extrabold text-sm tracking-widest bg-gradient-to-r from-white via-slate-200 to-slate-400 bg-clip-text text-transparent">
-                AETHERIS
+                VERO
               </span>
             )}
           </div>
@@ -91,7 +93,7 @@ export default function Sidebar() {
                 {isActive && (
                   <motion.div 
                     layoutId="sidebarActiveIndicator"
-                    className="absolute left-1.5 w-1 h-5 rounded-full bg-gradient-to-b from-primary to-indigo-400"
+                    className="absolute left-1.5 w-1 h-5 rounded-full bg-gradient-to-b from-primary to-orange-400"
                     transition={{ type: 'spring', stiffness: 350, damping: 30 }}
                   />
                 )}
@@ -118,18 +120,31 @@ export default function Sidebar() {
             );
           })}
         </nav>
+
+        {/* CTA UPGRADE BUTTON */}
+        {!collapsed && (
+          <div className="px-4 mb-4 mt-2">
+            <a 
+              href="mailto:business.marketingko@gmail.com?subject=Upgrade to Pro Tier"
+              className="w-full py-2.5 rounded-xl bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-400 hover:to-orange-500 text-white text-[10px] font-bold shadow-glow-primary transition-all flex items-center justify-center gap-2"
+            >
+              <Crown className="w-3.5 h-3.5" />
+              UPGRADE FEATURES
+            </a>
+          </div>
+        )}
       </div>
 
       {/* FOOTER USER PROFILE */}
       <div className="p-3 border-t border-white/[0.04] bg-white/[0.005] shrink-0">
         <div className={`flex items-center gap-3 overflow-hidden ${collapsed ? 'justify-center' : ''}`}>
-          <div className="w-8.5 h-8.5 rounded-full bg-indigo-900/40 border border-primary/20 flex items-center justify-center font-bold text-xs text-primary shadow-[0_2px_8px_rgba(99,102,241,0.15)]">
+          <div className="w-8.5 h-8.5 rounded-full bg-orange-900/40 border border-primary/20 flex items-center justify-center font-bold text-xs text-primary shadow-[0_2px_8px_rgba(99,102,241,0.15)]">
             {user?.name ? user.name[0].toUpperCase() : 'G'}
           </div>
           {!collapsed && (
             <div className="flex-1 min-w-0">
               <p className="text-[11px] font-bold text-white truncate">{user?.name || 'Guest User'}</p>
-              <p className="text-[9px] text-muted truncate">{user?.email || 'demo@aetheris.co'}</p>
+              <p className="text-[9px] text-muted truncate">{user?.email || 'demo@vero.co'}</p>
             </div>
           )}
           {!collapsed && (

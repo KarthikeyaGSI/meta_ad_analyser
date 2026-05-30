@@ -34,7 +34,7 @@ export async function setupAppwriteSchema() {
 
   // 1. Try to create the database if it doesn't already exist
   try {
-    await databases.create(DATABASE_ID, 'Aetheris Ads Analytics Database');
+    await databases.create(DATABASE_ID, 'Vero Ads Analytics Database');
     console.log(`✅ [Appwrite Setup] Database '${DATABASE_ID}' successfully created.`);
   } catch (err: any) {
     if (err.code === 409) {

@@ -3,23 +3,23 @@
     "id": "demo-act-id",
     "userId": "demo-user-id",
     "actId": "act_77491038201",
-    "name": "Aetheris Apparels Ltd. (Demo Sandbox)",
+    "name": "Vero Apparels Ltd. (Demo Sandbox)",
     "accessToken": "EAAdsa89fha89fhasdf89ashf89asdf7ha9hsd_demo_apparel",
     "status": "ACTIVE",
     "currency": "USD",
     "timezone": "America/New_York",
-    "lastSyncedAt": "2026-05-25T12:12:46.952Z"
+    "lastSyncedAt": "2026-05-30T05:25:38.909Z"
   },
   {
     "id": "demo-cosmetics-id",
     "userId": "demo-user-id",
     "actId": "act_99182047382",
-    "name": "Aetheris Cosmetics Ltd. (Demo Sandbox)",
+    "name": "Vero Cosmetics Ltd. (Demo Sandbox)",
     "accessToken": "EAAdsa89fha89fhasdf89ashf89asdf7ha9hsd_demo_cosmetics",
     "status": "ACTIVE",
     "currency": "USD",
     "timezone": "America/New_York",
-    "lastSyncedAt": "2026-05-25T12:12:47.066Z"
+    "lastSyncedAt": "2026-05-30T05:25:39.053Z"
   },
   {
     "id": "ma-direct-1779710110653",
@@ -30,13 +30,13 @@
     "status": "ACTIVE",
     "currency": "USD",
     "timezone": "America/New_York",
-    "lastSyncedAt": "2026-05-25T12:12:47.218Z"
+    "lastSyncedAt": "2026-05-30T05:25:46.885Z"
   },
   {
     "id": "ma-act_1684473322578378",
     "userId": "demo-user-id",
     "actId": "act_1684473322578378",
-    "name": "Aetheris Live Sandbox (Fallback Connection)",
+    "name": "Vero Live Sandbox (Fallback Connection)",
     "accessToken": "EAAT5O4yrg48BRmepxpJ2yXYcJjKZACDwfz51vMnXY3dJ098bPcV93cAyul4zPSLXM1b9wZAz8FhCDoCz61O0q4FZBsxybLjGr4ZCztZBZACo7ZBSBOOKxEN5xIbFwR9PKsFk0ZB6ZCjC57HCanycsUhgYuOG5UgJTq6X5hahXcQayH5c6nq0uFZBzZAD6JRUW3ZAV4eGMYZBMFNklbJRx5jxoVXwOuDbnJxSWyJZBv0ghuDZAtomJft3uLpxu2oJoXZCVUWt78HPHDznYZCgzDJIZD_demo",
     "status": "ACTIVE",
     "currency": "USD",

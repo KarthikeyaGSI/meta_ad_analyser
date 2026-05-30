@@ -7,7 +7,7 @@ export class SandboxEngine {
       userId,
       'demo-act-id', // default/legacy id
       'act_77491038201',
-      'Aetheris Apparels Ltd. (Demo Sandbox)',
+      'Vero Apparels Ltd. (Demo Sandbox)',
       'apparel'
     );
 
@@ -16,7 +16,7 @@ export class SandboxEngine {
       userId,
       'demo-cosmetics-id',
       'act_99182047382',
-      'Aetheris Cosmetics Ltd. (Demo Sandbox)',
+      'Vero Cosmetics Ltd. (Demo Sandbox)',
       'cosmetics'
     );
 
@@ -53,7 +53,7 @@ export class SandboxEngine {
           creativeId: '1202039401201',
           name: 'UGC Video - Customer Review Hook',
           headline: 'The Only Activewear You Need in 2026',
-          body: 'Over 10,000+ fitness enthusiasts choose Aetheris. Try today with free shipping and 30-day returns!',
+          body: 'Over 10,000+ fitness enthusiasts choose Vero. Try today with free shipping and 30-day returns!',
           imageUrl: 'https://images.unsplash.com/photo-1517838277536-f5f99be501cd?q=80&w=600&auto=format&fit=crop',
           thumbnailUrl: 'https://images.unsplash.com/photo-1517838277536-f5f99be501cd?q=80&w=200&auto=format&fit=crop',
           callToActionType: 'SHOP_NOW',
@@ -72,7 +72,7 @@ export class SandboxEngine {
           id: 'cr-image-cpm-spike',
           creativeId: '1202039401203',
           name: 'Founder Image - Story Overlay',
-          headline: 'Why We Designed Aetheris',
+          headline: 'Why We Designed Vero',
           body: 'A letter from our founder on sustainable design and performance testing. Click to read our story.',
           imageUrl: 'https://images.unsplash.com/photo-1507679799987-c73779587ccf?q=80&w=600&auto=format&fit=crop',
           thumbnailUrl: 'https://images.unsplash.com/photo-1507679799987-c73779587ccf?q=80&w=200&auto=format&fit=crop',
@@ -105,7 +105,7 @@ export class SandboxEngine {
           id: 'cr-cosm-video',
           creativeId: '2202039401203',
           name: 'Esthetician Review - Formula Breakdown',
-          headline: 'Why Dermatologists Approve of Aetheris Beauty',
+          headline: 'Why Dermatologists Approve of Vero Beauty',
           body: 'Clinical proof, clean ingredients, incredible results. Watch Dr. Aris dissect our active serum formula.',
           imageUrl: 'https://images.unsplash.com/photo-1556228720-195a672e8a03?q=80&w=600&auto=format&fit=crop',
           thumbnailUrl: 'https://images.unsplash.com/photo-1556228720-195a672e8a03?q=80&w=200&auto=format&fit=crop',
@@ -602,6 +602,6 @@ export class SandboxEngine {
     await db.upsertDailyInsights(dailyInsights);
     await db.upsertHourlyInsights(hourlyInsights);
 
-    console.log(`[Aetheris Sandbox] Seeded 180-day high-fidelity analytics history for: ${accountName}`);
+    console.log(`[Vero Sandbox] Seeded 180-day high-fidelity analytics history for: ${accountName}`);
   }
 }

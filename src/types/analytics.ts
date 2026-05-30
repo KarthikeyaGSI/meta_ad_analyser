@@ -1,5 +1,5 @@
 // src/types/analytics.ts
-// Shared normalized types for frontend Aetheris dashboard elements.
+// Shared normalized types for frontend Vero dashboard elements.
 // Isolates UI from database-specific response schemas (Appwrite, Meta API, etc.)
 
 export interface Campaign {

@@ -24,7 +24,7 @@ export default function SettingsPage() {
   
   const [slackEnabled, setSlackEnabled] = useState(false);
   const [whatsappEnabled, setWhatsappEnabled] = useState(false);
-  const [whiteLabelName, setWhiteLabelName] = useState('Aetheris Analytics');
+  const [whiteLabelName, setWhiteLabelName] = useState('Vero Analytics');
   
   // Meta OAuth Integration states
   const [oauthConnecting, setOauthConnecting] = useState(false);
@@ -254,18 +254,18 @@ export default function SettingsPage() {
                 <label className="text-[10px] font-bold text-slate-300 uppercase tracking-wider block">Agency Brand Color Accent</label>
                 <div className="flex flex-wrap gap-2.5">
                   {[
-                    { key: 'indigo', name: 'Indigo Aura', color: 'bg-[#6366F1]', border: 'border-[#6366F1]/55' },
+                    { key: 'orange', name: 'Indigo Aura', color: 'bg-[#F97316]', border: 'border-[#F97316]/55' },
                     { key: 'violet', name: 'Violet Nebula', color: 'bg-[#8B5CF6]', border: 'border-[#8B5CF6]/55' },
                     { key: 'emerald', name: 'Emerald Wave', color: 'bg-[#10B981]', border: 'border-[#10B981]/55' },
                     { key: 'ocean', name: 'Ocean Cyan', color: 'bg-[#0EA5E9]', border: 'border-[#0EA5E9]/55' },
                     { key: 'obsidian', name: 'Slate Obsidian', color: 'bg-[#64748B]', border: 'border-[#64748B]/55' }
                   ].map((colorObj) => {
-                    const active = (brandColor || 'indigo') === colorObj.key;
+                    const active = (brandColor || 'orange') === colorObj.key;
                     return (
                       <button
                         key={colorObj.key}
                         type="button"
-                        onClick={() => setBrandColor(colorObj.key as 'indigo' | 'violet' | 'emerald' | 'ocean' | 'obsidian')}
+                        onClick={() => setBrandColor(colorObj.key as 'orange' | 'violet' | 'emerald' | 'ocean' | 'obsidian')}
                         className={`flex items-center gap-2 px-3.5 py-2 rounded-xl border text-[10px] font-bold transition duration-300 btn-touch ${
                           active 
                             ? `${colorObj.border} bg-white/[0.04] text-white shadow-[0_4px_16px_rgba(0,0,0,0.15)]` 
@@ -302,13 +302,13 @@ export default function SettingsPage() {
             </div>
 
             <p className="text-xs text-slate-300 leading-relaxed">
-              Link your live Meta Business Profile with a single click. Aetheris will automatically discover and sync your connected ad accounts.
+              Link your live Meta Business Profile with a single click. Vero will automatically discover and sync your connected ad accounts.
             </p>
 
             <button
               onClick={handleMetaOauth}
               disabled={oauthConnecting}
-              className="w-full py-3.5 px-4 rounded-xl font-bold bg-gradient-to-r from-[#1877F2] to-indigo-600 hover:from-[#166FE5] hover:to-indigo-700 text-xs text-white transition-all flex items-center justify-center gap-2.5 shadow-lg shadow-blue-500/10 btn-touch disabled:opacity-50"
+              className="w-full py-3.5 px-4 rounded-xl font-bold bg-gradient-to-r from-[#1877F2] to-orange-600 hover:from-[#166FE5] hover:to-orange-700 text-xs text-white transition-all flex items-center justify-center gap-2.5 shadow-lg shadow-blue-500/10 btn-touch disabled:opacity-50"
             >
               <Facebook className="w-4.5 h-4.5 fill-current" />
               {oauthConnecting ? 'Redirecting to Meta Security Vault...' : 'Connect Meta Business Profile'}

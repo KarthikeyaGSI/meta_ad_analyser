@@ -30,7 +30,7 @@ export default function AnalyticsBreakdowns() {
 
   // Helper to map device icons
   const getDeviceIcon = (name: string) => {
-    if (name.includes('IOS')) return <Smartphone className="w-5 h-5 text-indigo-400" />;
+    if (name.includes('IOS')) return <Smartphone className="w-5 h-5 text-orange-400" />;
     if (name.includes('ANDROID')) return <Smartphone className="w-5 h-5 text-emerald-400" />;
     return <Monitor className="w-5 h-5 text-slate-400" />;
   };
@@ -91,7 +91,7 @@ export default function AnalyticsBreakdowns() {
                         name === 'spend' ? 'Spend' : 'Purchases'
                       ]}
                     />
-                    <Bar dataKey="spend" fill="#6366F1" radius={[4, 4, 0, 0]} barSize={28} />
+                    <Bar dataKey="spend" fill="#F97316" radius={[4, 4, 0, 0]} barSize={28} />
                   </BarChart>
                 </ResponsiveContainer>
               ) : (
@@ -129,7 +129,7 @@ export default function AnalyticsBreakdowns() {
                     {/* Progress visual bar */}
                     <div className="h-2 w-full bg-white/[0.04] border border-white/[0.06] rounded-full overflow-hidden">
                       <div
-                        className="h-full rounded-full bg-gradient-to-r from-primary to-indigo-400"
+                        className="h-full rounded-full bg-gradient-to-r from-primary to-orange-400"
                         style={{ width: `${pl.percentage}%` }}
                       ></div>
                     </div>
@@ -187,10 +187,10 @@ export default function AnalyticsBreakdowns() {
             {/* TOP BAR - ACTION PANEL (HIDDEN ON PRINT) */}
             <div className="flex justify-between items-center pb-6 border-b border-white/[0.08] no-print">
               <div className="flex items-center gap-2">
-                <div className="w-6 h-6 rounded bg-gradient-to-tr from-primary to-indigo-400 flex items-center justify-center">
+                <div className="w-6 h-6 rounded bg-gradient-to-tr from-primary to-orange-400 flex items-center justify-center">
                   <BarChart3 className="w-3.5 h-3.5 text-white" />
                 </div>
-                <span className="font-extrabold text-xs tracking-widest text-white uppercase">Aetheris Performance Dossier</span>
+                <span className="font-extrabold text-xs tracking-widest text-white uppercase">Vero Performance Dossier</span>
               </div>
               
               <div className="flex items-center gap-3">
@@ -309,10 +309,10 @@ export default function AnalyticsBreakdowns() {
 
             {/* SIGNATURE STAMP */}
             <div className="flex justify-between items-end pt-10 mt-auto border-t border-white/[0.04]">
-              <p className="text-[8px] text-muted font-medium">Aetheris Ads Analytics Platform • Reconciled Multi-Tenant Executive Dossier</p>
+              <p className="text-[8px] text-muted font-medium">Vero Ads Analytics Platform • Reconciled Multi-Tenant Executive Dossier</p>
               <div className="text-right space-y-1.5">
                 <p className="text-[8px] font-bold text-slate-300 uppercase tracking-wider block">Audit Verified By</p>
-                <div className="h-6 w-28 bg-gradient-to-r from-primary to-indigo-400 opacity-20 rounded"></div>
+                <div className="h-6 w-28 bg-gradient-to-r from-primary to-orange-400 opacity-20 rounded"></div>
                 <p className="text-[7px] text-muted font-mono block">HASH://AETH-SEC-VAULT-2026</p>
               </div>
             </div>

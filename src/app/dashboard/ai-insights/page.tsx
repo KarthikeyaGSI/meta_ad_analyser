@@ -117,7 +117,7 @@ export default function AiInsights() {
           <CheckCircle2 className="w-10 h-10 text-success" />
           <div>
             <h3 className="text-sm font-bold text-white">All Ad Operations Healthy</h3>
-            <p className="text-xs text-muted mt-1">Aetheris is actively auditing. No fatigue alerts or CPM anomalies triggered.</p>
+            <p className="text-xs text-muted mt-1">Vero is actively auditing. No fatigue alerts or CPM anomalies triggered.</p>
           </div>
         </div>
       ) : (

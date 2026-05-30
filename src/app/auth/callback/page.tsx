@@ -169,10 +169,10 @@ function AuthCallbackContent() {
         >
           {/* Brand header */}
           <div className="flex items-center gap-2 mb-4">
-            <div className="w-5 h-5 rounded bg-gradient-to-tr from-primary to-indigo-400 flex items-center justify-center">
+            <div className="w-5 h-5 rounded bg-gradient-to-tr from-primary to-orange-400 flex items-center justify-center">
               <Sparkles className="w-3 text-white" />
             </div>
-            <span className="font-extrabold text-xs tracking-widest text-white">AETHERIS</span>
+            <span className="font-extrabold text-xs tracking-widest text-white">VERO</span>
           </div>
 
           <div className="flex-1 flex flex-col items-center justify-center text-center space-y-4 mb-4">
@@ -186,7 +186,7 @@ function AuthCallbackContent() {
 
             {status === 'SYNCING' && (
               <>
-                <Activity className="w-10 h-10 text-indigo-400 animate-pulse" />
+                <Activity className="w-10 h-10 text-orange-400 animate-pulse" />
                 <h3 className="text-base font-bold text-white leading-tight">Pacing Ad Set Metrics</h3>
                 <p className="text-[11px] text-muted max-w-xs">{statusMsg}</p>
               </>

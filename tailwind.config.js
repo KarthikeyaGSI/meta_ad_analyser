@@ -15,8 +15,8 @@ module.exports = {
         card: "rgba(255, 255, 255, 0.035)",
         border: "rgba(255, 255, 255, 0.08)",
         primary: {
-          DEFAULT: "var(--color-primary, #6366F1)",
-          hover: "var(--color-primary-hover, #4F46E5)",
+          DEFAULT: "var(--color-primary, #F97316)",
+          hover: "var(--color-primary-hover, #EA580C)",
         },
         success: "#10B981",
         warning: "#F59E0B",
@@ -38,7 +38,7 @@ module.exports = {
       boxShadow: {
         "glass-shadow": "0 8px 40px 0 rgba(0, 0, 0, 0.45)",
         "glass-shadow-premium": "0 24px 60px -12px rgba(0, 0, 0, 0.65), inset 0 1px 0 0 rgba(255, 255, 255, 0.08)",
-        "glow-primary": "0 0 20px 0 rgba(99, 102, 241, 0.1)",
+        "glow-primary": "0 0 20px 0 rgba(249, 115, 22, 0.15)",
         "glow-success": "0 0 20px 0 rgba(16, 185, 129, 0.08)",
       }
     },

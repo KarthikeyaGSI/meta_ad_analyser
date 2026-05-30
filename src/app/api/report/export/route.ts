@@ -55,7 +55,7 @@ export async function GET(req: Request) {
     return new NextResponse(pdfBuffer as unknown as BodyInit, {
       headers: {
         'Content-Type': 'application/pdf',
-        'Content-Disposition': `attachment; filename="aetheris_report_${accountId}.pdf"`,
+        'Content-Disposition': `attachment; filename="vero_report_${accountId}.pdf"`,
       },
     });
 

@@ -1,203 +1,59 @@
-import fs from 'fs';
+// backend/src/database/dbClient.ts
 import path from 'path';
-import { Pool } from 'pg';
+import fs from 'fs';
+import { Client, Databases, ID } from 'node-appwrite';
+import dotenv from 'dotenv';
 
-// Setup directories for dynamic file database fallback
-const DATA_DIR = path.join(__dirname, '../../data');
-if (!fs.existsSync(DATA_DIR)) {
-  fs.mkdirSync(DATA_DIR, { recursive: true });
-}
+dotenv.config({ path: path.join(__dirname, '../../.env') });
 
-// Global configurations
-const DATABASE_URL = process.env.DATABASE_URL;
-let pgPool: Pool | null = null;
+// ---------------------------------------------------------------------------
+// Types (unchanged)
+// ---------------------------------------------------------------------------
+export interface User { id: string; email: string; passwordHash: string; name: string; createdAt: string; updatedAt: string; }
+export interface MetaAccount { id: string; userId: string; actId: string; name: string; accessToken: string; status: string; currency: string; timezone: string; lastSyncedAt: string; }
+export interface Campaign { id: string; metaAccountId: string; campaignId: string; name: string; status: string; objective: string; buyingType: string; budget: number; createdTime: string; }
+export interface Adset { id: string; campaignId: string; adsetId: string; name: string; status: string; targeting: any; budget: number; }
+export interface Ad { id: string; adsetId: string; adId: string; name: string; status: string; creativeId: string; }
+export interface Creative { id: string; creativeId: string; name: string; headline: string; body: string; imageUrl: string; videoUrl?: string; callToActionType: string; thumbnailUrl: string; }
+export interface DailyInsight { id: string; entityType: 'CAMPAIGN' | 'ADSET' | 'AD'; entityId: string; date: string; spend: number; impressions: number; clicks: number; purchases: number; revenue: number; ctr: number; cpc: number; cpm: number; roas: number; cpa: number; frequency: number; deviceBreakdown?: any; placementBreakdown?: any; demographics?: any; }
+export interface HourlyInsight { id: string; entityType: 'CAMPAIGN' | 'ADSET' | 'AD'; entityId: string; timestamp: string; spend: number; impressions: number; clicks: number; purchases: number; revenue: number; ctr: number; cpc: number; cpm: number; roas: number; cpa: number; }
+export interface SyncSession { id: string; metaAccountId: string; status: 'PENDING' | 'RUNNING' | 'COMPLETED' | 'FAILED'; rowsProcessed: number; durationMs: number; errorMessage?: string; createdAt: string; }
 
-if (DATABASE_URL) {
-  try {
-    pgPool = new Pool({ connectionString: DATABASE_URL });
-    console.log('[Aetheris DB] Connected to PostgreSQL successfully.');
-  } catch (error) {
-    console.error('[Aetheris DB] PostgreSQL connection failed. Falling back to Local JSON DB.', error);
-  }
+// ---------------------------------------------------------------------------
+// Appwrite client (optional)
+// ---------------------------------------------------------------------------
+const ENDPOINT = process.env.APPWRITE_ENDPOINT || 'https://cloud.appwrite.io/v1';
+const PROJECT_ID = process.env.APPWRITE_PROJECT_ID || '';
+const DATABASE_ID = process.env.APPWRITE_DATABASE_ID || '';
+const API_KEY = process.env.APPWRITE_API_KEY;
+
+let appwriteDb: Databases | null = null;
+if (API_KEY && PROJECT_ID && DATABASE_ID) {
+  const client = new Client()
+    .setEndpoint(ENDPOINT)
+    .setProject(PROJECT_ID)
+    .setKey(API_KEY);
+  appwriteDb = new Databases(client);
+  console.log('[Vero DB] Appwrite client configured.');
 } else {
-  console.log('[Aetheris DB] Running in Sandbox mode with Local JSON Database.');
+  console.log('[Vero DB] Appwrite credentials missing – falling back to local JSON DB.');
 }
 
-// ----------------------------------------------------
-// DATABASE SCHEMAS & TYPES
-// ----------------------------------------------------
-export interface User {
-  id: string;
-  email: string;
-  passwordHash: string;
-  name: string;
-  createdAt: string;
-  updatedAt: string;
-}
-
-export interface MetaAccount {
-  id: string;
-  userId: string;
-  actId: string;
-  name: string;
-  accessToken: string;
-  status: string;
-  currency: string;
-  timezone: string;
-  lastSyncedAt: string;
-}
-
-export interface Campaign {
-  id: string;
-  metaAccountId: string;
-  campaignId: string;
-  name: string;
-  status: string;
-  objective: string;
-  buyingType: string;
-  budget: number;
-  createdTime: string;
-}
-
-export interface Adset {
-  id: string;
-  campaignId: string;
-  adsetId: string;
-  name: string;
-  status: string;
-  targeting: any;
-  budget: number;
-}
-
-export interface Ad {
-  id: string;
-  adsetId: string;
-  adId: string;
-  name: string;
-  status: string;
-  creativeId: string;
-}
-
-export interface Creative {
-  id: string;
-  creativeId: string;
-  name: string;
-  headline: string;
-  body: string;
-  imageUrl: string;
-  videoUrl?: string;
-  callToActionType: string;
-  thumbnailUrl: string;
-}
-
-export interface DailyInsight {
-  id: string;
-  entityType: 'CAMPAIGN' | 'ADSET' | 'AD';
-  entityId: string; // The specific Campaign, Adset, or Ad Meta ID
-  date: string;
-  spend: number;
-  impressions: number;
-  clicks: number;
-  purchases: number;
-  revenue: number;
-  ctr: number;
-  cpc: number;
-  cpm: number;
-  roas: number;
-  cpa: number;
-  frequency: number;
-  deviceBreakdown?: any;
-  placementBreakdown?: any;
-  demographics?: any;
-}
-
-export interface HourlyInsight {
-  id: string;
-  entityType: 'CAMPAIGN' | 'ADSET' | 'AD';
-  entityId: string;
-  timestamp: string; // ISO String for hourly aggregation
-  spend: number;
-  impressions: number;
-  clicks: number;
-  purchases: number;
-  revenue: number;
-  ctr: number;
-  cpc: number;
-  cpm: number;
-  roas: number;
-  cpa: number;
-}
-
-export interface SyncSession {
-  id: string;
-  metaAccountId: string;
-  status: 'PENDING' | 'RUNNING' | 'COMPLETED' | 'FAILED';
-  rowsProcessed: number;
-  durationMs: number;
-  errorMessage?: string;
-  createdAt: string;
-}
-
-// ----------------------------------------------------
-// LOCAL JSON STORE UTILITY
-// ----------------------------------------------------
+// ---------------------------------------------------------------------------
+// Local JSON fallback – used only when Appwrite is not configured
+// ---------------------------------------------------------------------------
+const DATA_DIR = path.join(__dirname, '../../data');
+if (!fs.existsSync(DATA_DIR)) { fs.mkdirSync(DATA_DIR, { recursive: true }); }
 class LocalTableStore<T extends { id: string }> {
   private filePath: string;
-
-  constructor(tableName: string) {
-    this.filePath = path.join(DATA_DIR, `${tableName}.json`);
-    if (!fs.existsSync(this.filePath)) {
-      this.save([]);
-    }
-  }
-
-  getAll(): T[] {
-    try {
-      const content = fs.readFileSync(this.filePath, 'utf-8');
-      return JSON.parse(content || '[]');
-    } catch {
-      return [];
-    }
-  }
-
-  save(data: T[]): void {
-    fs.writeFileSync(this.filePath, JSON.stringify(data, null, 2), 'utf-8');
-  }
-
-  upsert(item: T): void {
-    const list = this.getAll();
-    const index = list.findIndex((x) => x.id === item.id);
-    if (index > -1) {
-      list[index] = { ...list[index], ...item };
-    } else {
-      list.push(item);
-    }
-    this.save(list);
-  }
-
-  upsertMany(items: T[]): void {
-    const list = this.getAll();
-    for (const item of items) {
-      const index = list.findIndex((x) => x.id === item.id);
-      if (index > -1) {
-        list[index] = { ...list[index], ...item };
-      } else {
-        list.push(item);
-      }
-    }
-    this.save(list);
-  }
-
-  find(predicate: (item: T) => boolean): T[] {
-    return this.getAll().filter(predicate);
-  }
-
-  findOne(predicate: (item: T) => boolean): T | undefined {
-    return this.getAll().find(predicate);
-  }
+  constructor(tableName: string) { this.filePath = path.join(DATA_DIR, `${tableName}.json`); if (!fs.existsSync(this.filePath)) { this.save([]); } }
+  getAll(): T[] { try { const content = fs.readFileSync(this.filePath, 'utf-8'); return JSON.parse(content || '[]'); } catch { return []; } }
+  save(data: T[]): void { fs.writeFileSync(this.filePath, JSON.stringify(data, null, 2), 'utf-8'); }
+  upsert(item: T): void { const list = this.getAll(); const idx = list.findIndex(x => x.id === item.id); if (idx > -1) list[idx] = { ...list[idx], ...item }; else list.push(item); this.save(list); }
+  upsertMany(items: T[]): void { const list = this.getAll(); for (const item of items) { const idx = list.findIndex(x => x.id === item.id); if (idx > -1) list[idx] = { ...list[idx], ...item }; else list.push(item); } this.save(list); }
+  find(predicate: (item: T) => boolean): T[] { return this.getAll().filter(predicate); }
+  findOne(predicate: (item: T) => boolean): T | undefined { return this.getAll().find(predicate); }
 }
-
-// Initialize tables
 const usersStore = new LocalTableStore<User>('users');
 const metaAccountsStore = new LocalTableStore<MetaAccount>('meta_accounts');
 const campaignsStore = new LocalTableStore<Campaign>('campaigns');
@@ -208,451 +64,313 @@ const dailyInsightsStore = new LocalTableStore<DailyInsight>('insights_daily');
 const hourlyInsightsStore = new LocalTableStore<HourlyInsight>('insights_hourly');
 const syncSessionsStore = new LocalTableStore<SyncSession>('sync_sessions');
 
-// ----------------------------------------------------
-// DATABASE SERVICE INTERFACE
-// ----------------------------------------------------
+// ---------------------------------------------------------------------------
+// Helper – Appwrite wrapper (returns undefined on error)
+// ---------------------------------------------------------------------------
+async function safeAppwrite<T>(promise: Promise<T>): Promise<T | undefined> {
+  try { return await promise; } catch (e) { console.error('[Vero DB] Appwrite error:', e); return undefined; }
+}
+
+// ---------------------------------------------------------------------------
+// DATABASE SERVICE INTERFACE (Appwrite first, fallback to local JSON)
+// ---------------------------------------------------------------------------
 export const db = {
   // SYNC SESSION METHODS
   async getSyncSessions(metaAccountId: string): Promise<SyncSession[]> {
-    if (pgPool) {
-      const res = await pgPool.query('SELECT * FROM sync_sessions WHERE meta_account_id = $1 ORDER BY created_at DESC LIMIT 10', [metaAccountId]);
-      return res.rows.map(row => ({
-        id: row.id,
-        metaAccountId: row.meta_account_id,
-        status: row.status,
-        rowsProcessed: Number(row.rows_processed),
-        durationMs: Number(row.duration_ms),
-        errorMessage: row.error_message,
-        createdAt: row.created_at
-      }));
+    if (appwriteDb) {
+      const docs = await safeAppwrite(appwriteDb.listDocuments(DATABASE_ID, 'sync_logs', [`metaAccountId=${metaAccountId}`, 'order=createdAt desc', 'limit=10']));
+      return docs?.documents.map(d => ({
+        id: d.$id,
+        metaAccountId: d.metaAccountId,
+        status: d.status,
+        rowsProcessed: Number(d.rowsProcessed),
+        durationMs: Number(d.durationMs),
+        errorMessage: d.errorMessage,
+        createdAt: d.createdAt,
+      })) ?? [];
     }
-    return syncSessionsStore.find(s => s.metaAccountId === metaAccountId).sort((a, b) => b.createdAt.localeCompare(a.createdAt)).slice(0, 10);
+    return syncSessionsStore.find(s => s.metaAccountId === metaAccountId).sort((a,b)=>b.createdAt.localeCompare(a.createdAt)).slice(0,10);
   },
-
   async upsertSyncSession(session: SyncSession): Promise<void> {
-    if (pgPool) {
-      await pgPool.query(
-        `INSERT INTO sync_sessions (id, meta_account_id, status, rows_processed, duration_ms, error_message, created_at) 
-         VALUES ($1, $2, $3, $4, $5, $6, $7) 
-         ON CONFLICT (id) DO UPDATE SET 
-           status = EXCLUDED.status, 
-           rows_processed = EXCLUDED.rows_processed, 
-           duration_ms = EXCLUDED.duration_ms, 
-           error_message = EXCLUDED.error_message`,
-        [session.id, session.metaAccountId, session.status, session.rowsProcessed, session.durationMs, session.errorMessage || null, session.createdAt]
-      );
+    if (appwriteDb) {
+      await safeAppwrite(appwriteDb.createDocument(DATABASE_ID, 'sync_logs', ID.unique(), {
+        metaAccountId: session.metaAccountId,
+        status: session.status,
+        rowsProcessed: session.rowsProcessed,
+        durationMs: session.durationMs,
+        errorMessage: session.errorMessage ?? null,
+        createdAt: session.createdAt,
+      }));
       return;
     }
     syncSessionsStore.upsert(session);
   },
-  // SYNC LOG METHODS
-  async createSyncLog(entry: {
-    metaAccountId: string;
-    status: string;
-    rowsProcessed: number;
-    durationMs?: number;
-    errorMessage?: string;
-    createdAt?: string;
-  }): Promise<void> {
-    const log = {
-      id: `sync_${Date.now()}`,
-      metaAccountId: entry.metaAccountId,
-      status: entry.status,
-      rowsProcessed: entry.rowsProcessed,
-      durationMs: entry.durationMs ?? 0,
-      errorMessage: entry.errorMessage,
-      createdAt: entry.createdAt ?? new Date().toISOString(),
-    };
+  async createSyncLog(entry: { metaAccountId: string; status: string; rowsProcessed: number; durationMs?: number; errorMessage?: string; createdAt?: string; }): Promise<void> {
+    const log = { id: `sync_${Date.now()}`, metaAccountId: entry.metaAccountId, status: entry.status, rowsProcessed: entry.rowsProcessed, durationMs: entry.durationMs ?? 0, errorMessage: entry.errorMessage, createdAt: entry.createdAt ?? new Date().toISOString() };
     await this.upsertSyncSession(log as any);
   },
   // USER METHODS
   async getUserByEmail(email: string): Promise<User | undefined> {
-    if (pgPool) {
-      const res = await pgPool.query('SELECT * FROM users WHERE email = $1', [email]);
-      if (res.rows[0]) {
-        return {
-          id: res.rows[0].id,
-          email: res.rows[0].email,
-          passwordHash: res.rows[0].password_hash,
-          name: res.rows[0].name,
-          createdAt: res.rows[0].created_at,
-          updatedAt: res.rows[0].updated_at,
-        };
+    if (appwriteDb) {
+      const docs = await safeAppwrite(appwriteDb.listDocuments(DATABASE_ID, 'users', [`email=${email}`]));
+      if (docs && docs.documents.length) {
+        const d = docs.documents[0];
+        return { id: d.$id, email: d.email, passwordHash: d.passwordHash, name: d.name, createdAt: d.createdAt, updatedAt: d.updatedAt };
       }
       return undefined;
     }
-    return usersStore.findOne((u) => u.email.toLowerCase() === email.toLowerCase());
+    return usersStore.findOne(u => u.email.toLowerCase() === email.toLowerCase());
   },
-
   async createUser(user: User): Promise<User> {
-    if (pgPool) {
-      await pgPool.query(
-        'INSERT INTO users (id, email, password_hash, name, created_at, updated_at) VALUES ($1, $2, $3, $4, $5, $6)',
-        [user.id, user.email, user.passwordHash, user.name, user.createdAt, user.updatedAt]
-      );
+    if (appwriteDb) {
+      await safeAppwrite(appwriteDb.createDocument(DATABASE_ID, 'users', user.id, {
+        email: user.email,
+        passwordHash: user.passwordHash,
+        name: user.name,
+        createdAt: user.createdAt,
+        updatedAt: user.updatedAt,
+      }));
       return user;
     }
     usersStore.upsert(user);
     return user;
   },
-
-  // ACCOUNTS METHODS
+  // ACCOUNT METHODS
   async getAccountsByUserId(userId: string): Promise<MetaAccount[]> {
-    if (pgPool) {
-      const res = await pgPool.query('SELECT * FROM meta_accounts WHERE user_id = $1', [userId]);
-      return res.rows.map((row) => ({
-        id: row.id,
-        userId: row.user_id,
-        actId: row.act_id,
-        name: row.name,
-        accessToken: row.access_token,
-        status: row.status,
-        currency: row.currency,
-        timezone: row.timezone,
-        lastSyncedAt: row.last_synced_at,
-      }));
+    if (appwriteDb) {
+      const docs = await safeAppwrite(appwriteDb.listDocuments(DATABASE_ID, 'meta_accounts', [`userId=${userId}`]));
+      return docs?.documents.map(d => ({ id: d.$id, userId: d.userId, actId: d.actId, name: d.name, accessToken: d.accessToken, status: d.status, currency: d.currency, timezone: d.timezone, lastSyncedAt: d.lastSyncedAt })) ?? [];
     }
-    return metaAccountsStore.find((a) => a.userId === userId);
+    return metaAccountsStore.find(a => a.userId === userId);
   },
-
   async getAccountById(accountId: string): Promise<MetaAccount | undefined> {
-    if (pgPool) {
-      const res = await pgPool.query('SELECT * FROM meta_accounts WHERE id = $1', [accountId]);
-      if (res.rows[0]) {
-        const row = res.rows[0];
-        return {
-          id: row.id,
-          userId: row.user_id,
-          actId: row.act_id,
-          name: row.name,
-          accessToken: row.access_token,
-          status: row.status,
-          currency: row.currency,
-          timezone: row.timezone,
-          lastSyncedAt: row.last_synced_at,
-        };
+    if (appwriteDb) {
+      const doc = await safeAppwrite(appwriteDb.getDocument(DATABASE_ID, 'meta_accounts', accountId));
+      if (doc) {
+        return { id: doc.$id, userId: doc.userId, actId: doc.actId, name: doc.name, accessToken: doc.accessToken, status: doc.status, currency: doc.currency, timezone: doc.timezone, lastSyncedAt: doc.lastSyncedAt };
       }
       return undefined;
     }
-    return metaAccountsStore.findOne((a) => a.id === accountId);
+    return metaAccountsStore.findOne(a => a.id === accountId);
   },
-
   async upsertMetaAccount(account: MetaAccount): Promise<MetaAccount> {
-    if (pgPool) {
-      await pgPool.query(
-        `INSERT INTO meta_accounts (id, user_id, act_id, name, access_token, status, currency, timezone, last_synced_at) 
-         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) 
-         ON CONFLICT (id) DO UPDATE SET 
-           name = EXCLUDED.name, 
-           access_token = EXCLUDED.access_token, 
-           status = EXCLUDED.status, 
-           last_synced_at = EXCLUDED.last_synced_at`,
-        [
-          account.id,
-          account.userId,
-          account.actId,
-          account.name,
-          account.accessToken,
-          account.status,
-          account.currency,
-          account.timezone,
-          account.lastSyncedAt,
-        ]
-      );
+    if (appwriteDb) {
+      await safeAppwrite(appwriteDb.createDocument(DATABASE_ID, 'meta_accounts', account.id, {
+        userId: account.userId,
+        actId: account.actId,
+        name: account.name,
+        accessToken: account.accessToken,
+        status: account.status,
+        currency: account.currency,
+        timezone: account.timezone,
+        lastSyncedAt: account.lastSyncedAt,
+      }));
       return account;
     }
     metaAccountsStore.upsert(account);
     return account;
   },
-
-  // CAMPAIGNS METHODS
+  // CAMPAIGN METHODS
   async getCampaigns(metaAccountId: string): Promise<Campaign[]> {
-    if (pgPool) {
-      const res = await pgPool.query('SELECT * FROM campaigns WHERE meta_account_id = $1', [metaAccountId]);
-      return res.rows.map((row) => ({
-        id: row.id,
-        metaAccountId: row.meta_account_id,
-        campaignId: row.campaign_id,
-        name: row.name,
-        status: row.status,
-        objective: row.objective,
-        buyingType: row.buying_type,
-        budget: Number(row.budget),
-        createdTime: row.created_time,
-      }));
+    if (appwriteDb) {
+      const docs = await safeAppwrite(appwriteDb.listDocuments(DATABASE_ID, 'campaigns', [`metaAccountId=${metaAccountId}`]));
+      return docs?.documents.map(d => ({ id: d.$id, metaAccountId: d.metaAccountId, campaignId: d.campaignId, name: d.name, status: d.status, objective: d.objective, buyingType: d.buyingType, budget: Number(d.budget), createdTime: d.createdTime })) ?? [];
     }
-    return campaignsStore.find((c) => c.metaAccountId === metaAccountId);
+    return campaignsStore.find(c => c.metaAccountId === metaAccountId);
   },
-
   async upsertCampaigns(campaigns: Campaign[]): Promise<void> {
-    if (pgPool) {
+    if (appwriteDb) {
       for (const c of campaigns) {
-        await pgPool.query(
-          `INSERT INTO campaigns (id, meta_account_id, campaign_id, name, status, objective, buying_type, budget, created_time) 
-           VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) 
-           ON CONFLICT (id) DO UPDATE SET 
-             name = EXCLUDED.name, 
-             status = EXCLUDED.status, 
-             budget = EXCLUDED.budget`,
-          [c.id, c.metaAccountId, c.campaignId, c.name, c.status, c.objective, c.buyingType, c.budget, c.createdTime]
-        );
+        await safeAppwrite(appwriteDb.createDocument(DATABASE_ID, 'campaigns', c.id, {
+          metaAccountId: c.metaAccountId,
+          campaignId: c.campaignId,
+          name: c.name,
+          status: c.status,
+          objective: c.objective,
+          buyingType: c.buyingType,
+          budget: c.budget,
+          createdTime: c.createdTime,
+        }));
       }
       return;
     }
     campaignsStore.upsertMany(campaigns);
   },
-
-  // ADSETS METHODS
+  // ADSET METHODS
   async getAdsets(campaignIds: string[]): Promise<Adset[]> {
-    if (pgPool) {
-      const res = await pgPool.query('SELECT * FROM adsets WHERE campaign_id = ANY($1)', [campaignIds]);
-      return res.rows.map((row) => ({
-        id: row.id,
-        campaignId: row.campaign_id,
-        adsetId: row.adset_id,
-        name: row.name,
-        status: row.status,
-        targeting: typeof row.targeting === 'string' ? JSON.parse(row.targeting) : row.targeting,
-        budget: Number(row.budget),
-      }));
+    if (appwriteDb) {
+      const filter = campaignIds.map(id => `campaignId=${id}`).join(' && ');
+      const docs = await safeAppwrite(appwriteDb.listDocuments(DATABASE_ID, 'adsets', [filter]));
+      return docs?.documents.map(d => ({ id: d.$id, campaignId: d.campaignId, adsetId: d.adsetId, name: d.name, status: d.status, targeting: typeof d.targeting === 'string' ? JSON.parse(d.targeting) : d.targeting, budget: Number(d.budget) })) ?? [];
     }
-    return adsetsStore.find((a) => campaignIds.includes(a.campaignId));
+    return adsetsStore.find(a => campaignIds.includes(a.campaignId));
   },
-
   async upsertAdsets(adsets: Adset[]): Promise<void> {
-    if (pgPool) {
+    if (appwriteDb) {
       for (const a of adsets) {
-        await pgPool.query(
-          `INSERT INTO adsets (id, campaign_id, adset_id, name, status, targeting, budget) 
-           VALUES ($1, $2, $3, $4, $5, $6, $7) 
-           ON CONFLICT (id) DO UPDATE SET 
-             name = EXCLUDED.name, 
-             status = EXCLUDED.status, 
-             targeting = EXCLUDED.targeting,
-             budget = EXCLUDED.budget`,
-          [a.id, a.campaignId, a.adsetId, a.name, a.status, JSON.stringify(a.targeting), a.budget]
-        );
+        await safeAppwrite(appwriteDb.createDocument(DATABASE_ID, 'adsets', a.id, {
+          campaignId: a.campaignId,
+          adsetId: a.adsetId,
+          name: a.name,
+          status: a.status,
+          targeting: JSON.stringify(a.targeting),
+          budget: a.budget,
+        }));
       }
       return;
     }
     adsetsStore.upsertMany(adsets);
   },
-
-  // ADS METHODS
+  // AD METHODS
   async getAds(adsetIds: string[]): Promise<Ad[]> {
-    if (pgPool) {
-      const res = await pgPool.query('SELECT * FROM ads WHERE adset_id = ANY($1)', [adsetIds]);
-      return res.rows.map((row) => ({
-        id: row.id,
-        adsetId: row.adset_id,
-        adId: row.ad_id,
-        name: row.name,
-        status: row.status,
-        creativeId: row.creative_id,
-      }));
+    if (appwriteDb) {
+      const filter = adsetIds.map(id => `adsetId=${id}`).join(' && ');
+      const docs = await safeAppwrite(appwriteDb.listDocuments(DATABASE_ID, 'ads', [filter]));
+      return docs?.documents.map(d => ({ id: d.$id, adsetId: d.adsetId, adId: d.adId, name: d.name, status: d.status, creativeId: d.creativeId })) ?? [];
     }
-    return adsStore.find((a) => adsetIds.includes(a.adsetId));
+    return adsStore.find(a => adsetIds.includes(a.adsetId));
   },
-
   async upsertAds(ads: Ad[]): Promise<void> {
-    if (pgPool) {
+    if (appwriteDb) {
       for (const ad of ads) {
-        await pgPool.query(
-          `INSERT INTO ads (id, adset_id, ad_id, name, status, creative_id) 
-           VALUES ($1, $2, $3, $4, $5, $6) 
-           ON CONFLICT (id) DO UPDATE SET 
-             name = EXCLUDED.name, 
-             status = EXCLUDED.status, 
-             creative_id = EXCLUDED.creative_id`,
-          [ad.id, ad.adsetId, ad.adId, ad.name, ad.status, ad.creativeId]
-        );
+        await safeAppwrite(appwriteDb.createDocument(DATABASE_ID, 'ads', ad.id, {
+          adsetId: ad.adsetId,
+          adId: ad.adId,
+          name: ad.name,
+          status: ad.status,
+          creativeId: ad.creativeId,
+        }));
       }
       return;
     }
     adsStore.upsertMany(ads);
   },
-
-  // CREATIVES METHODS
+  // CREATIVE METHODS
   async getCreatives(): Promise<Creative[]> {
-    if (pgPool) {
-      const res = await pgPool.query('SELECT * FROM creatives');
-      return res.rows.map((row) => ({
-        id: row.id,
-        creativeId: row.creative_id,
-        name: row.name,
-        headline: row.headline,
-        body: row.body,
-        imageUrl: row.image_url,
-        videoUrl: row.video_url,
-        callToActionType: row.call_to_action_type,
-        thumbnailUrl: row.thumbnail_url,
-      }));
+    if (appwriteDb) {
+      const docs = await safeAppwrite(appwriteDb.listDocuments(DATABASE_ID, 'creatives'));
+      return docs?.documents.map(d => ({ id: d.$id, creativeId: d.creativeId, name: d.name, headline: d.headline, body: d.body, imageUrl: d.imageUrl, videoUrl: d.videoUrl, callToActionType: d.callToActionType, thumbnailUrl: d.thumbnailUrl })) ?? [];
     }
     return creativesStore.getAll();
   },
-
   async upsertCreatives(creatives: Creative[]): Promise<void> {
-    if (pgPool) {
+    if (appwriteDb) {
       for (const cr of creatives) {
-        await pgPool.query(
-          `INSERT INTO creatives (id, creative_id, name, headline, body, image_url, video_url, call_to_action_type, thumbnail_url) 
-           VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) 
-           ON CONFLICT (id) DO UPDATE SET 
-             headline = EXCLUDED.headline, 
-             body = EXCLUDED.body, 
-             image_url = EXCLUDED.image_url,
-             thumbnail_url = EXCLUDED.thumbnail_url`,
-          [cr.id, cr.creativeId, cr.name, cr.headline, cr.body, cr.imageUrl, cr.videoUrl, cr.callToActionType, cr.thumbnailUrl]
-        );
+        await safeAppwrite(appwriteDb.createDocument(DATABASE_ID, 'creatives', cr.id, {
+          creativeId: cr.creativeId,
+          name: cr.name,
+          headline: cr.headline,
+          body: cr.body,
+          imageUrl: cr.imageUrl,
+          videoUrl: cr.videoUrl,
+          callToActionType: cr.callToActionType,
+          thumbnailUrl: cr.thumbnailUrl,
+        }));
       }
       return;
     }
     creativesStore.upsertMany(creatives);
   },
-
-  // INSIGHTS DAILY METHODS
+  // DAILY INSIGHTS
   async getDailyInsights(entityType: 'CAMPAIGN' | 'ADSET' | 'AD', entityIds: string[], startDate: string, endDate: string): Promise<DailyInsight[]> {
-    if (pgPool) {
-      const res = await pgPool.query(
-        `SELECT * FROM insights_daily 
-         WHERE entity_type = $1 AND entity_id = ANY($2) AND date BETWEEN $3 AND $4
-         ORDER BY date ASC`,
-        [entityType, entityIds, startDate, endDate]
-      );
-      return res.rows.map((row) => ({
-        id: row.id,
-        entityType: row.entity_type,
-        entityId: row.entity_id,
-        date: row.date.toISOString ? row.date.toISOString().split('T')[0] : row.date,
-        spend: Number(row.spend),
-        impressions: Number(row.impressions),
-        clicks: Number(row.clicks),
-        purchases: Number(row.purchases),
-        revenue: Number(row.revenue),
-        ctr: Number(row.ctr),
-        cpc: Number(row.cpc),
-        cpm: Number(row.cpm),
-        roas: Number(row.roas),
-        cpa: Number(row.cpa),
-        frequency: Number(row.frequency),
-        deviceBreakdown: typeof row.device_breakdown === 'string' ? JSON.parse(row.device_breakdown) : row.device_breakdown,
-        placementBreakdown: typeof row.placement_breakdown === 'string' ? JSON.parse(row.placement_breakdown) : row.placement_breakdown,
-        demographics: typeof row.demographics === 'string' ? JSON.parse(row.demographics) : row.demographics,
-      }));
+    if (appwriteDb) {
+      const filter = `entityType=${entityType} && entityId=${entityIds.join(',')} && date>=${startDate} && date<=${endDate}`;
+      const docs = await safeAppwrite(appwriteDb.listDocuments(DATABASE_ID, 'insights_daily', [filter]));
+      return docs?.documents.map(d => ({
+        id: d.$id,
+        entityType: d.entityType,
+        entityId: d.entityId,
+        date: d.date,
+        spend: Number(d.spend),
+        impressions: Number(d.impressions),
+        clicks: Number(d.clicks),
+        purchases: Number(d.purchases),
+        revenue: Number(d.revenue),
+        ctr: Number(d.ctr),
+        cpc: Number(d.cpc),
+        cpm: Number(d.cpm),
+        roas: Number(d.roas),
+        cpa: Number(d.cpa),
+        frequency: Number(d.frequency),
+        deviceBreakdown: typeof d.deviceBreakdown === 'string' ? JSON.parse(d.deviceBreakdown) : d.deviceBreakdown,
+        placementBreakdown: typeof d.placementBreakdown === 'string' ? JSON.parse(d.placementBreakdown) : d.placementBreakdown,
+        demographics: typeof d.demographics === 'string' ? JSON.parse(d.demographics) : d.demographics,
+      })) ?? [];
     }
-    return dailyInsightsStore.find(
-      (di) =>
-        di.entityType === entityType &&
-        entityIds.includes(di.entityId) &&
-        di.date >= startDate &&
-        di.date <= endDate
-    );
+    return dailyInsightsStore.find(di => di.entityType === entityType && entityIds.includes(di.entityId) && di.date >= startDate && di.date <= endDate);
   },
-
   async upsertDailyInsights(insights: DailyInsight[]): Promise<void> {
-    if (pgPool) {
+    if (appwriteDb) {
       for (const i of insights) {
-        await pgPool.query(
-          `INSERT INTO insights_daily 
-           (id, entity_type, entity_id, date, spend, impressions, clicks, purchases, revenue, ctr, cpc, cpm, roas, cpa, frequency, device_breakdown, placement_breakdown, demographics) 
-           VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18) 
-           ON CONFLICT (id) DO UPDATE SET 
-             spend = EXCLUDED.spend, 
-             impressions = EXCLUDED.impressions, 
-             clicks = EXCLUDED.clicks,
-             purchases = EXCLUDED.purchases,
-             revenue = EXCLUDED.revenue,
-             ctr = EXCLUDED.ctr,
-             cpc = EXCLUDED.cpc,
-             cpm = EXCLUDED.cpm,
-             roas = EXCLUDED.roas,
-             cpa = EXCLUDED.cpa,
-             frequency = EXCLUDED.frequency`,
-          [
-            i.id,
-            i.entityType,
-            i.entityId,
-            i.date,
-            i.spend,
-            i.impressions,
-            i.clicks,
-            i.purchases,
-            i.revenue,
-            i.ctr,
-            i.cpc,
-            i.cpm,
-            i.roas,
-            i.cpa,
-            i.frequency,
-            JSON.stringify(i.deviceBreakdown || {}),
-            JSON.stringify(i.placementBreakdown || {}),
-            JSON.stringify(i.demographics || {}),
-          ]
-        );
+        await safeAppwrite(appwriteDb.createDocument(DATABASE_ID, 'insights_daily', i.id, {
+          entityType: i.entityType,
+          entityId: i.entityId,
+          date: i.date,
+          spend: i.spend,
+          impressions: i.impressions,
+          clicks: i.clicks,
+          purchases: i.purchases,
+          revenue: i.revenue,
+          ctr: i.ctr,
+          cpc: i.cpc,
+          cpm: i.cpm,
+          roas: i.roas,
+          cpa: i.cpa,
+          frequency: i.frequency,
+          deviceBreakdown: JSON.stringify(i.deviceBreakdown || {}),
+          placementBreakdown: JSON.stringify(i.placementBreakdown || {}),
+          demographics: JSON.stringify(i.demographics || {}),
+        }));
       }
       return;
     }
     dailyInsightsStore.upsertMany(insights);
   },
-
-  // INSIGHTS HOURLY METHODS
+  // HOURLY INSIGHTS
   async getHourlyInsights(entityType: 'CAMPAIGN' | 'ADSET' | 'AD', entityIds: string[], startDate: string, endDate: string): Promise<HourlyInsight[]> {
-    if (pgPool) {
-      const res = await pgPool.query(
-        `SELECT * FROM insights_hourly 
-         WHERE entity_type = $1 AND entity_id = ANY($2) AND timestamp BETWEEN $3 AND $4
-         ORDER BY timestamp ASC`,
-        [entityType, entityIds, startDate, endDate]
-      );
-      return res.rows.map((row) => ({
-        id: row.id,
-        entityType: row.entity_type,
-        entityId: row.entity_id,
-        timestamp: row.timestamp,
-        spend: Number(row.spend),
-        impressions: Number(row.impressions),
-        clicks: Number(row.clicks),
-        purchases: Number(row.purchases),
-        revenue: Number(row.revenue),
-        ctr: Number(row.ctr),
-        cpc: Number(row.cpc),
-        cpm: Number(row.cpm),
-        roas: Number(row.roas),
-        cpa: Number(row.cpa),
-      }));
+    if (appwriteDb) {
+      const filter = `entityType=${entityType} && entityId=${entityIds.join(',')} && timestamp>=${startDate} && timestamp<=${endDate}`;
+      const docs = await safeAppwrite(appwriteDb.listDocuments(DATABASE_ID, 'insights_hourly', [filter]));
+      return docs?.documents.map(d => ({
+        id: d.$id,
+        entityType: d.entityType,
+        entityId: d.entityId,
+        timestamp: d.timestamp,
+        spend: Number(d.spend),
+        impressions: Number(d.impressions),
+        clicks: Number(d.clicks),
+        purchases: Number(d.purchases),
+        revenue: Number(d.revenue),
+        ctr: Number(d.ctr),
+        cpc: Number(d.cpc),
+        cpm: Number(d.cpm),
+        roas: Number(d.roas),
+        cpa: Number(d.cpa),
+      })) ?? [];
     }
-    // Simple filter: extract date from hourly timestamp 'YYYY-MM-DDTHH:MM:SS'
-    return hourlyInsightsStore.find(
-      (hi) => {
-        const hDate = hi.timestamp.split('T')[0];
-        return hi.entityType === entityType &&
-          entityIds.includes(hi.entityId) &&
-          hDate >= startDate &&
-          hDate <= endDate;
-      }
-    );
+    return hourlyInsightsStore.find(hi => {
+      const hDate = hi.timestamp.split('T')[0];
+      return hi.entityType === entityType && entityIds.includes(hi.entityId) && hDate >= startDate && hDate <= endDate;
+    });
   },
-
   async upsertHourlyInsights(insights: HourlyInsight[]): Promise<void> {
-    if (pgPool) {
+    if (appwriteDb) {
       for (const i of insights) {
-        await pgPool.query(
-          `INSERT INTO insights_hourly 
-           (id, entity_type, entity_id, timestamp, spend, impressions, clicks, purchases, revenue, ctr, cpc, cpm, roas, cpa) 
-           VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14) 
-           ON CONFLICT (id) DO UPDATE SET 
-             spend = EXCLUDED.spend, 
-             impressions = EXCLUDED.impressions, 
-             clicks = EXCLUDED.clicks,
-             purchases = EXCLUDED.purchases,
-             revenue = EXCLUDED.revenue,
-             ctr = EXCLUDED.ctr,
-             cpc = EXCLUDED.cpc,
-             cpm = EXCLUDED.cpm,
-             roas = EXCLUDED.roas,
-             cpa = EXCLUDED.cpa`,
-          [i.id, i.entityType, i.entityId, i.timestamp, i.spend, i.impressions, i.clicks, i.purchases, i.revenue, i.ctr, i.cpc, i.cpm, i.roas, i.cpa]
-        );
+        await safeAppwrite(appwriteDb.createDocument(DATABASE_ID, 'insights_hourly', i.id, {
+          entityType: i.entityType,
+          entityId: i.entityId,
+          timestamp: i.timestamp,
+          spend: i.spend,
+          impressions: i.impressions,
+          clicks: i.clicks,
+          purchases: i.purchases,
+          revenue: i.revenue,
+          ctr: i.ctr,
+          cpc: i.cpc,
+          cpm: i.cpm,
+          roas: i.roas,
+          cpa: i.cpa,
+        }));
       }
       return;
     }

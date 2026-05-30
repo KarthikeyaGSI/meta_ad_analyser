@@ -567,7 +567,7 @@ export const exportCampaignsCsv = async (req: AuthenticatedRequest, res: Respons
     }
 
     res.setHeader('Content-Type', 'text/csv');
-    res.setHeader('Content-Disposition', `attachment; filename="aetheris_campaigns_${startDate}_to_${endDate}.csv"`);
+    res.setHeader('Content-Disposition', `attachment; filename="vero_campaigns_${startDate}_to_${endDate}.csv"`);
     res.status(200).send(csv);
   } catch (error: any) {
     res.status(500).json({ message: 'CSV export generation encountered a database error.', error: error.message });
@@ -606,35 +606,20 @@ export const connectDirectToken = async (req: AuthenticatedRequest, res: Respons
     const isMockMode = rawToken.includes('_demo') || rawToken.startsWith('EAAdsa89fha89fhasdf89ashf89asdf7ha9hsd_demo');
 
     // Step 1: Validate Token and Fetch Connected Accounts
-    if (isMockMode) {
-      console.log('[Meta Direct Connect] Mock bypass token active.');
-      accounts = [
-        { account_id: '77491038201', name: 'Demo Prospecting Inc.' },
-        { account_id: cleanActIdOnly, name: rawName || 'Aetheris Live Sandbox (Mock Connection)', currency: 'USD', timezone_name: 'America/New_York' }
-      ];
-    } else {
-      console.log('[Meta Direct Connect] Meta validation: Calling /me/adaccounts...');
-      try {
-        const fetchUrl = `https://graph.facebook.com/v25.0/me/adaccounts?fields=name,account_id,currency,timezone_name&access_token=${rawToken}`;
-        const response = await fetch(fetchUrl);
-        const resJson = await response.json();
-        
-        if (resJson.error) {
-          throw new Error(resJson.error.message || 'Token handshake verification failed.');
-        }
-        
-        accounts = resJson.data || [];
-      } catch (err: any) {
-        console.warn(`[Meta Direct Connect] Live Meta validation failed: ${err.message}. Gracefully falling back to Sandbox Mode bypass for local developer testing.`);
-        // Append _demo to the token to signal local sandbox data seeding
-        if (!rawToken.includes('_demo')) {
-          rawToken = `${rawToken}_demo`;
-        }
-        accounts = [
-          { account_id: '77491038201', name: 'Demo Prospecting Inc.' },
-          { account_id: cleanActIdOnly, name: rawName || 'Aetheris Live Sandbox (Fallback Connection)', currency: 'USD', timezone_name: 'America/New_York' }
-        ];
+    console.log('[Meta Direct Connect] Meta validation: Calling /me/adaccounts...');
+    try {
+      const fetchUrl = `https://graph.facebook.com/v25.0/me/adaccounts?fields=name,account_id,currency,timezone_name&access_token=${rawToken}`;
+      const response = await fetch(fetchUrl);
+      const resJson = await response.json();
+      
+      if (resJson.error) {
+        throw new Error(resJson.error.message || 'Token handshake verification failed.');
       }
+      
+      accounts = resJson.data || [];
+    } catch (err: any) {
+      console.warn(`[Meta Direct Connect] Live Meta validation failed: ${err.message}.`);
+      throw err;
     }
 
     // Step 2: Verify whether target ad account exists in the returned list
@@ -645,39 +630,26 @@ export const connectDirectToken = async (req: AuthenticatedRequest, res: Respons
     );
 
     if (!targetAccount) {
-      console.warn(`[Meta Direct Connect] Target account ${formattedActId} not found in user accounts list. Gracefully falling back to Sandbox Mode bypass.`);
-      if (!rawToken.includes('_demo')) {
-        rawToken = `${rawToken}_demo`;
-      }
-      targetAccount = {
-        account_id: cleanActIdOnly,
-        name: rawName || 'Aetheris Live Sandbox (Fallback Connection)',
-        currency: 'USD',
-        timezone_name: 'America/New_York'
-      };
+      console.warn(`[Meta Direct Connect] Target account ${formattedActId} not found in user accounts list.`);
+      throw new Error(`Target account ${formattedActId} not found in user accounts list.`);
     }
 
     // Step 3: Test Insights API Node Immediately
     let insightsWorking = false;
-    if (isMockMode) {
-      insightsWorking = true;
-      console.log('[Meta Direct Connect] insights response (mock): insights endpoint working verified.');
-    } else {
-      console.log(`[Meta Direct Connect] Meta validation: Testing insights for ${formattedActId}...`);
-      try {
-        const insightsUrl = `https://graph.facebook.com/v25.0/${formattedActId}/insights?fields=spend,impressions&date_preset=last_30d&access_token=${rawToken}`;
-        const insightsRes = await fetch(insightsUrl);
-        const insightsData = await insightsRes.json();
-        
-        if (!insightsData.error) {
-          insightsWorking = true;
-          console.log('[Meta Direct Connect] insights response (live): verified.');
-        } else {
-          console.warn('[Meta Direct Connect] Live Insights test warning:', insightsData.error.message);
-        }
-      } catch (err) {
-        console.error('[Meta Direct Connect] Live Insights test failed:', err);
+    console.log(`[Meta Direct Connect] Meta validation: Testing insights for ${formattedActId}...`);
+    try {
+      const insightsUrl = `https://graph.facebook.com/v25.0/${formattedActId}/insights?fields=spend,impressions&date_preset=last_30d&access_token=${rawToken}`;
+      const insightsRes = await fetch(insightsUrl);
+      const insightsData = await insightsRes.json();
+      
+      if (!insightsData.error) {
+        insightsWorking = true;
+        console.log('[Meta Direct Connect] insights response (live): verified.');
+      } else {
+        console.warn('[Meta Direct Connect] Live Insights test warning:', insightsData.error.message);
       }
+    } catch (err) {
+      console.error('[Meta Direct Connect] Live Insights test failed:', err);
     }
 
     // Step 4: Save Account Details inside Database

@@ -78,7 +78,7 @@ export const authApi = {
   submitMetaCallback: (code: string, userId: string) => safeFetch(() => apiClient.post('/auth/meta/callback', { code, userId }), { 
     success: true,
     token: 'demo_mock_token_123',
-    user: { id: userId, name: 'Demo User', email: 'demo@aetheris.co' },
+    user: { id: userId, name: 'Demo User', email: 'demo@vero.co' },
     accounts: demoAccounts,
     adAccountConnected: true,
     insightsWorking: true,

@@ -13,12 +13,8 @@ export class MetaApiService {
     const redirectUri = process.env.META_REDIRECT_URI;
 
     // Check if we are running in OAuth sandbox mode or using mock credentials
-    if (!appId || !appSecret || code.startsWith('demo-guest-code') || code.startsWith('mock_') || code.startsWith('demo')) {
-      console.log('[Meta API] Sandbox bypass token generated.');
-      return {
-        accessToken: 'EAAdsa89fha89fhasdf89ashf89asdf7ha9hsd_demo_longlived',
-        expiresIn: 5184000, // 60 days
-      };
+    if (!appId || !appSecret) {
+      throw new Error('Missing Meta App ID or App Secret.');
     }
 
     try {
@@ -44,9 +40,7 @@ export class MetaApiService {
    * Fetches ad accounts connected to the token
    */
   static async fetchAdAccounts(accessToken: string): Promise<Array<{ id: string; name: string }>> {
-    if (accessToken.includes('_demo')) {
-      return [{ id: 'act_77491038201', name: 'Aetheris Apparels Ltd. (Demo Sandbox)' }];
-    }
+
 
     try {
       const res = await fetch(`${this.BASE_URL}/me/adaccounts?fields=name,account_id&access_token=${accessToken}`);
@@ -58,8 +52,8 @@ export class MetaApiService {
         name: acc.name || `Ad Account ${acc.account_id}`,
       }));
     } catch (err) {
-      console.error('[Meta API] Failed to fetch live accounts. Falling back to Demo account.');
-      return [{ id: 'act_77491038201', name: 'Aetheris Apparels Ltd. (Demo Sandbox)' }];
+      console.error('[Meta API] Failed to fetch live accounts.');
+      throw err;
     }
   }
 
@@ -83,28 +77,7 @@ export class MetaApiService {
     };
     await db.upsertSyncSession(currentSession);
 
-    if (accessToken.includes('_demo') || accountId === 'demo-act-id' || accountId.includes('77491038201')) {
-      try {
-        const metaAcc = await db.getAccountById(accountId);
-        const userId = metaAcc?.userId || 'demo-user-id';
-        
-        // Seed coherent sandbox narratives
-        await SandboxEngine.seedDemoData(userId);
 
-        // Update session as successful
-        currentSession.status = 'COMPLETED';
-        currentSession.rowsProcessed = 350; // Approximated coherent mock insights rows
-        currentSession.durationMs = Date.now() - startTimestamp;
-        await db.upsertSyncSession(currentSession);
-        return;
-      } catch (err: any) {
-        currentSession.status = 'FAILED';
-        currentSession.durationMs = Date.now() - startTimestamp;
-        currentSession.errorMessage = err.message || 'Demo seeding encountered a structural crash.';
-        await db.upsertSyncSession(currentSession);
-        return;
-      }
-    }
 
     try {
       let syncedRowsCount = 0;
@@ -280,40 +253,7 @@ export class MetaApiService {
     } catch (err: any) {
       console.error(`[Meta API] Live synchronization failed for account ${accountId}:`, err);
       
-      const isTokenError = err.message?.includes('token') || 
-                           err.message?.includes('OAuth') || 
-                           err.message?.includes('expired') || 
-                           err.message?.includes('session') ||
-                           err.message?.includes('validate');
 
-      if (isTokenError) {
-        console.warn(`[Meta API] Token validation error detected: "${err.message}". Gracefully converting account ${accountId} to Sandbox Mode fallback for local testing.`);
-        try {
-          // Load account, append _demo to access token and save it back so future calls bypass live
-          const metaAcc = await db.getAccountById(accountId);
-          if (metaAcc) {
-            if (!metaAcc.accessToken.includes('_demo')) {
-              metaAcc.accessToken = `${metaAcc.accessToken}_demo`;
-              await db.upsertMetaAccount(metaAcc);
-            }
-            const userId = metaAcc.userId || 'demo-user-id';
-            
-            // Seed sandbox demo data
-            await SandboxEngine.seedDemoData(userId);
-
-            // Update session as successful fallback
-            currentSession.status = 'COMPLETED';
-            currentSession.rowsProcessed = 350;
-            currentSession.durationMs = Date.now() - startTimestamp;
-            await db.upsertSyncSession(currentSession);
-            
-            console.log(`[Meta API] Gracefully finished fallback sandbox sync for account: ${accountId}`);
-            return;
-          }
-        } catch (fallbackErr: any) {
-          console.error('[Meta API] Sandbox fallback failed:', fallbackErr);
-        }
-      }
 
       // Update session as failed, logging raw stack
       currentSession.status = 'FAILED';

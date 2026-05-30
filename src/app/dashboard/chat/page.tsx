@@ -1,32 +1,59 @@
 'use client';
 
-import { useChat } from '@ai-sdk/react';
 import { Send, Bot, User, ArrowRight, BrainCircuit, MessageSquare, AlertTriangle } from 'lucide-react';
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import { useStore } from '../../../store/useStore';
 
 export default function AiChatAnalyst() {
   const { activeAccount } = useStore();
   const chatEndRef = useRef<HTMLDivElement>(null);
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const chatOptions: any = {
-    api: '/api/chat',
-    body: { accountId: activeAccount?.id }
-  };
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { messages, input, handleInputChange, handleSubmit, isLoading, error } = useChat(chatOptions) as any;
+  const [messages, setMessages] = useState<{ role: string; content: string }[]>([]);
+  const [input, setInput] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<{message: string} | null>(null);
 
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!input.trim() || !activeAccount) return;
+
+    const userMessage = { role: 'user', content: input };
+    setMessages(prev => [...prev, userMessage]);
+    setInput('');
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const res = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          messages: [...messages, userMessage],
+          accountId: activeAccount.id,
+        })
+      });
+
+      if (!res.ok) throw new Error('Failed to fetch response');
+      
+      const data = await res.json();
+      setMessages(prev => [...prev, { role: 'assistant', content: data.text || 'Simulated AI Response' }]);
+    } catch (err: any) {
+      setError({ message: err.message || 'An error occurred' });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const handleQuickPrompt = (promptText: string) => {
-    // A bit hacky but we simulate a submit by manually constructing the fake event for useChat
-    const fakeEvent = { preventDefault: () => {} } as React.FormEvent<HTMLFormElement>;
-    handleInputChange({ target: { value: promptText } } as unknown as React.ChangeEvent<HTMLInputElement>);
-    setTimeout(() => handleSubmit(fakeEvent), 50);
+    setInput(promptText);
+    setTimeout(() => {
+      const form = document.getElementById('chat-form');
+      if (form) form.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
+    }, 100);
   };
 
   return (
@@ -37,7 +64,7 @@ export default function AiChatAnalyst() {
           <h1 className="text-3xl font-extrabold text-white tracking-tight flex items-center gap-2">
             AI Chat Analyst <BrainCircuit className="w-6 h-6 text-primary animate-pulse" />
           </h1>
-          <p className="text-sm text-muted">Consult Aetheris Copilot on campaign ROAS, audience fatigue, and scaling opportunities.</p>
+          <p className="text-sm text-muted">Consult Vero Copilot on campaign ROAS, audience fatigue, and scaling opportunities.</p>
         </div>
       </div>
 
@@ -83,7 +110,7 @@ export default function AiChatAnalyst() {
               <div className="flex items-center justify-center h-full text-center text-muted">
                 <div className="flex flex-col items-center gap-3">
                   <Bot className="w-12 h-12 text-primary/50" />
-                  <p className="text-sm">Hello! I am your Aetheris AI Chat Analyst.<br/>Ask me about your campaign performance.</p>
+                  <p className="text-sm">Hello! I am your Vero AI Chat Analyst.<br/>Ask me about your campaign performance.</p>
                 </div>
               </div>
             )}
@@ -138,18 +165,18 @@ export default function AiChatAnalyst() {
             <div ref={chatEndRef}></div>
           </div>
 
-          <form onSubmit={handleSubmit} className="p-4 border-t border-white/[0.06] bg-white/[0.005] flex items-center gap-3">
+          <form id="chat-form" onSubmit={handleSubmit} className="p-4 border-t border-white/[0.06] bg-white/[0.005] flex items-center gap-3">
             <input
               type="text"
               placeholder={activeAccount ? "Ask AI Chat Analyst..." : "Select an account to chat"}
-              value={input}
-              onChange={handleInputChange}
+              value={input || ''}
+              onChange={(e) => setInput(e.target.value)}
               disabled={isLoading || !activeAccount}
               className="flex-1 px-4 py-3.5 rounded-xl bg-white/[0.02] border border-white/[0.06] focus:border-primary/50 text-xs text-white placeholder-muted focus:outline-none transition disabled:opacity-50"
             />
             <button
               type="submit"
-              disabled={isLoading || !input.trim() || !activeAccount}
+              disabled={isLoading || !(input || '').trim() || !activeAccount}
               className="p-3.5 rounded-xl bg-primary hover:bg-primary-hover text-white transition disabled:opacity-50 shadow-glow-primary shrink-0"
             >
               <Send className="w-4 h-4" />

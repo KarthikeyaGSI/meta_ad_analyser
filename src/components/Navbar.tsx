@@ -1,7 +1,7 @@
 'use client';
 
 import { useQuery } from '@tanstack/react-query';
-import { RefreshCw, Calendar, ChevronDown, Check, ShieldAlert, Sparkles } from 'lucide-react';
+import { RefreshCw, Calendar, ChevronDown, Check, ShieldAlert, Sparkles, BrainCircuit, Key, Save, FileDown } from 'lucide-react';
 import { useRouter, usePathname } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import { enableSandbox } from '../lib/runtime';
@@ -26,6 +26,7 @@ export default function Navbar() {
   const [accDropdownOpen, setAccDropdownOpen] = useState(false);
   const [dateDropdownOpen, setDateDropdownOpen] = useState(false);
   const [syncing, setSyncing] = useState(false);
+  const [aiProvider, setAiProvider] = useState('OpenAI');
 
   // 1. Fetch available accounts connected to user session
   const { data: accountsData } = useQuery({
@@ -104,6 +105,12 @@ export default function Navbar() {
     }
   };
 
+  const handleExportPDF = () => {
+    if (!activeAccount) return;
+    // Open a new tab to trigger the PDF download from the API route
+    window.open(`/api/report/export?accountId=${activeAccount.id}`, '_blank');
+  };
+
   return (
     <header 
       className="fixed top-4 right-4 z-20 h-14 rounded-2xl border border-white/[0.06] bg-white/[0.015] backdrop-blur-3xl flex items-center justify-between px-6 shadow-[0_8px_32px_rgba(0,0,0,0.35),inset_0_1px_0_0_rgba(255,255,255,0.04)] transition-all duration-300"
@@ -178,6 +185,16 @@ export default function Navbar() {
           {enableSandbox ? 'Sandbox' : 'Live'}
         </div>
 
+        {/* PDF Export Button */}
+        <button
+          onClick={handleExportPDF}
+          disabled={!activeAccount}
+          className="flex items-center justify-center p-1.5 rounded-xl bg-white/[0.02] border border-white/[0.06] hover:bg-white/[0.06] hover:border-white/[0.1] transition text-muted hover:text-white btn-touch"
+          title="Export PDF Report"
+        >
+          <FileDown className="w-4 h-4" />
+        </button>
+
         {/* Sync Button */}
         <button
           onClick={handleSyncClick}
@@ -207,6 +224,16 @@ export default function Navbar() {
                   Select Date Range
                 </p>
                 <div className="mt-1 space-y-0.5">
+                  <select 
+                      value={aiProvider}
+                      onChange={(e) => setAiProvider(e.target.value)}
+                      className="w-full px-3 py-2 rounded-xl text-xs text-white bg-[#0E1017] border border-white/[0.06] focus:border-primary/50 outline-none appearance-none"
+                    >
+                      <option value="OpenAI" className="bg-[#0E1017] text-white py-1">OpenAI (GPT-4o)</option>
+                      <option value="Anthropic" className="bg-[#0E1017] text-white py-1">Anthropic (Claude 3.5)</option>
+                      <option value="Gemini" className="bg-[#0E1017] text-white py-1">Google (Gemini 1.5)</option>
+                      <option value="Groq" className="bg-[#0E1017] text-white py-1">Groq (Llama 3)</option>
+                    </select>
                   {dateOptions.map((opt) => {
                     const selected = dateRange.label === opt.label;
                     return (

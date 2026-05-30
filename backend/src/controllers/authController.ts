@@ -13,7 +13,7 @@ export const hasMetaCreds = Boolean(
   process.env.META_APP_SECRET
 );
 
-const JWT_SECRET = process.env.JWT_SECRET || 'aetheris_super_secret_analytics_passphrase_2026';
+const JWT_SECRET = process.env.JWT_SECRET || 'vero_super_secret_analytics_passphrase_2026';
 
 export const register = async (req: Request, res: Response) => {
   const { name, email, password } = req.body;
@@ -88,8 +88,8 @@ export const login = async (req: Request, res: Response) => {
  * and pre-seeds it with beautiful dynamic 30-day dashboard stories.
  */
 export const guestLogin = async (req: Request, res: Response) => {
-  const email = 'demo@aetheris.co';
-  const name = 'Aetheris Demo Partner';
+  const email = 'demo@vero.co';
+  const name = 'Vero Demo Partner';
   
   try {
     let user = await db.getUserByEmail(email);
@@ -177,7 +177,7 @@ export const metaCallback = async (req: Request, res: Response) => {
     if (isMockMode) {
       accounts = [
         { account_id: '77491038201', name: 'Demo Prospecting Inc.' },
-        { account_id: TARGET_ACCOUNT_ID.replace('act_', ''), name: 'Aetheris Agency Partner (Live Test Sandbox)', currency: 'USD', timezone_name: 'America/New_York' }
+        { account_id: TARGET_ACCOUNT_ID.replace('act_', ''), name: 'Vero Agency Partner (Live Test Sandbox)', currency: 'USD', timezone_name: 'America/New_York' }
       ];
     } else {
       try {
@@ -279,8 +279,8 @@ export const metaCallback = async (req: Request, res: Response) => {
     }
 
     // Generate valid JWT session
-    const token = jwt.sign({ id: userId, email: `oauth-${userId}@aetheris.co` }, JWT_SECRET, { expiresIn: '7d' });
-    const userSession = { id: userId, name: 'Meta Partner', email: `oauth-${userId}@aetheris.co` };
+    const token = jwt.sign({ id: userId, email: `oauth-${userId}@vero.co` }, JWT_SECRET, { expiresIn: '7d' });
+    const userSession = { id: userId, name: 'Meta Partner', email: `oauth-${userId}@vero.co` };
 
     res.json({
       success: true,

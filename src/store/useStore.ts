@@ -19,7 +19,7 @@ export interface AdAccount {
   actId: string;
 }
 
-interface AetherisState {
+interface VeroState {
   // Auth state
   user: UserSession | null;
   setUser: (user: UserSession | null) => void;
@@ -48,8 +48,8 @@ interface AetherisState {
   setSidebarCollapsed: (val: boolean) => void;
 
   // Agency CNAME Branding
-  brandColor: 'indigo' | 'violet' | 'emerald' | 'ocean' | 'obsidian';
-  setBrandColor: (color: 'indigo' | 'violet' | 'emerald' | 'ocean' | 'obsidian') => void;
+  brandColor: 'orange' | 'violet' | 'emerald' | 'ocean' | 'obsidian';
+  setBrandColor: (color: 'orange' | 'violet' | 'emerald' | 'ocean' | 'obsidian') => void;
 
   // Refresh Trigger
   refreshTrigger: number;
@@ -64,7 +64,7 @@ const getSafeLocalItem = (key: string) => {
     if (!value || value === 'undefined' || value === 'null') return null;
     return JSON.parse(value);
   } catch (error) {
-    console.error('[Aetheris Store] Failed to parse local item:', key, error);
+    console.error('[Vero Store] Failed to parse local item:', key, error);
     return null;
   }
 };
@@ -87,7 +87,7 @@ const initialIsDemo = initialActiveAccount
   ? (initialActiveAccount.id === 'demo-act-id' || initialActiveAccount.id === 'demo-cosmetics-id')
   : true;
 
-export const useStore = create<AetherisState>((set) => ({
+export const useStore = create<VeroState>((set) => ({
   // Auth Store
   user: getSafeLocalItem('ae_session'),
   
@@ -140,7 +140,7 @@ export const useStore = create<AetherisState>((set) => ({
   setSidebarCollapsed: (val) => set({ sidebarCollapsed: val }),
 
   // Agency CNAME Branding
-  brandColor: getSafeLocalItem('ae_brand_color') || 'indigo',
+  brandColor: getSafeLocalItem('ae_brand_color') || 'orange',
   setBrandColor: (color) => set(() => {
     localStorage.setItem('ae_brand_color', JSON.stringify(color));
     return { brandColor: color };

@@ -133,7 +133,7 @@ export default function DashboardOverview() {
 
   // Set up chart configurations
   const chartConfigs = {
-    spend: { color: '#6366F1', label: 'Spend', formatter: formatCurrency },
+    spend: { color: '#F97316', label: 'Spend', formatter: formatCurrency },
     roas: { color: '#10B981', label: 'ROAS', formatter: formatRoas },
     ctr: { color: '#8B5CF6', label: 'CTR', formatter: formatPercent },
     purchases: { color: '#F59E0B', label: 'Purchases', formatter: formatNumber },
@@ -276,7 +276,7 @@ export default function DashboardOverview() {
             {isDemoMode && (
               <button 
                 onClick={() => window.location.href = '/dashboard/settings'}
-                className="text-[9px] text-primary hover:text-indigo-300 font-bold tracking-wider flex items-center gap-1 uppercase mt-1.5 transition btn-touch"
+                className="text-[9px] text-primary hover:text-orange-300 font-bold tracking-wider flex items-center gap-1 uppercase mt-1.5 transition btn-touch"
               >
                 Link Your Real Meta Ad Account <ArrowUpRight className="w-3 h-3" />
               </button>

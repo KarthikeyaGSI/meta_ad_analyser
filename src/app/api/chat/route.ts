@@ -15,7 +15,7 @@ export async function POST(req: Request) {
     const result = await streamText({
       model: openai('gpt-4o'),
       messages,
-      system: `You are Aetheris, an expert Meta Ads Media Buyer AI. You analyze campaigns, budgets, and creatives. 
+      system: `You are Vero, an expert Meta Ads Media Buyer AI. You analyze campaigns, budgets, and creatives. 
       You are speaking to the campaign manager. Provide concise, strategic, and data-driven answers.`,
       tools: {
         getCampaignMetrics: tool({

@@ -25,7 +25,7 @@ const deviceData = [
   { name: 'Tablet', value: 2 },
 ];
 
-const COLORS = ['#6366f1', '#8b5cf6', '#ec4899', '#f43f5e', '#f59e0b'];
+const COLORS = ['#F97316', '#8b5cf6', '#ec4899', '#f43f5e', '#f59e0b'];
 
 export default function AudienceDashboard() {
   return (
@@ -49,7 +49,7 @@ export default function AudienceDashboard() {
         >
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-lg font-bold text-white flex items-center gap-2">
-              <Users className="w-5 h-5 text-indigo-400" /> Age Distribution
+              <Users className="w-5 h-5 text-orange-400" /> Age Distribution
             </h2>
           </div>
           <div className="h-[300px] w-full">
@@ -62,7 +62,7 @@ export default function AudienceDashboard() {
                   cursor={{ fill: 'rgba(255,255,255,0.05)' }}
                   contentStyle={{ backgroundColor: 'rgba(15,23,42,0.9)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px' }}
                 />
-                <Bar dataKey="value" fill="#6366f1" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="value" fill="#F97316" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </div>

@@ -48,7 +48,7 @@ export default function DashboardLayout({
 
   // Dynamic branding variables mapping
   const themeColors = {
-    indigo: { primary: '#6366F1', hover: '#4F46E5' },
+    orange: { primary: '#F97316', hover: '#4F46E5' },
     violet: { primary: '#8B5CF6', hover: '#7C3AED' },
     emerald: { primary: '#10B981', hover: '#059669' },
     ocean: { primary: '#0EA5E9', hover: '#0284C7' },
@@ -56,8 +56,8 @@ export default function DashboardLayout({
   };
 
   const customStyles = {
-    '--color-primary': themeColors[brandColor || 'indigo'].primary,
-    '--color-primary-hover': themeColors[brandColor || 'indigo'].hover,
+    '--color-primary': (themeColors[brandColor as keyof typeof themeColors] || themeColors['orange']).primary,
+    '--color-primary-hover': (themeColors[brandColor as keyof typeof themeColors] || themeColors['orange']).hover,
   } as React.CSSProperties;
 
   if (!mounted || !user) {

@@ -23,7 +23,7 @@ app.use('/api', apiRouter);
 app.get('/', (req: Request, res: Response) => {
   res.json({
     status: 'ONLINE',
-    message: 'Welcome to Aetheris Ads Analytics API Engine.',
+    message: 'Welcome to Vero Ads Analytics API Engine.',
     frontend_url: 'http://localhost:3000',
     api_documentation: 'http://localhost:5000/health'
   });
@@ -35,13 +35,13 @@ app.get('/health', (req: Request, res: Response) => {
     status: 'ONLINE',
     uptime: process.uptime(),
     timestamp: new Date().toISOString(),
-    service: 'Aetheris Express API Server'
+    service: 'Vero Express API Server'
   });
 });
 
 // Global Fallback Error Handler
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
-  console.error('[Aetheris Server Error]', err);
+  console.error('[Vero Server Error]', err);
   res.status(err.status || 500).json({
     message: err.message || 'Internal Server Error',
     error: process.env.NODE_ENV === 'production' ? {} : err
@@ -51,7 +51,7 @@ app.use((err: any, req: Request, res: Response, next: NextFunction) => {
 // Start listening
 app.listen(PORT, () => {
   console.log('====================================================');
-  console.log(`🚀 AETHERIS BACKEND SERVER RUNNING ON PORT: ${PORT}`);
+  console.log(`🚀 VERO BACKEND SERVER RUNNING ON PORT: ${PORT}`);
   console.log(`🔗 API Base: http://localhost:${PORT}/api`);
   console.log(`🔗 Health Check: http://localhost:${PORT}/health`);
   console.log('====================================================');
