@@ -30,16 +30,18 @@ export default function Sidebar() {
   const [upgradeModalOpen, setUpgradeModalOpen] = useState(false);
   const [upgradeFeatureName, setUpgradeFeatureName] = useState('');
 
-  const menuItems = [
+  type MenuItem = { name: string; icon: any; path: string; premium?: boolean; badge?: string };
+
+  const menuItems: MenuItem[] = [
     { name: 'Overview', icon: Gauge, path: '/dashboard' },
     { name: 'Campaigns', icon: Layers, path: '/dashboard/campaigns' },
     { name: 'Ad Sets', icon: FolderLock, path: '/dashboard/adsets' },
     { name: 'Creatives', icon: Image, path: '/dashboard/creatives' },
     { name: 'Analytics', icon: BarChart3, path: '/dashboard/analytics' },
-    { name: 'Leads Intelligence', icon: Users, path: '/dashboard/leads', badge: 'New' },
-    { name: 'Audience Insights', icon: Users, path: '/dashboard/audience', badge: 'New' },
-    { name: 'AI Recommendations', icon: BrainCircuit, path: '/dashboard/ai-insights' },
-    { name: 'AI Chat Analyst', icon: MessageSquare, path: '/dashboard/chat', badge: 'Beta' },
+    { name: 'Leads Intelligence', icon: Users, path: '/dashboard/leads', premium: true },
+    { name: 'Audience Insights', icon: Users, path: '/dashboard/audience', premium: true },
+    { name: 'AI Recommendations', icon: BrainCircuit, path: '/dashboard/ai-insights', premium: true },
+    { name: 'AI Chat Analyst', icon: MessageSquare, path: '/dashboard/chat', premium: true },
     { name: 'Automation & Rules', icon: Network, path: '/dashboard/workflows', premium: true },
     { name: 'Competitor Tracking', icon: Layers, path: '/dashboard/competitors', premium: true },
     { name: 'Settings', icon: Settings, path: '/dashboard/settings' },

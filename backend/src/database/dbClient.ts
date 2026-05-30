@@ -9,7 +9,7 @@ dotenv.config({ path: path.join(__dirname, '../../.env') });
 // ---------------------------------------------------------------------------
 // Types (unchanged)
 // ---------------------------------------------------------------------------
-export interface User { id: string; email: string; passwordHash: string; name: string; createdAt: string; updatedAt: string; }
+export interface User { id: string; email: string; passwordHash: string; name: string; createdAt: string; updatedAt: string; knownIps?: string[]; lockoutUntil?: string | null; }
 export interface MetaAccount { id: string; userId: string; actId: string; name: string; accessToken: string; status: string; currency: string; timezone: string; lastSyncedAt: string; }
 export interface Campaign { id: string; metaAccountId: string; campaignId: string; name: string; status: string; objective: string; buyingType: string; budget: number; createdTime: string; }
 export interface Adset { id: string; campaignId: string; adsetId: string; name: string; status: string; targeting: any; budget: number; }
@@ -121,6 +121,16 @@ export const db = {
     }
     return usersStore.findOne(u => u.email.toLowerCase() === email.toLowerCase());
   },
+  async getUserById(id: string): Promise<User | undefined> {
+    if (appwriteDb) {
+      const doc = await safeAppwrite(appwriteDb.getDocument(DATABASE_ID, 'users', id));
+      if (doc) {
+        return { id: doc.$id, email: doc.email, passwordHash: doc.passwordHash, name: doc.name, createdAt: doc.createdAt, updatedAt: doc.updatedAt, knownIps: doc.knownIps, lockoutUntil: doc.lockoutUntil };
+      }
+      return undefined;
+    }
+    return usersStore.findOne(u => u.id === id);
+  },
   async createUser(user: User): Promise<User> {
     if (appwriteDb) {
       await safeAppwrite(appwriteDb.createDocument(DATABASE_ID, 'users', user.id, {
@@ -129,6 +139,21 @@ export const db = {
         name: user.name,
         createdAt: user.createdAt,
         updatedAt: user.updatedAt,
+      }));
+      return user;
+    }
+    usersStore.upsert(user);
+    return user;
+  },
+  async updateUser(user: User): Promise<User> {
+    if (appwriteDb) {
+      await safeAppwrite(appwriteDb.updateDocument(DATABASE_ID, 'users', user.id, {
+        email: user.email,
+        passwordHash: user.passwordHash,
+        name: user.name,
+        updatedAt: user.updatedAt,
+        knownIps: user.knownIps,
+        lockoutUntil: user.lockoutUntil,
       }));
       return user;
     }

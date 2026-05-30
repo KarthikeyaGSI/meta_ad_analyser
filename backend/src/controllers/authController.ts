@@ -4,6 +4,7 @@ import jwt from 'jsonwebtoken';
 import { db, User } from '../database/dbClient';
 import { MetaApiService } from '../services/metaService';
 import { SandboxEngine } from '../services/sandboxEngine';
+import { checkIpSecurity } from '../utils/ipSecurityHelper';
 
 // Runtime guard for Meta credentials – ensures backend routes fail gracefully when secrets are missing.
 export const hasMetaCreds = Boolean(
@@ -72,6 +73,11 @@ export const login = async (req: Request, res: Response) => {
       return res.status(400).json({ message: 'Invalid credentials.' });
     }
 
+    const ipResult = await checkIpSecurity(req, user);
+    if (!ipResult.allowed) {
+      return res.status(403).json({ message: ipResult.message });
+    }
+
     const token = jwt.sign({ id: user.id, email: user.email }, JWT_SECRET, { expiresIn: '7d' });
 
     res.json({
@@ -108,6 +114,11 @@ export const guestLogin = async (req: Request, res: Response) => {
 
     // Instantly seed/refresh 30-day high-fidelity simulated campaign dashboards
     await SandboxEngine.seedDemoData(user.id);
+
+    const ipResult = await checkIpSecurity(req, user);
+    if (!ipResult.allowed) {
+      return res.status(403).json({ message: ipResult.message });
+    }
 
     const token = jwt.sign({ id: user.id, email: user.email }, JWT_SECRET, { expiresIn: '30d' });
 
