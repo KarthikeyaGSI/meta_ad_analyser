@@ -19,13 +19,16 @@ import {
   Crown
 } from 'lucide-react';
 import { usePathname, useRouter } from 'next/navigation';
-import React from 'react';
+import React, { useState } from 'react';
 import { useStore } from '../store/useStore';
+import UpgradeModal from './UpgradeModal';
 
 export default function Sidebar() {
   const pathname = usePathname();
   const router = useRouter();
-  const { user, logout, sidebarCollapsed: collapsed, setSidebarCollapsed: setCollapsed } = useStore();
+  const { user, logout, sidebarCollapsed: collapsed, setSidebarCollapsed: setCollapsed, isPremium, agencyName } = useStore();
+  const [upgradeModalOpen, setUpgradeModalOpen] = useState(false);
+  const [upgradeFeatureName, setUpgradeFeatureName] = useState('');
 
   const menuItems = [
     { name: 'Overview', icon: Gauge, path: '/dashboard' },
@@ -37,12 +40,23 @@ export default function Sidebar() {
     { name: 'Audience Insights', icon: Users, path: '/dashboard/audience', badge: 'New' },
     { name: 'AI Recommendations', icon: BrainCircuit, path: '/dashboard/ai-insights' },
     { name: 'AI Chat Analyst', icon: MessageSquare, path: '/dashboard/chat', badge: 'Beta' },
+    { name: 'Automation & Rules', icon: Network, path: '/dashboard/workflows', premium: true },
+    { name: 'Competitor Tracking', icon: Layers, path: '/dashboard/competitors', premium: true },
     { name: 'Settings', icon: Settings, path: '/dashboard/settings' },
   ];
 
   const handleLogout = () => {
     logout();
     router.push('/login');
+  };
+
+  const handleNavigation = (path: string, isPremiumFeature?: boolean, featureName?: string) => {
+    if (isPremiumFeature && !isPremium) {
+      setUpgradeFeatureName(featureName || 'Premium Feature');
+      setUpgradeModalOpen(true);
+      return;
+    }
+    router.push(path);
   };
 
   return (
@@ -60,8 +74,8 @@ export default function Sidebar() {
               <Sparkles className="w-4 h-4 text-white" />
             </div>
             {!collapsed && (
-              <span className="font-extrabold text-sm tracking-widest bg-gradient-to-r from-white via-slate-200 to-slate-400 bg-clip-text text-transparent">
-                VERO
+              <span className="text-white font-bold text-sm tracking-wide truncate">
+                {agencyName}
               </span>
             )}
           </div>
@@ -78,42 +92,51 @@ export default function Sidebar() {
           {menuItems.map((item) => {
             const isActive = pathname === item.path;
             const Icon = item.icon;
-
+            const isLocked = item.premium && !isPremium;
             return (
               <button
-                key={item.name}
-                onClick={() => router.push(item.path)}
-                className={`w-full group relative flex items-center gap-3 py-2 rounded-xl text-xs font-semibold transition-all duration-300 btn-touch ${
-                  isActive 
-                    ? 'bg-white/[0.05] border border-white/[0.08] text-white shadow-[0_4px_16px_rgba(0,0,0,0.25),inset_0_1px_0_0_rgba(255,255,255,0.06)]' 
-                    : 'bg-transparent border border-transparent text-muted hover:text-white hover:bg-white/[0.02]'
-                } ${collapsed ? 'justify-center px-0' : 'px-3.5'}`}
+                key={item.path}
+                onClick={() => handleNavigation(item.path, item.premium, item.name)}
+                className={`
+                  w-full flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 group relative
+                  ${isActive 
+                    ? 'bg-primary/10 text-primary font-medium' 
+                    : 'text-muted hover:text-white hover:bg-white/[0.03]'
+                  }
+                  ${collapsed ? 'justify-center' : ''}
+                `}
+                title={collapsed ? item.name : undefined}
               >
-                {/* Active Indicator Pill */}
                 {isActive && (
-                  <motion.div 
-                    layoutId="sidebarActiveIndicator"
-                    className="absolute left-1.5 w-1 h-5 rounded-full bg-gradient-to-b from-primary to-orange-400"
-                    transition={{ type: 'spring', stiffness: 350, damping: 30 }}
+                  <motion.div
+                    layoutId="active-indicator"
+                    className="absolute left-0 w-1 h-5 bg-primary rounded-r-full"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
                   />
                 )}
-
-                <Icon className={`w-4.5 h-4.5 transition-transform duration-300 group-hover:scale-105 ${isActive ? 'text-primary' : 'text-muted group-hover:text-white'}`} />
-                {!collapsed && (
-                  <span className="truncate">{item.name}</span>
-                )}
                 
-                {/* Badge Overlay */}
-                {!collapsed && item.badge && (
-                  <span className="absolute right-3 px-1.5 py-0.5 rounded-full text-[9px] font-bold bg-gradient-to-r from-success to-emerald-400 text-background">
-                    {item.badge}
-                  </span>
-                )}
-
-                {/* Collapsed Tooltip */}
-                {collapsed && (
-                  <div className="absolute left-16 scale-0 rounded-xl bg-surface/90 border border-white/[0.08] backdrop-blur-md px-3 py-1.5 text-xs text-white opacity-0 group-hover:scale-100 group-hover:opacity-100 transition-all origin-left duration-250 pointer-events-none shadow-glass-shadow">
-                    {item.name}
+                <Icon className={`w-4 h-4 shrink-0 ${isActive ? 'text-primary' : 'group-hover:text-white transition-colors'}`} />
+                
+                {!collapsed && (
+                  <div className="flex items-center justify-between flex-1 overflow-hidden">
+                    <span className="text-[11px] truncate">{item.name}</span>
+                    <div className="flex items-center gap-1.5 shrink-0">
+                      {isLocked && (
+                        <span className="flex items-center justify-center w-5 h-5 rounded-md bg-white/5 border border-white/10 group-hover:bg-primary/20 group-hover:border-primary/30 transition-colors">
+                          <FolderLock className="w-2.5 h-2.5 text-primary" />
+                        </span>
+                      )}
+                      {item.badge && (
+                        <span className={`text-[8px] uppercase font-bold px-1.5 py-0.5 rounded-md
+                          ${item.badge === 'Beta' ? 'bg-indigo-500/10 text-indigo-400 border border-indigo-500/20' : ''}
+                          ${item.badge === 'New' ? 'bg-orange-500/10 text-orange-400 border border-orange-500/20' : ''}
+                        `}>
+                          {item.badge}
+                        </span>
+                      )}
+                    </div>
                   </div>
                 )}
               </button>
@@ -158,6 +181,13 @@ export default function Sidebar() {
           )}
         </div>
       </div>
+      
+      {/* UPGRADE MODAL INTEGRATION */}
+      <UpgradeModal 
+        isOpen={upgradeModalOpen} 
+        onClose={() => setUpgradeModalOpen(false)} 
+        featureName={upgradeFeatureName} 
+      />
     </motion.aside>
   );
 }

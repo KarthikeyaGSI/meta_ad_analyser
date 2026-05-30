@@ -50,6 +50,12 @@ interface VeroState {
   // Agency CNAME Branding
   brandColor: 'orange' | 'violet' | 'emerald' | 'ocean' | 'obsidian';
   setBrandColor: (color: 'orange' | 'violet' | 'emerald' | 'ocean' | 'obsidian') => void;
+  agencyName: string;
+  setAgencyName: (name: string) => void;
+
+  // Premium Features
+  isPremium: boolean;
+  unlockPremium: (code: string) => boolean;
 
   // Refresh Trigger
   refreshTrigger: number;
@@ -145,6 +151,23 @@ export const useStore = create<VeroState>((set) => ({
     localStorage.setItem('ae_brand_color', JSON.stringify(color));
     return { brandColor: color };
   }),
+  agencyName: getSafeLocalItem('ae_agency_name') || 'Vero Analytics',
+  setAgencyName: (name) => set(() => {
+    localStorage.setItem('ae_agency_name', JSON.stringify(name));
+    return { agencyName: name };
+  }),
+
+  // Premium Features
+  isPremium: getSafeLocalItem('ae_is_premium') || false,
+  unlockPremium: (code: string) => {
+    const validCodes = ['VERO_VIP_2026', 'karthikeyathallapally', 'marketingko'];
+    if (validCodes.includes(code.trim())) {
+      localStorage.setItem('ae_is_premium', 'true');
+      set({ isPremium: true });
+      return true;
+    }
+    return false;
+  },
 
   // Global Refresh Signal
   refreshTrigger: 0,

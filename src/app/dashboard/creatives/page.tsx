@@ -9,7 +9,7 @@ import { useStore } from '../../../store/useStore';
 import { formatCurrency, formatPercent, formatRoas } from '../../../utils/formatters';
 
 export default function CreativesExplorer() {
-  const { activeAccount, dateRange, refreshTrigger } = useStore();
+  const { activeAccount, dateRange, refreshTrigger, isPremium } = useStore();
 
   // 1. Fetch Creatives
   const { data: creativeList = [], isLoading } = useQuery({
@@ -114,23 +114,42 @@ export default function CreativesExplorer() {
                   </div>
 
                   {/* 4. PREMIUM FATIGUE AUDIT METER */}
-                  <div className="space-y-2">
-                    <div className="flex justify-between items-center text-[10px]">
-                      <span className="text-muted font-semibold flex items-center gap-1">
-                        <ShieldAlert className="w-3.5 h-3.5" />
-                        Ad Saturation Pacing
-                      </span>
-                      <span className="text-white font-bold">{cr.fatigueScore}/10</span>
-                    </div>
+                  {isPremium ? (
+                    <div className="space-y-2">
+                      <div className="flex justify-between items-center text-[10px]">
+                        <span className="text-muted font-semibold flex items-center gap-1">
+                          <ShieldAlert className="w-3.5 h-3.5" />
+                          Ad Saturation Pacing
+                        </span>
+                        <span className="text-white font-bold">{cr.fatigueScore}/10</span>
+                      </div>
 
-                    {/* Progress slider bar */}
-                    <div className="h-1.5 w-full bg-white/[0.04] border border-white/[0.06] rounded-full overflow-hidden">
-                      <div 
-                        className={`h-full rounded-full transition-all duration-300 ${colors.bar}`}
-                        style={{ width: `${cr.fatigueScore * 10}%` }}
-                      ></div>
+                      {/* Progress slider bar */}
+                      <div className="h-1.5 w-full bg-white/[0.04] border border-white/[0.06] rounded-full overflow-hidden">
+                        <div 
+                          className={`h-full rounded-full transition-all duration-300 ${colors.bar}`}
+                          style={{ width: `${cr.fatigueScore * 10}%` }}
+                        ></div>
+                      </div>
+                      
+                      {cr.fatigueScore >= 7.0 && (
+                        <div className="mt-2 p-2 rounded bg-red-500/10 border border-red-500/20 flex gap-2">
+                          <AlertTriangle className="w-4 h-4 text-red-400 shrink-0" />
+                          <p className="text-[10px] text-red-400 leading-tight">AI predicts audience burnout within 3 days. Prepare to rotate.</p>
+                        </div>
+                      )}
                     </div>
-                  </div>
+                  ) : (
+                    <div className="relative group overflow-hidden rounded-xl bg-white/5 border border-white/10 p-3 h-[60px] flex items-center justify-center cursor-pointer">
+                      <div className="absolute inset-0 bg-black/60 backdrop-blur-[2px] z-10 flex items-center justify-center transition-all group-hover:bg-black/50">
+                        <span className="text-xs font-bold text-white flex items-center gap-2">
+                          <ShieldAlert className="w-4 h-4 text-primary" />
+                          Unlock AI Fatigue Predictor
+                        </span>
+                      </div>
+                      <div className="h-1.5 w-full bg-white/10 rounded-full blur-sm"></div>
+                    </div>
+                  )}
                 </div>
 
               </motion.div>

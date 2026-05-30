@@ -20,11 +20,11 @@ import { analyticsApi, authApi } from '../../../services/api';
 import { useStore } from '../../../store/useStore';
 
 export default function SettingsPage() {
-  const { setActiveAccount, triggerRefresh, activeAccount, brandColor, setBrandColor } = useStore();
+  const { setActiveAccount, triggerRefresh, activeAccount, brandColor, setBrandColor, agencyName, setAgencyName, isPremium } = useStore();
   
   const [slackEnabled, setSlackEnabled] = useState(false);
   const [whatsappEnabled, setWhatsappEnabled] = useState(false);
-  const [whiteLabelName, setWhiteLabelName] = useState('Vero Analytics');
+  const [teamEmails, setTeamEmails] = useState('karthikeya@vero.co, marketing@vero.co');
   
   // Meta OAuth Integration states
   const [oauthConnecting, setOauthConnecting] = useState(false);
@@ -239,13 +239,15 @@ export default function SettingsPage() {
             <div className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <label className="text-[11px] font-bold text-slate-300 uppercase tracking-wider">Dashboard Platform Title</label>
+                  <label className="text-[11px] font-bold text-slate-300 uppercase tracking-wider">Dashboard Platform Title (Agency Name)</label>
                   <input
                     type="text"
-                    value={whiteLabelName}
-                    onChange={(e) => setWhiteLabelName(e.target.value)}
+                    value={agencyName}
+                    onChange={(e) => setAgencyName(e.target.value)}
                     className="w-full px-4 py-2.5 rounded-xl text-xs text-white input-premium"
+                    disabled={!isPremium}
                   />
+                  {!isPremium && <p className="text-[9px] text-primary mt-1">Upgrade to Premium to unlock custom branding.</p>}
                 </div>
                 <div className="space-y-2">
                   <label className="text-[11px] font-bold text-slate-300 uppercase tracking-wider">Custom Portal CNAME Domain</label>
@@ -301,9 +303,67 @@ export default function SettingsPage() {
             </div>
           </div>
 
+          {/* 3. TEAM MANAGEMENT & OMNI-CHANNEL (PREMIUM) */}
+          {isPremium && (
+            <>
+              {/* Unlimited Team Seats */}
+              <div className="glass-panel p-6 rounded-3xl space-y-6">
+                <div className="flex items-center gap-2 border-b border-white/[0.06] pb-3.5">
+                  <Shield className="w-5 h-5 text-primary" />
+                  <div>
+                    <h3 className="text-base font-bold text-white">Team Management & Permissions</h3>
+                    <p className="text-[10px] text-muted">Invite team members or clients with specific view/edit permissions.</p>
+                  </div>
+                </div>
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    <label className="text-[11px] font-bold text-slate-300 uppercase tracking-wider">Invite Team Members (Comma separated emails)</label>
+                    <textarea
+                      value={teamEmails}
+                      onChange={(e) => setTeamEmails(e.target.value)}
+                      className="w-full px-4 py-3 rounded-xl text-xs text-white input-premium h-20"
+                    />
+                  </div>
+                  <button className="px-4 py-2 bg-primary hover:bg-primary-hover text-white font-bold rounded-lg text-xs transition-colors">
+                    Send Invites
+                  </button>
+                </div>
+              </div>
+
+              {/* Omni-Channel Integration */}
+              <div className="glass-panel p-6 rounded-3xl space-y-6">
+                <div className="flex items-center gap-2 border-b border-white/[0.06] pb-3.5">
+                  <RefreshCw className="w-5 h-5 text-primary" />
+                  <div>
+                    <h3 className="text-base font-bold text-white">Omni-Channel Integration</h3>
+                    <p className="text-[10px] text-muted">Sync data from multiple ad platforms to see blended ROAS.</p>
+                  </div>
+                </div>
+                <div className="space-y-4">
+                  {['TikTok Ads', 'Google Ads', 'LinkedIn Ads'].map((platform) => (
+                    <div key={platform} className="p-4 rounded-2xl bg-white/[0.015] border border-white/[0.05] flex items-center justify-between gap-4">
+                      <div className="flex items-center gap-3.5">
+                        <div className="p-2.5 rounded-xl bg-white/5 border border-white/10 text-white">
+                          <Globe className="w-5 h-5" />
+                        </div>
+                        <div>
+                          <h4 className="text-sm font-semibold text-white">{platform}</h4>
+                          <p className="text-[11px] text-emerald-400">Connected</p>
+                        </div>
+                      </div>
+                      <button className="px-3 py-1.5 bg-white/5 hover:bg-white/10 text-white text-xs rounded transition-colors">
+                        Configure
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </>
+          )}
+
         </div>
 
-        {/* RIGHT COLUMN: META ACCOUNT MANAGEMENT & INTEGRATION CONNECTIONS */}
+        {/* RIGHT COLUMN: INTEGRATION STATUS PANELS */}
         <div className="space-y-8">
           
           {/* 1. META OAUTH CONNECTION SLOT */}
