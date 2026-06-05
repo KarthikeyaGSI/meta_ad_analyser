@@ -253,7 +253,7 @@ export const analyticsApi = {
         }
       };
     }
-    return api.get(`/analytics/${accountId}/metrics`, { params: { startDate, endDate } });
+    return apiClient.get(`/analytics/${accountId}/metrics`, { params: { startDate, endDate } });
   },
   exportCsvUrl: (accountId: string, startDate: string, endDate: string) => 
     `${API_BASE_URL}/accounts/${accountId}/export?startDate=${startDate}&endDate=${endDate}`,
