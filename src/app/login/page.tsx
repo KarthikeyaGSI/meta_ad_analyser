@@ -9,15 +9,15 @@ import React, { useState, useEffect } from 'react';
 import { useStore } from '../../store/useStore';
 import { authApi } from '../../services/api';
 import NeumorphismButton from '../../components/NeumorphismButton';
-import { appwriteClient } from '../../server/appwrite/safeClient';
+const NetworkAnimation = ({ darkMode }: { darkMode: boolean }) => {
+  const strokeColor = darkMode ? "rgba(255, 255, 255, 0.15)" : "rgba(15, 23, 42, 0.15)";
+  const dotColor = darkMode ? "rgba(99, 102, 241, 0.8)" : "rgba(79, 70, 229, 0.8)";
+  const blendMode = darkMode ? "mix-blend-screen" : "mix-blend-multiply";
 
-const account = new Account(appwriteClient);
-
-const NetworkAnimation = () => {
   return (
-    <div className="absolute inset-0 pointer-events-none opacity-40 mix-blend-screen overflow-hidden flex items-center justify-center">
+    <div className={`absolute inset-0 pointer-events-none opacity-60 overflow-hidden flex items-center justify-center ${blendMode}`}>
       <svg className="w-full h-full" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
-        <g stroke="rgba(255, 255, 255, 0.2)" strokeWidth="1">
+        <g stroke={strokeColor} strokeWidth="1.5">
           <line x1="200" y1="200" x2="300" y2="100" />
           <line x1="200" y1="200" x2="100" y2="150" />
           <line x1="200" y1="200" x2="250" y2="300" />
@@ -26,13 +26,13 @@ const NetworkAnimation = () => {
           <line x1="250" y1="300" x2="150" y2="280" />
           <line x1="300" y1="100" x2="100" y2="150" />
         </g>
-        <g fill="rgba(99, 102, 241, 0.8)">
-          <circle cx="200" cy="200" r="6" />
-          <circle cx="300" cy="100" r="4" />
-          <circle cx="100" cy="150" r="5" />
-          <circle cx="250" cy="300" r="4" />
-          <circle cx="350" cy="200" r="3" />
-          <circle cx="150" cy="280" r="5" />
+        <g fill={dotColor}>
+          <circle cx="200" cy="200" r="7" />
+          <circle cx="300" cy="100" r="5" />
+          <circle cx="100" cy="150" r="6" />
+          <circle cx="250" cy="300" r="5" />
+          <circle cx="350" cy="200" r="4" />
+          <circle cx="150" cy="280" r="6" />
         </g>
       </svg>
     </div>
@@ -227,7 +227,7 @@ export default function LoginPage() {
 
         {/* RIGHT COLUMN: LOGIN WINDOW */}
         <div className="relative w-full max-w-md">
-          <NetworkAnimation />
+          <NetworkAnimation darkMode={darkMode} />
           <motion.div 
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
