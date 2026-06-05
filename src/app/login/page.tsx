@@ -4,7 +4,8 @@ import { Account, OAuthProvider } from 'appwrite';
 import { motion } from 'framer-motion';
 import { Sparkles, Facebook, ArrowRight, BrainCircuit, BarChart3, Rocket, ShieldCheck, Mail, Apple } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import React, { useState } from 'react';
+import { Moon, Sun, Network } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
 import { useStore } from '../../store/useStore';
 import { authApi } from '../../services/api';
 import NeumorphismButton from '../../components/NeumorphismButton';
@@ -12,11 +13,47 @@ import { appwriteClient } from '../../server/appwrite/safeClient';
 
 const account = new Account(appwriteClient);
 
+const NetworkAnimation = () => {
+  return (
+    <div className="absolute inset-0 pointer-events-none opacity-40 mix-blend-screen overflow-hidden flex items-center justify-center">
+      <svg className="w-full h-full" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+        <g stroke="rgba(255, 255, 255, 0.2)" strokeWidth="1">
+          <line x1="200" y1="200" x2="300" y2="100" />
+          <line x1="200" y1="200" x2="100" y2="150" />
+          <line x1="200" y1="200" x2="250" y2="300" />
+          <line x1="300" y1="100" x2="350" y2="200" />
+          <line x1="100" y1="150" x2="150" y2="280" />
+          <line x1="250" y1="300" x2="150" y2="280" />
+          <line x1="300" y1="100" x2="100" y2="150" />
+        </g>
+        <g fill="rgba(99, 102, 241, 0.8)">
+          <circle cx="200" cy="200" r="6" />
+          <circle cx="300" cy="100" r="4" />
+          <circle cx="100" cy="150" r="5" />
+          <circle cx="250" cy="300" r="4" />
+          <circle cx="350" cy="200" r="3" />
+          <circle cx="150" cy="280" r="5" />
+        </g>
+      </svg>
+    </div>
+  );
+};
+
 export default function LoginPage() {
   const router = useRouter();
   const { setUser } = useStore();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [darkMode, setDarkMode] = useState(true);
+
+  // Toggle theme class on body
+  useEffect(() => {
+    if (darkMode) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }, [darkMode]);
 
   // Triggers instant Vero JSON-DB Sandbox loading
   const handleGuestLogin = async () => {
@@ -103,12 +140,29 @@ export default function LoginPage() {
   };
 
   return (
-    <main className="relative min-h-screen bg-background flex flex-col items-center justify-center p-6 overflow-hidden">
+    <main className={`relative min-h-screen ${darkMode ? 'bg-background text-white' : 'bg-slate-50 text-slate-900'} flex flex-col items-center justify-center p-6 overflow-hidden transition-colors duration-500`}>
+      {/* HEADER */}
+      <header className="absolute top-0 left-0 right-0 p-6 flex justify-between items-center z-50 max-w-7xl mx-auto w-full">
+        <div className="flex items-center gap-2">
+          <div className="w-8 h-8 rounded bg-gradient-to-tr from-primary to-orange-400 flex items-center justify-center shadow-lg shadow-primary/30">
+            <Sparkles className="w-4 h-4 text-white" />
+          </div>
+          <span className={`font-extrabold text-xl tracking-widest ${darkMode ? 'text-white' : 'text-slate-900'}`}>VERO</span>
+        </div>
+        <button 
+          onClick={() => setDarkMode(!darkMode)} 
+          className={`p-2 rounded-full border transition-colors ${darkMode ? 'bg-white/10 border-white/20 text-white hover:bg-white/20' : 'bg-slate-200 border-slate-300 text-slate-800 hover:bg-slate-300'}`}
+          aria-label="Toggle Theme"
+        >
+          {darkMode ? <Sun className="w-5 h-5"/> : <Moon className="w-5 h-5"/>}
+        </button>
+      </header>
+
       {/* Background spotlights */}
       <div className="glow-bg top-[-100px] left-[-100px] opacity-10"></div>
       <div className="glow-bg bottom-[-200px] right-[-100px] opacity-20" style={{ background: 'radial-gradient(circle, rgba(139, 92, 246, 0.15) 0%, rgba(0,0,0,0) 70%)' }}></div>
 
-      <div className="w-full max-w-5xl flex flex-col md:flex-row items-center gap-12 z-10">
+      <div className="w-full max-w-5xl flex flex-col md:flex-row items-center gap-12 z-10 mt-16">
         
         {/* LEFT COLUMN: HERO INFORMATION */}
         <div className="flex-1 text-left space-y-6">
@@ -172,12 +226,14 @@ export default function LoginPage() {
         </div>
 
         {/* RIGHT COLUMN: LOGIN WINDOW */}
-        <motion.div 
-          initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.5, delay: 0.1 }}
-          className="w-full max-w-md glass-panel p-8 rounded-3xl relative overflow-hidden"
-        >
+        <div className="relative w-full max-w-md">
+          <NetworkAnimation />
+          <motion.div 
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+            className="w-full glass-panel p-8 rounded-3xl relative overflow-hidden z-10"
+          >
           {/* Subtle logo inside the card */}
           <div className="flex items-center gap-2 mb-6">
             <div className="w-6 h-6 rounded bg-gradient-to-tr from-primary to-orange-400 flex items-center justify-center">
@@ -297,6 +353,7 @@ export default function LoginPage() {
             </div>
           </div>
         </motion.div>
+        </div>
 
       </div>
     </main>
