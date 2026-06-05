@@ -1,0 +1,74 @@
+[
+  {
+    "id": "ad-prospecting-winner",
+    "adsetId": "as-prospecting-winner",
+    "adId": "ad_prospecting_winner_ugc",
+    "name": "UGC Ad - Winner Hook V1",
+    "status": "ACTIVE",
+    "creativeId": "1202039401201"
+  },
+  {
+    "id": "ad-retargeting-decay",
+    "adsetId": "as-retargeting-decay",
+    "adId": "ad_retargeting_decay_carousel",
+    "name": "Carousel Ad - Pastel Grid",
+    "status": "ACTIVE",
+    "creativeId": "1202039401202"
+  },
+  {
+    "id": "ad-broad-cpm-spike",
+    "adsetId": "as-broad-cpm-spike",
+    "adId": "ad_broad_cpm_spike_founder",
+    "name": "Image Ad - Founder Story Card",
+    "status": "ACTIVE",
+    "creativeId": "1202039401203"
+  },
+  {
+    "id": "ad-prospecting-winner-demo-act-id",
+    "adsetId": "as-prospecting-winner-demo-act-id",
+    "adId": "ad_prospecting_winner_ugc_apparel",
+    "name": "UGC Ad - Winner Hook V1",
+    "status": "ACTIVE",
+    "creativeId": "1202039401201"
+  },
+  {
+    "id": "ad-retargeting-decay-demo-act-id",
+    "adsetId": "as-retargeting-decay-demo-act-id",
+    "adId": "ad_retargeting_decay_carousel_apparel",
+    "name": "Carousel Ad - Pastel Grid",
+    "status": "ACTIVE",
+    "creativeId": "1202039401202"
+  },
+  {
+    "id": "ad-broad-cpm-spike-demo-act-id",
+    "adsetId": "as-broad-cpm-spike-demo-act-id",
+    "adId": "ad_broad_cpm_spike_founder_apparel",
+    "name": "Image Ad - Founder Story Card",
+    "status": "ACTIVE",
+    "creativeId": "1202039401203"
+  },
+  {
+    "id": "ad-prospecting-winner-demo-cosmetics-id",
+    "adsetId": "as-prospecting-winner-demo-cosmetics-id",
+    "adId": "ad_prospecting_winner_ugc_cosmetics",
+    "name": "UGC Ad - Before/After Serum Hook V2",
+    "status": "ACTIVE",
+    "creativeId": "2202039401201"
+  },
+  {
+    "id": "ad-retargeting-decay-demo-cosmetics-id",
+    "adsetId": "as-retargeting-decay-demo-cosmetics-id",
+    "adId": "ad_retargeting_decay_carousel_cosmetics",
+    "name": "Catalog Ad - Serum & Tint Duo Grid",
+    "status": "ACTIVE",
+    "creativeId": "2202039401202"
+  },
+  {
+    "id": "ad-broad-cpm-spike-demo-cosmetics-id",
+    "adsetId": "as-broad-cpm-spike-demo-cosmetics-id",
+    "adId": "ad_broad_cpm_spike_founder_cosmetics",
+    "name": "Video Ad - Dr. Aris Formula Breakdown",
+    "status": "ACTIVE",
+    "creativeId": "2202039401203"
+  }
+]

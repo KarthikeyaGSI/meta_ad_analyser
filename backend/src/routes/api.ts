@@ -1,0 +1,57 @@
+import { Router } from 'express';
+import * as analytics from '../controllers/analyticsController';
+import * as auth from '../controllers/authController';
+import * as subscription from '../controllers/subscriptionController';
+import * as admin from '../controllers/adminController';
+import * as webhooks from '../controllers/webhookController';
+import { authenticateToken } from '../middleware/auth';
+import { ipRateLimiter } from '../middleware/ipRateLimiter';
+
+const router = Router();
+
+// ----------------------------------------------------
+// ----------------------------------------------------
+// AUTHENTICATION ROUTES
+// ----------------------------------------------------
+router.post('/auth/register', ipRateLimiter, auth.register);
+router.post('/auth/login', ipRateLimiter, auth.login);
+router.post('/auth/guest', auth.guestLogin); // Guest demo bypass login
+router.get('/auth/meta/login', auth.getMetaLoginUrl); // Meta OAuth URL
+router.post('/auth/meta/callback', auth.metaCallback); // Meta OAuth Callback receiver
+
+// ----------------------------------------------------
+// SUBSCRIPTION & ADMIN ROUTES
+// ----------------------------------------------------
+router.post('/activate-key', authenticateToken, subscription.activateSubscription);
+router.get('/admin/users', authenticateToken, admin.getUsers);
+router.post('/admin/revoke', authenticateToken, admin.revokeAccess);
+
+// ----------------------------------------------------
+// WEBHOOK ROUTES
+// ----------------------------------------------------
+router.get('/webhooks/meta', webhooks.verifyMetaWebhook);
+router.post('/webhooks/meta', webhooks.handleMetaWebhook);
+router.post('/webhooks/mock', webhooks.triggerMockWebhook);
+
+// ----------------------------------------------------
+// ----------------------------------------------------
+// ANALYTICS & INSIGHTS ROUTES (Secured via JWT tokens)
+// ----------------------------------------------------
+router.use('/accounts', authenticateToken, ipRateLimiter);
+
+router.get('/accounts', analytics.getAccounts);
+router.post('/accounts/connect', analytics.connectDirectToken); // Multi-stage Meta direct connection
+router.post('/accounts/direct-token', analytics.connectDirectToken); // Legacy fallback connection slot
+router.get('/accounts/:id/overview', analytics.getAccountOverview);
+router.get('/accounts/:id/charts', analytics.getAccountCharts);
+router.get('/accounts/:id/campaigns', analytics.getCampaignsTable);
+router.get('/accounts/:id/adsets', analytics.getAdsetsExplorer);
+router.get('/accounts/:id/creatives', analytics.getCreativesPerformance);
+router.get('/accounts/:id/breakdowns', analytics.getBreakdowns);
+router.get('/accounts/:id/recommendations', analytics.getRecommendations);
+router.post('/accounts/:id/sync', analytics.syncAccountManual);
+router.post('/accounts/:id/rules/execute', analytics.executeAutopilotRule);
+router.get('/accounts/:id/export', analytics.exportCampaignsCsv);
+
+
+export default router;

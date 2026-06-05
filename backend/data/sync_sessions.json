@@ -1,0 +1,793 @@
+[
+  {
+    "id": "sync-sess-1779708490042",
+    "metaAccountId": "demo-act-id",
+    "status": "COMPLETED",
+    "rowsProcessed": 350,
+    "durationMs": 177,
+    "createdAt": "2026-05-25T11:28:10.042Z"
+  },
+  {
+    "id": "sync-sess-1779708491311",
+    "metaAccountId": "demo-act-id",
+    "status": "COMPLETED",
+    "rowsProcessed": 350,
+    "durationMs": 244,
+    "createdAt": "2026-05-25T11:28:11.311Z"
+  },
+  {
+    "id": "sync-sess-1779708492048",
+    "metaAccountId": "demo-act-id",
+    "status": "COMPLETED",
+    "rowsProcessed": 350,
+    "durationMs": 249,
+    "createdAt": "2026-05-25T11:28:12.048Z"
+  },
+  {
+    "id": "sync-sess-1779708492421",
+    "metaAccountId": "demo-act-id",
+    "status": "COMPLETED",
+    "rowsProcessed": 350,
+    "durationMs": 187,
+    "createdAt": "2026-05-25T11:28:12.421Z"
+  },
+  {
+    "id": "sync-sess-1779708670933",
+    "metaAccountId": "demo-cosmetics-id",
+    "status": "COMPLETED",
+    "rowsProcessed": 350,
+    "durationMs": 219,
+    "createdAt": "2026-05-25T11:31:10.933Z"
+  },
+  {
+    "id": "sync-sess-1779710110654",
+    "metaAccountId": "ma-direct-1779710110653",
+    "status": "FAILED",
+    "rowsProcessed": 0,
+    "durationMs": 831,
+    "createdAt": "2026-05-25T11:55:10.654Z",
+    "errorMessage": "(#100) Tried accessing nonexisting field (campaigns)"
+  },
+  {
+    "id": "sync-sess-1779710119271",
+    "metaAccountId": "demo-act-id",
+    "status": "COMPLETED",
+    "rowsProcessed": 350,
+    "durationMs": 197,
+    "createdAt": "2026-05-25T11:55:19.271Z"
+  },
+  {
+    "id": "sync-sess-1779710120476",
+    "metaAccountId": "demo-act-id",
+    "status": "COMPLETED",
+    "rowsProcessed": 350,
+    "durationMs": 214,
+    "createdAt": "2026-05-25T11:55:20.477Z"
+  },
+  {
+    "id": "sync-sess-1779710721802",
+    "metaAccountId": "ma-act_1684473322578378",
+    "status": "COMPLETED",
+    "rowsProcessed": 350,
+    "durationMs": 245,
+    "createdAt": "2026-05-25T12:05:21.802Z"
+  },
+  {
+    "id": "sync-sess-1779710735466",
+    "metaAccountId": "ma-direct-1779710110653",
+    "status": "FAILED",
+    "rowsProcessed": 0,
+    "durationMs": 370,
+    "createdAt": "2026-05-25T12:05:35.466Z",
+    "errorMessage": "Error validating access token: Session has expired on Monday, 25-May-26 05:00:00 PDT. The current time is Monday, 25-May-26 05:05:33 PDT."
+  },
+  {
+    "id": "sync-sess-1779710749437",
+    "metaAccountId": "ma-direct-1779710110653",
+    "status": "FAILED",
+    "rowsProcessed": 0,
+    "durationMs": 334,
+    "createdAt": "2026-05-25T12:05:49.437Z",
+    "errorMessage": "Error validating access token: Session has expired on Monday, 25-May-26 05:00:00 PDT. The current time is Monday, 25-May-26 05:05:47 PDT."
+  },
+  {
+    "id": "sync-sess-1779710771066",
+    "metaAccountId": "ma-direct-1779710110653",
+    "status": "COMPLETED",
+    "rowsProcessed": 350,
+    "durationMs": 757,
+    "createdAt": "2026-05-25T12:06:11.066Z"
+  },
+  {
+    "id": "sync-sess-1779710791021",
+    "metaAccountId": "ma-direct-1779710110653",
+    "status": "COMPLETED",
+    "rowsProcessed": 350,
+    "durationMs": 675,
+    "createdAt": "2026-05-25T12:06:31.021Z"
+  },
+  {
+    "id": "sync-sess-1779710794071",
+    "metaAccountId": "ma-direct-1779710110653",
+    "status": "COMPLETED",
+    "rowsProcessed": 350,
+    "durationMs": 518,
+    "createdAt": "2026-05-25T12:06:34.071Z"
+  },
+  {
+    "id": "sync-sess-1779710802548",
+    "metaAccountId": "ma-direct-1779710110653",
+    "status": "COMPLETED",
+    "rowsProcessed": 350,
+    "durationMs": 669,
+    "createdAt": "2026-05-25T12:06:42.548Z"
+  },
+  {
+    "id": "sync-sess-1779710811262",
+    "metaAccountId": "ma-direct-1779710110653",
+    "status": "COMPLETED",
+    "rowsProcessed": 350,
+    "durationMs": 536,
+    "createdAt": "2026-05-25T12:06:51.262Z"
+  },
+  {
+    "id": "sync-sess-1779710855443",
+    "metaAccountId": "ma-direct-1779710110653",
+    "status": "COMPLETED",
+    "rowsProcessed": 350,
+    "durationMs": 588,
+    "createdAt": "2026-05-25T12:07:35.443Z"
+  },
+  {
+    "id": "sync-sess-1779710856919",
+    "metaAccountId": "ma-direct-1779710110653",
+    "status": "COMPLETED",
+    "rowsProcessed": 350,
+    "durationMs": 496,
+    "createdAt": "2026-05-25T12:07:36.919Z"
+  },
+  {
+    "id": "sync-sess-1779710876669",
+    "metaAccountId": "ma-direct-1779710110653",
+    "status": "COMPLETED",
+    "rowsProcessed": 350,
+    "durationMs": 611,
+    "createdAt": "2026-05-25T12:07:56.669Z"
+  },
+  {
+    "id": "sync-sess-1779710880227",
+    "metaAccountId": "ma-direct-1779710110653",
+    "status": "COMPLETED",
+    "rowsProcessed": 350,
+    "durationMs": 504,
+    "createdAt": "2026-05-25T12:08:00.227Z"
+  },
+  {
+    "id": "sync-sess-1779710950874",
+    "metaAccountId": "ma-direct-1779710110653",
+    "status": "COMPLETED",
+    "rowsProcessed": 350,
+    "durationMs": 709,
+    "createdAt": "2026-05-25T12:09:10.874Z"
+  },
+  {
+    "id": "sync-sess-1779711166207",
+    "metaAccountId": "ma-direct-1779710110653",
+    "status": "COMPLETED",
+    "rowsProcessed": 350,
+    "durationMs": 1010,
+    "createdAt": "2026-05-25T12:12:46.207Z"
+  },
+  {
+    "id": "sync-sess-1780113963072",
+    "metaAccountId": "ma-direct-1779710110653",
+    "status": "FAILED",
+    "rowsProcessed": 0,
+    "durationMs": 3864,
+    "createdAt": "2026-05-30T04:06:03.072Z",
+    "errorMessage": "Error validating access token: Session has expired on Monday, 25-May-26 05:00:00 PDT. The current time is Friday, 29-May-26 21:06:06 PDT."
+  },
+  {
+    "id": "sync-sess-1780113970955",
+    "metaAccountId": "ma-direct-1779710110653",
+    "status": "FAILED",
+    "rowsProcessed": 0,
+    "durationMs": 5588,
+    "createdAt": "2026-05-30T04:06:10.955Z",
+    "errorMessage": "Error validating access token: Session has expired on Monday, 25-May-26 05:00:00 PDT. The current time is Friday, 29-May-26 21:06:15 PDT."
+  },
+  {
+    "id": "sync-sess-1780113984549",
+    "metaAccountId": "ma-direct-1779710110653",
+    "status": "FAILED",
+    "rowsProcessed": 0,
+    "durationMs": 315,
+    "createdAt": "2026-05-30T04:06:24.549Z",
+    "errorMessage": "Error validating access token: Session has expired on Monday, 25-May-26 05:00:00 PDT. The current time is Friday, 29-May-26 21:06:24 PDT."
+  },
+  {
+    "id": "sync-sess-1780114000869",
+    "metaAccountId": "ma-direct-1779710110653",
+    "status": "FAILED",
+    "rowsProcessed": 0,
+    "durationMs": 484,
+    "createdAt": "2026-05-30T04:06:40.869Z",
+    "errorMessage": "Error validating access token: Session has expired on Monday, 25-May-26 05:00:00 PDT. The current time is Friday, 29-May-26 21:06:40 PDT."
+  },
+  {
+    "id": "sync-sess-1780114744150",
+    "metaAccountId": "ma-direct-1779710110653",
+    "status": "FAILED",
+    "rowsProcessed": 0,
+    "durationMs": 459,
+    "createdAt": "2026-05-30T04:19:04.150Z",
+    "errorMessage": "Error validating access token: Session has expired on Monday, 25-May-26 05:00:00 PDT. The current time is Friday, 29-May-26 21:19:03 PDT."
+  },
+  {
+    "id": "sync-sess-1780114748625",
+    "metaAccountId": "ma-direct-1779710110653",
+    "status": "FAILED",
+    "rowsProcessed": 0,
+    "durationMs": 460,
+    "createdAt": "2026-05-30T04:19:08.625Z",
+    "errorMessage": "Error validating access token: Session has expired on Monday, 25-May-26 05:00:00 PDT. The current time is Friday, 29-May-26 21:19:08 PDT."
+  },
+  {
+    "id": "sync-sess-1780114757095",
+    "metaAccountId": "ma-direct-1779710110653",
+    "status": "FAILED",
+    "rowsProcessed": 0,
+    "durationMs": 323,
+    "createdAt": "2026-05-30T04:19:17.095Z",
+    "errorMessage": "Error validating access token: Session has expired on Monday, 25-May-26 05:00:00 PDT. The current time is Friday, 29-May-26 21:19:16 PDT."
+  },
+  {
+    "id": "sync-sess-1780114773427",
+    "metaAccountId": "ma-direct-1779710110653",
+    "status": "FAILED",
+    "rowsProcessed": 0,
+    "durationMs": 2161,
+    "createdAt": "2026-05-30T04:19:33.427Z",
+    "errorMessage": "Error validating access token: Session has expired on Monday, 25-May-26 05:00:00 PDT. The current time is Friday, 29-May-26 21:19:34 PDT."
+  },
+  {
+    "id": "sync-sess-1780114891207",
+    "metaAccountId": "ma-direct-1779710110653",
+    "status": "FAILED",
+    "rowsProcessed": 0,
+    "durationMs": 357,
+    "createdAt": "2026-05-30T04:21:31.207Z",
+    "errorMessage": "Error validating access token: Session has expired on Monday, 25-May-26 05:00:00 PDT. The current time is Friday, 29-May-26 21:21:30 PDT."
+  },
+  {
+    "id": "sync-sess-1780114895570",
+    "metaAccountId": "ma-direct-1779710110653",
+    "status": "FAILED",
+    "rowsProcessed": 0,
+    "durationMs": 303,
+    "createdAt": "2026-05-30T04:21:35.570Z",
+    "errorMessage": "Error validating access token: Session has expired on Monday, 25-May-26 05:00:00 PDT. The current time is Friday, 29-May-26 21:21:34 PDT."
+  },
+  {
+    "id": "sync-sess-1780114903889",
+    "metaAccountId": "ma-direct-1779710110653",
+    "status": "FAILED",
+    "rowsProcessed": 0,
+    "durationMs": 319,
+    "createdAt": "2026-05-30T04:21:43.889Z",
+    "errorMessage": "Error validating access token: Session has expired on Monday, 25-May-26 05:00:00 PDT. The current time is Friday, 29-May-26 21:21:43 PDT."
+  },
+  {
+    "id": "sync-sess-1780114920226",
+    "metaAccountId": "ma-direct-1779710110653",
+    "status": "FAILED",
+    "rowsProcessed": 0,
+    "durationMs": 353,
+    "createdAt": "2026-05-30T04:22:00.226Z",
+    "errorMessage": "Error validating access token: Session has expired on Monday, 25-May-26 05:00:00 PDT. The current time is Friday, 29-May-26 21:21:59 PDT."
+  },
+  {
+    "id": "sync-sess-1780115281646",
+    "metaAccountId": "ma-direct-1779710110653",
+    "status": "FAILED",
+    "rowsProcessed": 0,
+    "durationMs": 353,
+    "createdAt": "2026-05-30T04:28:01.646Z",
+    "errorMessage": "Error validating access token: Session has expired on Monday, 25-May-26 05:00:00 PDT. The current time is Friday, 29-May-26 21:28:01 PDT."
+  },
+  {
+    "id": "sync-sess-1780115282807",
+    "metaAccountId": "ma-direct-1779710110653",
+    "status": "FAILED",
+    "rowsProcessed": 0,
+    "durationMs": 278,
+    "createdAt": "2026-05-30T04:28:02.807Z",
+    "errorMessage": "Error validating access token: Session has expired on Monday, 25-May-26 05:00:00 PDT. The current time is Friday, 29-May-26 21:28:02 PDT."
+  },
+  {
+    "id": "sync-sess-1780115286005",
+    "metaAccountId": "ma-direct-1779710110653",
+    "status": "FAILED",
+    "rowsProcessed": 0,
+    "durationMs": 280,
+    "createdAt": "2026-05-30T04:28:06.005Z",
+    "errorMessage": "Error validating access token: Session has expired on Monday, 25-May-26 05:00:00 PDT. The current time is Friday, 29-May-26 21:28:05 PDT."
+  },
+  {
+    "id": "sync-sess-1780115287102",
+    "metaAccountId": "ma-direct-1779710110653",
+    "status": "FAILED",
+    "rowsProcessed": 0,
+    "durationMs": 288,
+    "createdAt": "2026-05-30T04:28:07.102Z",
+    "errorMessage": "Error validating access token: Session has expired on Monday, 25-May-26 05:00:00 PDT. The current time is Friday, 29-May-26 21:28:06 PDT."
+  },
+  {
+    "id": "sync-sess-1780115294302",
+    "metaAccountId": "ma-direct-1779710110653",
+    "status": "FAILED",
+    "rowsProcessed": 0,
+    "durationMs": 302,
+    "createdAt": "2026-05-30T04:28:14.302Z",
+    "errorMessage": "Error validating access token: Session has expired on Monday, 25-May-26 05:00:00 PDT. The current time is Friday, 29-May-26 21:28:13 PDT."
+  },
+  {
+    "id": "sync-sess-1780115295403",
+    "metaAccountId": "ma-direct-1779710110653",
+    "status": "FAILED",
+    "rowsProcessed": 0,
+    "durationMs": 268,
+    "createdAt": "2026-05-30T04:28:15.403Z",
+    "errorMessage": "Error validating access token: Session has expired on Monday, 25-May-26 05:00:00 PDT. The current time is Friday, 29-May-26 21:28:14 PDT."
+  },
+  {
+    "id": "sync-sess-1780115310613",
+    "metaAccountId": "ma-direct-1779710110653",
+    "status": "FAILED",
+    "rowsProcessed": 0,
+    "durationMs": 318,
+    "createdAt": "2026-05-30T04:28:30.613Z",
+    "errorMessage": "Error validating access token: Session has expired on Monday, 25-May-26 05:00:00 PDT. The current time is Friday, 29-May-26 21:28:30 PDT."
+  },
+  {
+    "id": "sync-sess-1780115311691",
+    "metaAccountId": "ma-direct-1779710110653",
+    "status": "FAILED",
+    "rowsProcessed": 0,
+    "durationMs": 280,
+    "createdAt": "2026-05-30T04:28:31.691Z",
+    "errorMessage": "Error validating access token: Session has expired on Monday, 25-May-26 05:00:00 PDT. The current time is Friday, 29-May-26 21:28:31 PDT."
+  },
+  {
+    "id": "sync-sess-1780115359697",
+    "metaAccountId": "ma-direct-1779710110653",
+    "status": "FAILED",
+    "rowsProcessed": 0,
+    "durationMs": 441,
+    "createdAt": "2026-05-30T04:29:19.697Z",
+    "errorMessage": "Error validating access token: Session has expired on Monday, 25-May-26 05:00:00 PDT. The current time is Friday, 29-May-26 21:29:19 PDT."
+  },
+  {
+    "id": "sync-sess-1780115362126",
+    "metaAccountId": "ma-direct-1779710110653",
+    "status": "FAILED",
+    "rowsProcessed": 0,
+    "durationMs": 277,
+    "createdAt": "2026-05-30T04:29:22.126Z",
+    "errorMessage": "Error validating access token: Session has expired on Monday, 25-May-26 05:00:00 PDT. The current time is Friday, 29-May-26 21:29:21 PDT."
+  },
+  {
+    "id": "sync-sess-1780115363177",
+    "metaAccountId": "ma-direct-1779710110653",
+    "status": "FAILED",
+    "rowsProcessed": 0,
+    "durationMs": 341,
+    "createdAt": "2026-05-30T04:29:23.177Z",
+    "errorMessage": "Error validating access token: Session has expired on Monday, 25-May-26 05:00:00 PDT. The current time is Friday, 29-May-26 21:29:22 PDT."
+  },
+  {
+    "id": "sync-sess-1780115364149",
+    "metaAccountId": "ma-direct-1779710110653",
+    "status": "FAILED",
+    "rowsProcessed": 0,
+    "durationMs": 432,
+    "createdAt": "2026-05-30T04:29:24.149Z",
+    "errorMessage": "Error validating access token: Session has expired on Monday, 25-May-26 05:00:00 PDT. The current time is Friday, 29-May-26 21:29:23 PDT."
+  },
+  {
+    "id": "sync-sess-1780115366409",
+    "metaAccountId": "ma-direct-1779710110653",
+    "status": "FAILED",
+    "rowsProcessed": 0,
+    "durationMs": 794,
+    "createdAt": "2026-05-30T04:29:26.409Z",
+    "errorMessage": "Error validating access token: Session has expired on Monday, 25-May-26 05:00:00 PDT. The current time is Friday, 29-May-26 21:29:25 PDT."
+  },
+  {
+    "id": "sync-sess-1780115367530",
+    "metaAccountId": "ma-direct-1779710110653",
+    "status": "FAILED",
+    "rowsProcessed": 0,
+    "durationMs": 389,
+    "createdAt": "2026-05-30T04:29:27.530Z",
+    "errorMessage": "Error validating access token: Session has expired on Monday, 25-May-26 05:00:00 PDT. The current time is Friday, 29-May-26 21:29:26 PDT."
+  },
+  {
+    "id": "sync-sess-1780115372597",
+    "metaAccountId": "ma-direct-1779710110653",
+    "status": "FAILED",
+    "rowsProcessed": 0,
+    "durationMs": 547,
+    "createdAt": "2026-05-30T04:29:32.597Z",
+    "errorMessage": "Error validating access token: Session has expired on Monday, 25-May-26 05:00:00 PDT. The current time is Friday, 29-May-26 21:29:32 PDT."
+  },
+  {
+    "id": "sync-sess-1780115375207",
+    "metaAccountId": "ma-direct-1779710110653",
+    "status": "FAILED",
+    "rowsProcessed": 0,
+    "durationMs": 266,
+    "createdAt": "2026-05-30T04:29:35.207Z",
+    "errorMessage": "Error validating access token: Session has expired on Monday, 25-May-26 05:00:00 PDT. The current time is Friday, 29-May-26 21:29:34 PDT."
+  },
+  {
+    "id": "sync-sess-1780115375933",
+    "metaAccountId": "ma-direct-1779710110653",
+    "status": "FAILED",
+    "rowsProcessed": 0,
+    "durationMs": 343,
+    "createdAt": "2026-05-30T04:29:35.933Z",
+    "errorMessage": "Error validating access token: Session has expired on Monday, 25-May-26 05:00:00 PDT. The current time is Friday, 29-May-26 21:29:35 PDT."
+  },
+  {
+    "id": "sync-sess-1780115389160",
+    "metaAccountId": "ma-direct-1779710110653",
+    "status": "FAILED",
+    "rowsProcessed": 0,
+    "durationMs": 829,
+    "createdAt": "2026-05-30T04:29:49.160Z",
+    "errorMessage": "Error validating access token: Session has expired on Monday, 25-May-26 05:00:00 PDT. The current time is Friday, 29-May-26 21:29:49 PDT."
+  },
+  {
+    "id": "sync-sess-1780115391480",
+    "metaAccountId": "ma-direct-1779710110653",
+    "status": "FAILED",
+    "rowsProcessed": 0,
+    "durationMs": 297,
+    "createdAt": "2026-05-30T04:29:51.480Z",
+    "errorMessage": "Error validating access token: Session has expired on Monday, 25-May-26 05:00:00 PDT. The current time is Friday, 29-May-26 21:29:50 PDT."
+  },
+  {
+    "id": "sync-sess-1780115392285",
+    "metaAccountId": "ma-direct-1779710110653",
+    "status": "FAILED",
+    "rowsProcessed": 0,
+    "durationMs": 312,
+    "createdAt": "2026-05-30T04:29:52.285Z",
+    "errorMessage": "Error validating access token: Session has expired on Monday, 25-May-26 05:00:00 PDT. The current time is Friday, 29-May-26 21:29:51 PDT."
+  },
+  {
+    "id": "sync-sess-1780116203517",
+    "metaAccountId": "ma-direct-1779710110653",
+    "status": "FAILED",
+    "rowsProcessed": 0,
+    "durationMs": 346,
+    "createdAt": "2026-05-30T04:43:23.517Z",
+    "errorMessage": "Error validating access token: Session has expired on Monday, 25-May-26 05:00:00 PDT. The current time is Friday, 29-May-26 21:43:23 PDT."
+  },
+  {
+    "id": "sync-sess-1780116205922",
+    "metaAccountId": "ma-direct-1779710110653",
+    "status": "FAILED",
+    "rowsProcessed": 0,
+    "durationMs": 502,
+    "createdAt": "2026-05-30T04:43:25.922Z",
+    "errorMessage": "Error validating access token: Session has expired on Monday, 25-May-26 05:00:00 PDT. The current time is Friday, 29-May-26 21:43:25 PDT."
+  },
+  {
+    "id": "sync-sess-1780116207872",
+    "metaAccountId": "ma-direct-1779710110653",
+    "status": "FAILED",
+    "rowsProcessed": 0,
+    "durationMs": 290,
+    "createdAt": "2026-05-30T04:43:27.872Z",
+    "errorMessage": "Error validating access token: Session has expired on Monday, 25-May-26 05:00:00 PDT. The current time is Friday, 29-May-26 21:43:27 PDT."
+  },
+  {
+    "id": "sync-sess-1780116210442",
+    "metaAccountId": "ma-direct-1779710110653",
+    "status": "FAILED",
+    "rowsProcessed": 0,
+    "durationMs": 289,
+    "createdAt": "2026-05-30T04:43:30.442Z",
+    "errorMessage": "Error validating access token: Session has expired on Monday, 25-May-26 05:00:00 PDT. The current time is Friday, 29-May-26 21:43:29 PDT."
+  },
+  {
+    "id": "sync-sess-1780116216182",
+    "metaAccountId": "ma-direct-1779710110653",
+    "status": "FAILED",
+    "rowsProcessed": 0,
+    "durationMs": 388,
+    "createdAt": "2026-05-30T04:43:36.182Z",
+    "errorMessage": "Error validating access token: Session has expired on Monday, 25-May-26 05:00:00 PDT. The current time is Friday, 29-May-26 21:43:35 PDT."
+  },
+  {
+    "id": "sync-sess-1780116218739",
+    "metaAccountId": "ma-direct-1779710110653",
+    "status": "FAILED",
+    "rowsProcessed": 0,
+    "durationMs": 482,
+    "createdAt": "2026-05-30T04:43:38.739Z",
+    "errorMessage": "Error validating access token: Session has expired on Monday, 25-May-26 05:00:00 PDT. The current time is Friday, 29-May-26 21:43:38 PDT."
+  },
+  {
+    "id": "sync-sess-1780116232581",
+    "metaAccountId": "ma-direct-1779710110653",
+    "status": "FAILED",
+    "rowsProcessed": 0,
+    "durationMs": 362,
+    "createdAt": "2026-05-30T04:43:52.581Z",
+    "errorMessage": "Error validating access token: Session has expired on Monday, 25-May-26 05:00:00 PDT. The current time is Friday, 29-May-26 21:43:52 PDT."
+  },
+  {
+    "id": "sync-sess-1780116235227",
+    "metaAccountId": "ma-direct-1779710110653",
+    "status": "FAILED",
+    "rowsProcessed": 0,
+    "durationMs": 277,
+    "createdAt": "2026-05-30T04:43:55.227Z",
+    "errorMessage": "Error validating access token: Session has expired on Monday, 25-May-26 05:00:00 PDT. The current time is Friday, 29-May-26 21:43:54 PDT."
+  },
+  {
+    "id": "sync-sess-1780116427660",
+    "metaAccountId": "ma-direct-1779710110653",
+    "status": "FAILED",
+    "rowsProcessed": 0,
+    "durationMs": 389,
+    "createdAt": "2026-05-30T04:47:07.660Z",
+    "errorMessage": "Error validating access token: Session has expired on Monday, 25-May-26 05:00:00 PDT. The current time is Friday, 29-May-26 21:47:07 PDT."
+  },
+  {
+    "id": "sync-sess-1780116432059",
+    "metaAccountId": "ma-direct-1779710110653",
+    "status": "FAILED",
+    "rowsProcessed": 0,
+    "durationMs": 391,
+    "createdAt": "2026-05-30T04:47:12.059Z",
+    "errorMessage": "Error validating access token: Session has expired on Monday, 25-May-26 05:00:00 PDT. The current time is Friday, 29-May-26 21:47:11 PDT."
+  },
+  {
+    "id": "sync-sess-1780116440464",
+    "metaAccountId": "ma-direct-1779710110653",
+    "status": "FAILED",
+    "rowsProcessed": 0,
+    "durationMs": 298,
+    "createdAt": "2026-05-30T04:47:20.464Z",
+    "errorMessage": "Error validating access token: Session has expired on Monday, 25-May-26 05:00:00 PDT. The current time is Friday, 29-May-26 21:47:19 PDT."
+  },
+  {
+    "id": "sync-sess-1780116456772",
+    "metaAccountId": "ma-direct-1779710110653",
+    "status": "FAILED",
+    "rowsProcessed": 0,
+    "durationMs": 561,
+    "createdAt": "2026-05-30T04:47:36.772Z",
+    "errorMessage": "Error validating access token: Session has expired on Monday, 25-May-26 05:00:00 PDT. The current time is Friday, 29-May-26 21:47:36 PDT."
+  },
+  {
+    "id": "sync-sess-1780116671835",
+    "metaAccountId": "ma-direct-1779710110653",
+    "status": "FAILED",
+    "rowsProcessed": 0,
+    "durationMs": 356,
+    "createdAt": "2026-05-30T04:51:11.835Z",
+    "errorMessage": "Error validating access token: Session has expired on Monday, 25-May-26 05:00:00 PDT. The current time is Friday, 29-May-26 21:51:11 PDT."
+  },
+  {
+    "id": "sync-sess-1780116676199",
+    "metaAccountId": "ma-direct-1779710110653",
+    "status": "FAILED",
+    "rowsProcessed": 0,
+    "durationMs": 436,
+    "createdAt": "2026-05-30T04:51:16.199Z",
+    "errorMessage": "Error validating access token: Session has expired on Monday, 25-May-26 05:00:00 PDT. The current time is Friday, 29-May-26 21:51:15 PDT."
+  },
+  {
+    "id": "sync-sess-1780116684676",
+    "metaAccountId": "ma-direct-1779710110653",
+    "status": "FAILED",
+    "rowsProcessed": 0,
+    "durationMs": 399,
+    "createdAt": "2026-05-30T04:51:24.676Z",
+    "errorMessage": "Error validating access token: Session has expired on Monday, 25-May-26 05:00:00 PDT. The current time is Friday, 29-May-26 21:51:24 PDT."
+  },
+  {
+    "id": "sync-sess-1780116701090",
+    "metaAccountId": "ma-direct-1779710110653",
+    "status": "FAILED",
+    "rowsProcessed": 0,
+    "durationMs": 2578,
+    "createdAt": "2026-05-30T04:51:41.090Z",
+    "errorMessage": "Error validating access token: Session has expired on Monday, 25-May-26 05:00:00 PDT. The current time is Friday, 29-May-26 21:51:42 PDT."
+  },
+  {
+    "id": "sync-sess-1780117986371",
+    "metaAccountId": "ma-direct-1779710110653",
+    "status": "FAILED",
+    "rowsProcessed": 0,
+    "durationMs": 424,
+    "createdAt": "2026-05-30T05:13:06.371Z",
+    "errorMessage": "Error validating access token: Session has expired on Monday, 25-May-26 05:00:00 PDT. The current time is Friday, 29-May-26 22:13:05 PDT."
+  },
+  {
+    "id": "sync-sess-1780117986692",
+    "metaAccountId": "ma-direct-1779710110653",
+    "status": "FAILED",
+    "rowsProcessed": 0,
+    "durationMs": 389,
+    "createdAt": "2026-05-30T05:13:06.692Z",
+    "errorMessage": "Error validating access token: Session has expired on Monday, 25-May-26 05:00:00 PDT. The current time is Friday, 29-May-26 22:13:06 PDT."
+  },
+  {
+    "id": "sync-sess-1780117990799",
+    "metaAccountId": "ma-direct-1779710110653",
+    "status": "FAILED",
+    "rowsProcessed": 0,
+    "durationMs": 366,
+    "createdAt": "2026-05-30T05:13:10.799Z",
+    "errorMessage": "Error validating access token: Session has expired on Monday, 25-May-26 05:00:00 PDT. The current time is Friday, 29-May-26 22:13:10 PDT."
+  },
+  {
+    "id": "sync-sess-1780117991096",
+    "metaAccountId": "ma-direct-1779710110653",
+    "status": "FAILED",
+    "rowsProcessed": 0,
+    "durationMs": 377,
+    "createdAt": "2026-05-30T05:13:11.096Z",
+    "errorMessage": "Error validating access token: Session has expired on Monday, 25-May-26 05:00:00 PDT. The current time is Friday, 29-May-26 22:13:10 PDT."
+  },
+  {
+    "id": "sync-sess-1780117999172",
+    "metaAccountId": "ma-direct-1779710110653",
+    "status": "FAILED",
+    "rowsProcessed": 0,
+    "durationMs": 381,
+    "createdAt": "2026-05-30T05:13:19.172Z",
+    "errorMessage": "Error validating access token: Session has expired on Monday, 25-May-26 05:00:00 PDT. The current time is Friday, 29-May-26 22:13:18 PDT."
+  },
+  {
+    "id": "sync-sess-1780117999487",
+    "metaAccountId": "ma-direct-1779710110653",
+    "status": "FAILED",
+    "rowsProcessed": 0,
+    "durationMs": 361,
+    "createdAt": "2026-05-30T05:13:19.487Z",
+    "errorMessage": "Error validating access token: Session has expired on Monday, 25-May-26 05:00:00 PDT. The current time is Friday, 29-May-26 22:13:19 PDT."
+  },
+  {
+    "id": "sync-sess-1780118015559",
+    "metaAccountId": "ma-direct-1779710110653",
+    "status": "FAILED",
+    "rowsProcessed": 0,
+    "durationMs": 410,
+    "createdAt": "2026-05-30T05:13:35.559Z",
+    "errorMessage": "Error validating access token: Session has expired on Monday, 25-May-26 05:00:00 PDT. The current time is Friday, 29-May-26 22:13:35 PDT."
+  },
+  {
+    "id": "sync-sess-1780118015857",
+    "metaAccountId": "ma-direct-1779710110653",
+    "status": "FAILED",
+    "rowsProcessed": 0,
+    "durationMs": 360,
+    "createdAt": "2026-05-30T05:13:35.857Z",
+    "errorMessage": "Error validating access token: Session has expired on Monday, 25-May-26 05:00:00 PDT. The current time is Friday, 29-May-26 22:13:35 PDT."
+  },
+  {
+    "id": "sync-sess-1780118642951",
+    "metaAccountId": "ma-direct-1779710110653",
+    "status": "FAILED",
+    "rowsProcessed": 0,
+    "durationMs": 489,
+    "createdAt": "2026-05-30T05:24:02.951Z",
+    "errorMessage": "Error validating access token: Session has expired on Monday, 25-May-26 05:00:00 PDT. The current time is Friday, 29-May-26 22:24:02 PDT."
+  },
+  {
+    "id": "sync-sess-1780118644165",
+    "metaAccountId": "ma-direct-1779710110653",
+    "status": "FAILED",
+    "rowsProcessed": 0,
+    "durationMs": 306,
+    "createdAt": "2026-05-30T05:24:04.165Z",
+    "errorMessage": "Error validating access token: Session has expired on Monday, 25-May-26 05:00:00 PDT. The current time is Friday, 29-May-26 22:24:03 PDT."
+  },
+  {
+    "id": "sync-sess-1780118647456",
+    "metaAccountId": "ma-direct-1779710110653",
+    "status": "FAILED",
+    "rowsProcessed": 0,
+    "durationMs": 310,
+    "createdAt": "2026-05-30T05:24:07.456Z",
+    "errorMessage": "Error validating access token: Session has expired on Monday, 25-May-26 05:00:00 PDT. The current time is Friday, 29-May-26 22:24:06 PDT."
+  },
+  {
+    "id": "sync-sess-1780118648489",
+    "metaAccountId": "ma-direct-1779710110653",
+    "status": "FAILED",
+    "rowsProcessed": 0,
+    "durationMs": 474,
+    "createdAt": "2026-05-30T05:24:08.489Z",
+    "errorMessage": "Error validating access token: Session has expired on Monday, 25-May-26 05:00:00 PDT. The current time is Friday, 29-May-26 22:24:07 PDT."
+  },
+  {
+    "id": "sync-sess-1780118655773",
+    "metaAccountId": "ma-direct-1779710110653",
+    "status": "FAILED",
+    "rowsProcessed": 0,
+    "durationMs": 456,
+    "createdAt": "2026-05-30T05:24:15.773Z",
+    "errorMessage": "Error validating access token: Session has expired on Monday, 25-May-26 05:00:00 PDT. The current time is Friday, 29-May-26 22:24:15 PDT."
+  },
+  {
+    "id": "sync-sess-1780118656975",
+    "metaAccountId": "ma-direct-1779710110653",
+    "status": "FAILED",
+    "rowsProcessed": 0,
+    "durationMs": 384,
+    "createdAt": "2026-05-30T05:24:16.975Z",
+    "errorMessage": "Error validating access token: Session has expired on Monday, 25-May-26 05:00:00 PDT. The current time is Friday, 29-May-26 22:24:16 PDT."
+  },
+  {
+    "id": "sync-sess-1780118672238",
+    "metaAccountId": "ma-direct-1779710110653",
+    "status": "FAILED",
+    "rowsProcessed": 0,
+    "durationMs": 440,
+    "createdAt": "2026-05-30T05:24:32.238Z",
+    "errorMessage": "Error validating access token: Session has expired on Monday, 25-May-26 05:00:00 PDT. The current time is Friday, 29-May-26 22:24:31 PDT."
+  },
+  {
+    "id": "sync-sess-1780118673376",
+    "metaAccountId": "ma-direct-1779710110653",
+    "status": "FAILED",
+    "rowsProcessed": 0,
+    "durationMs": 423,
+    "createdAt": "2026-05-30T05:24:33.376Z",
+    "errorMessage": "Error validating access token: Session has expired on Monday, 25-May-26 05:00:00 PDT. The current time is Friday, 29-May-26 22:24:32 PDT."
+  },
+  {
+    "id": "sync-sess-1780118746884",
+    "metaAccountId": "ma-direct-1779710110653",
+    "status": "FAILED",
+    "rowsProcessed": 0,
+    "durationMs": 10769,
+    "createdAt": "2026-05-30T05:25:46.884Z",
+    "errorMessage": "fetch failed"
+  },
+  {
+    "id": "sync-sess-1780118761663",
+    "metaAccountId": "ma-direct-1779710110653",
+    "status": "FAILED",
+    "rowsProcessed": 0,
+    "durationMs": 420,
+    "createdAt": "2026-05-30T05:26:01.663Z",
+    "errorMessage": "Error validating access token: Session has expired on Monday, 25-May-26 05:00:00 PDT. The current time is Friday, 29-May-26 22:26:01 PDT."
+  },
+  {
+    "id": "sync-sess-1780118770088",
+    "metaAccountId": "ma-direct-1779710110653",
+    "status": "FAILED",
+    "rowsProcessed": 0,
+    "durationMs": 378,
+    "createdAt": "2026-05-30T05:26:10.088Z",
+    "errorMessage": "Error validating access token: Session has expired on Monday, 25-May-26 05:00:00 PDT. The current time is Friday, 29-May-26 22:26:09 PDT."
+  },
+  {
+    "id": "sync-sess-1780118786475",
+    "metaAccountId": "ma-direct-1779710110653",
+    "status": "FAILED",
+    "rowsProcessed": 0,
+    "durationMs": 404,
+    "createdAt": "2026-05-30T05:26:26.475Z",
+    "errorMessage": "Error validating access token: Session has expired on Monday, 25-May-26 05:00:00 PDT. The current time is Friday, 29-May-26 22:26:26 PDT."
+  }
+]

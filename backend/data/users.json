@@ -1,0 +1,10 @@
+[
+  {
+    "id": "demo-user-id",
+    "email": "demo@vero.co",
+    "passwordHash": "$2a$10$Oc8IXfH9e7xuSk.Y33Cm6.reW7vsRKEsVOoU.XT8vH5MSmLlhQvCS",
+    "name": "Vero Demo Partner",
+    "createdAt": "2026-05-25T11:11:31.799Z",
+    "updatedAt": "2026-05-25T11:11:31.800Z"
+  }
+]
