@@ -36,9 +36,10 @@ export default function PremiumDashboard() {
 
           <button 
             onClick={() => setIsModalOpen(true)}
-            className="bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-400 hover:to-purple-500 text-white font-medium px-8 py-4 rounded-xl transition-all shadow-[0_0_30px_rgba(99,102,241,0.2)] hover:shadow-[0_0_50px_rgba(99,102,241,0.4)] flex items-center gap-2 mx-auto"
+            aria-label="Open Premium Request Modal"
+            className="bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-400 hover:to-purple-500 text-white font-medium px-8 py-4 rounded-xl transition-all shadow-[0_0_30px_rgba(99,102,241,0.2)] hover:shadow-[0_0_50px_rgba(99,102,241,0.4)] flex items-center gap-2 mx-auto cursor-pointer"
           >
-            <Sparkles className="w-5 h-5" />
+            <Sparkles className="w-5 h-5" aria-hidden="true" />
             Request Premium Access
           </button>
         </div>

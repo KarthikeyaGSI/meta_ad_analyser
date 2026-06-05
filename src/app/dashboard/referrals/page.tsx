@@ -77,7 +77,8 @@ export default function ReferralsDashboard() {
         {!code ? (
           <button 
             onClick={handleGenerate}
-            className="bg-indigo-500 hover:bg-indigo-400 text-white font-medium px-6 py-3 rounded-xl transition-all"
+            aria-label="Generate My Referral Link"
+            className="bg-indigo-500 hover:bg-indigo-400 text-white font-medium px-6 py-3 rounded-xl transition-all cursor-pointer"
           >
             Generate My Referral Link
           </button>
@@ -89,9 +90,10 @@ export default function ReferralsDashboard() {
             </div>
             <button 
               onClick={handleCopy}
-              className="bg-white/10 hover:bg-white/20 text-white px-6 py-3 rounded-xl transition-all flex items-center gap-2 font-medium border border-white/10"
+              aria-label={copied ? "Link copied" : "Copy referral link"}
+              className="bg-white/10 hover:bg-white/20 text-white px-6 py-3 rounded-xl transition-all flex items-center gap-2 font-medium border border-white/10 cursor-pointer"
             >
-              {copied ? <><CheckCircle2 className="w-4 h-4 text-green-400" /> Copied!</> : <><Copy className="w-4 h-4" /> Copy</>}
+              {copied ? <><CheckCircle2 className="w-4 h-4 text-green-400" aria-hidden="true" /> Copied!</> : <><Copy className="w-4 h-4" aria-hidden="true" /> Copy</>}
             </button>
           </div>
         )}

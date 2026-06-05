@@ -36,23 +36,27 @@ export default function FAQPage() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto py-24 px-6 relative">
+    <main className="max-w-4xl mx-auto py-24 px-6 relative">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
       
-      <h1 className="text-4xl font-bold text-white mb-4">Frequently Asked Questions</h1>
-      <p className="text-white/60 text-lg mb-12">Everything you need to know about the product and billing.</p>
+      <header className="mb-12">
+        <h1 className="text-4xl font-bold text-white mb-4">Frequently Asked Questions</h1>
+        <p className="text-white/60 text-lg">Everything you need to know about the product and billing.</p>
+      </header>
 
-      <div className="space-y-6">
-        {faqs.map((faq, idx) => (
-          <div key={idx} className="glass-panel-premium p-6 rounded-2xl">
-            <h3 className="text-xl font-bold text-white mb-2">{faq.question}</h3>
-            <p className="text-white/70 leading-relaxed">{faq.answer}</p>
-          </div>
-        ))}
-      </div>
-    </div>
+      <section aria-label="FAQ List">
+        <dl className="space-y-6">
+          {faqs.map((faq, idx) => (
+            <div key={idx} className="glass-panel-premium p-6 rounded-2xl">
+              <dt className="text-xl font-bold text-white mb-2">{faq.question}</dt>
+              <dd className="text-white/70 leading-relaxed m-0">{faq.answer}</dd>
+            </div>
+          ))}
+        </dl>
+      </section>
+    </main>
   );
 }

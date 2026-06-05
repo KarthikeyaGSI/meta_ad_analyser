@@ -32,9 +32,30 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: 'Vero',
+    url: 'https://vero.yourdomain.com',
+    potentialAction: {
+      '@type': 'SearchAction',
+      target: 'https://vero.yourdomain.com/search?q={search_term_string}',
+      'query-input': 'required name=search_term_string'
+    },
+    publisher: {
+      '@type': 'Organization',
+      name: 'Vero',
+      logo: 'https://vero.yourdomain.com/logo.png'
+    }
+  };
+
   return (
     <html lang="en" className={`${outfit.variable}`}>
       <body className="font-sans">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
         <Providers>
           <ErrorBoundary>
             {children}

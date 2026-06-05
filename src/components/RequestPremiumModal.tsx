@@ -91,88 +91,103 @@ export function RequestPremiumModal({ isOpen, onClose, organizationId }: Request
             )}
 
             <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-1">
-                  <label className="text-xs font-medium text-white/60 uppercase tracking-wider">Full Name</label>
-                  <input
-                    required
-                    type="text"
-                    value={formData.name}
-                    onChange={e => setFormData({...formData, name: e.target.value})}
-                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-white placeholder-white/20 focus:outline-none focus:border-indigo-500/50 transition-all"
-                    placeholder="John Doe"
-                  />
+              <fieldset className="space-y-4 border-none p-0 m-0">
+                <legend className="sr-only">Request Premium Form</legend>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-1">
+                    <label htmlFor="premium-name" className="text-xs font-medium text-white/60 uppercase tracking-wider">Full Name</label>
+                    <input
+                      id="premium-name"
+                      required
+                      aria-required="true"
+                      type="text"
+                      value={formData.name}
+                      onChange={e => setFormData({...formData, name: e.target.value})}
+                      className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-white placeholder-white/20 focus:outline-none focus:border-indigo-500/50 transition-all"
+                      placeholder="John Doe"
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <label htmlFor="premium-email" className="text-xs font-medium text-white/60 uppercase tracking-wider">Work Email</label>
+                    <input
+                      id="premium-email"
+                      required
+                      aria-required="true"
+                      type="email"
+                      value={formData.email}
+                      onChange={e => setFormData({...formData, email: e.target.value})}
+                      className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-white placeholder-white/20 focus:outline-none focus:border-indigo-500/50 transition-all"
+                      placeholder="john@company.com"
+                    />
+                  </div>
                 </div>
-                <div className="space-y-1">
-                  <label className="text-xs font-medium text-white/60 uppercase tracking-wider">Work Email</label>
-                  <input
-                    required
-                    type="email"
-                    value={formData.email}
-                    onChange={e => setFormData({...formData, email: e.target.value})}
-                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-white placeholder-white/20 focus:outline-none focus:border-indigo-500/50 transition-all"
-                    placeholder="john@company.com"
-                  />
-                </div>
-              </div>
 
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-1">
-                  <label className="text-xs font-medium text-white/60 uppercase tracking-wider">Company</label>
-                  <input
-                    required
-                    type="text"
-                    value={formData.company}
-                    onChange={e => setFormData({...formData, company: e.target.value})}
-                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-white placeholder-white/20 focus:outline-none focus:border-indigo-500/50 transition-all"
-                    placeholder="Acme Corp"
-                  />
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-1">
+                    <label htmlFor="premium-company" className="text-xs font-medium text-white/60 uppercase tracking-wider">Company</label>
+                    <input
+                      id="premium-company"
+                      required
+                      aria-required="true"
+                      type="text"
+                      value={formData.company}
+                      onChange={e => setFormData({...formData, company: e.target.value})}
+                      className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-white placeholder-white/20 focus:outline-none focus:border-indigo-500/50 transition-all"
+                      placeholder="Acme Corp"
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <label htmlFor="premium-website" className="text-xs font-medium text-white/60 uppercase tracking-wider">Website</label>
+                    <input
+                      id="premium-website"
+                      required
+                      aria-required="true"
+                      type="url"
+                      value={formData.website}
+                      onChange={e => setFormData({...formData, website: e.target.value})}
+                      className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-white placeholder-white/20 focus:outline-none focus:border-indigo-500/50 transition-all"
+                      placeholder="https://acme.com"
+                    />
+                  </div>
                 </div>
-                <div className="space-y-1">
-                  <label className="text-xs font-medium text-white/60 uppercase tracking-wider">Website</label>
-                  <input
-                    required
-                    type="url"
-                    value={formData.website}
-                    onChange={e => setFormData({...formData, website: e.target.value})}
-                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-white placeholder-white/20 focus:outline-none focus:border-indigo-500/50 transition-all"
-                    placeholder="https://acme.com"
-                  />
-                </div>
-              </div>
 
-              <div className="space-y-1">
-                <label className="text-xs font-medium text-white/60 uppercase tracking-wider">Team Size</label>
-                <select
-                  value={formData.teamSize}
-                  onChange={e => setFormData({...formData, teamSize: e.target.value})}
-                  className="w-full bg-[#111] border border-white/10 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-indigo-500/50 transition-all"
+                <div className="space-y-1">
+                  <label htmlFor="premium-teamsize" className="text-xs font-medium text-white/60 uppercase tracking-wider">Team Size</label>
+                  <select
+                    id="premium-teamsize"
+                    value={formData.teamSize}
+                    onChange={e => setFormData({...formData, teamSize: e.target.value})}
+                    className="w-full bg-[#111] border border-white/10 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-indigo-500/50 transition-all cursor-pointer"
+                  >
+                    <option value="1-10">1-10 employees</option>
+                    <option value="11-50">11-50 employees</option>
+                    <option value="51-200">51-200 employees</option>
+                    <option value="201+">201+ employees</option>
+                  </select>
+                </div>
+
+                <div className="space-y-1">
+                  <label htmlFor="premium-requirements" className="text-xs font-medium text-white/60 uppercase tracking-wider">Specific Requirements</label>
+                  <textarea
+                    id="premium-requirements"
+                    required
+                    aria-required="true"
+                    value={formData.requirements}
+                    onChange={e => setFormData({...formData, requirements: e.target.value})}
+                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-white/20 focus:outline-none focus:border-indigo-500/50 transition-all min-h-[100px] resize-none"
+                    placeholder="Tell us what premium features you're looking for..."
+                  />
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={loading}
+                  aria-label="Submit Premium Request"
+                  className="w-full bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-400 hover:to-purple-500 text-white font-medium px-6 py-3 rounded-xl transition-all shadow-[0_0_20px_rgba(99,102,241,0.3)] hover:shadow-[0_0_30px_rgba(99,102,241,0.5)] disabled:opacity-50 mt-4 cursor-pointer"
                 >
-                  <option value="1-10">1-10 employees</option>
-                  <option value="11-50">11-50 employees</option>
-                  <option value="51-200">51-200 employees</option>
-                  <option value="201+">201+ employees</option>
-                </select>
-              </div>
-
-              <div className="space-y-1">
-                <label className="text-xs font-medium text-white/60 uppercase tracking-wider">Specific Requirements</label>
-                <textarea
-                  required
-                  value={formData.requirements}
-                  onChange={e => setFormData({...formData, requirements: e.target.value})}
-                  className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-white/20 focus:outline-none focus:border-indigo-500/50 transition-all min-h-[100px] resize-none"
-                  placeholder="Tell us what premium features you're looking for..."
-                />
-              </div>
-
-              <button
-                type="submit"
-                disabled={loading}
-                className="w-full bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-400 hover:to-purple-500 text-white font-medium px-6 py-3 rounded-xl transition-all shadow-[0_0_20px_rgba(99,102,241,0.3)] hover:shadow-[0_0_30px_rgba(99,102,241,0.5)] disabled:opacity-50 mt-4"
-              >
-                {loading ? 'Submitting...' : 'Request Premium Access'}
-              </button>
+                  {loading ? 'Submitting...' : 'Request Premium Access'}
+                </button>
+              </fieldset>
             </form>
           </>
         )}

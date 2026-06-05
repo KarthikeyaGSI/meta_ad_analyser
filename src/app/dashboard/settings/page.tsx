@@ -239,8 +239,9 @@ export default function SettingsPage() {
             <div className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <label className="text-[11px] font-bold text-slate-300 uppercase tracking-wider">Dashboard Platform Title (Agency Name)</label>
+                  <label htmlFor="agency-name" className="text-[11px] font-bold text-slate-300 uppercase tracking-wider">Dashboard Platform Title (Agency Name)</label>
                   <input
+                    id="agency-name"
                     type="text"
                     value={agencyName}
                     onChange={(e) => setAgencyName(e.target.value)}
@@ -250,8 +251,9 @@ export default function SettingsPage() {
                   {!isPremium && <p className="text-[9px] text-primary mt-1">Upgrade to Premium to unlock custom branding.</p>}
                 </div>
                 <div className="space-y-2">
-                  <label className="text-[11px] font-bold text-slate-300 uppercase tracking-wider">Custom Portal CNAME Domain</label>
+                  <label htmlFor="custom-domain" className="text-[11px] font-bold text-slate-300 uppercase tracking-wider">Custom Portal CNAME Domain</label>
                   <input
+                    id="custom-domain"
                     type="text"
                     placeholder="analytics.youragency.com"
                     className="w-full px-4 py-2.5 rounded-xl text-xs text-white input-premium"
@@ -317,8 +319,9 @@ export default function SettingsPage() {
                 </div>
                 <div className="space-y-4">
                   <div className="space-y-2">
-                    <label className="text-[11px] font-bold text-slate-300 uppercase tracking-wider">Invite Team Members (Comma separated emails)</label>
+                    <label htmlFor="team-emails" className="text-[11px] font-bold text-slate-300 uppercase tracking-wider">Invite Team Members (Comma separated emails)</label>
                     <textarea
+                      id="team-emails"
                       value={teamEmails}
                       onChange={(e) => setTeamEmails(e.target.value)}
                       className="w-full px-4 py-3 rounded-xl text-xs text-white input-premium h-20"
@@ -428,61 +431,70 @@ export default function SettingsPage() {
             )}
 
             <form onSubmit={handleConnectDirectToken} className="space-y-4">
-              <div className="space-y-1.5">
-                <label className="text-[10px] font-bold text-slate-300 uppercase tracking-wider">Ad Account ID</label>
-                <input
-                  type="text"
-                  placeholder="act_xxxxxxxxxxxx"
-                  value={directActId}
-                  onChange={(e) => setDirectActId(e.target.value)}
-                  disabled={connecting}
-                  className="w-full px-3.5 py-2.5 rounded-xl text-xs text-white input-premium disabled:opacity-50"
-                  required
-                />
-              </div>
+              <fieldset className="space-y-4 border-none p-0 m-0">
+                <legend className="sr-only">Connect Direct Meta API Account</legend>
+                <div className="space-y-1.5">
+                  <label htmlFor="direct-act-id" className="text-[10px] font-bold text-slate-300 uppercase tracking-wider">Ad Account ID</label>
+                  <input
+                    id="direct-act-id"
+                    type="text"
+                    placeholder="act_xxxxxxxxxxxx"
+                    value={directActId}
+                    onChange={(e) => setDirectActId(e.target.value)}
+                    disabled={connecting}
+                    className="w-full px-3.5 py-2.5 rounded-xl text-xs text-white input-premium disabled:opacity-50"
+                    required
+                    aria-required="true"
+                  />
+                </div>
 
-              <div className="space-y-1.5">
-                <label className="text-[10px] font-bold text-slate-300 uppercase tracking-wider">Meta User Access Token</label>
-                <input
-                  type="password"
-                  placeholder="EAAdsa..."
-                  value={directToken}
-                  onChange={(e) => setDirectToken(e.target.value)}
-                  disabled={connecting}
-                  className="w-full px-3.5 py-2.5 rounded-xl text-xs text-white input-premium disabled:opacity-50"
-                  required
-                />
-              </div>
+                <div className="space-y-1.5">
+                  <label htmlFor="direct-token" className="text-[10px] font-bold text-slate-300 uppercase tracking-wider">Meta User Access Token</label>
+                  <input
+                    id="direct-token"
+                    type="password"
+                    placeholder="EAAdsa..."
+                    value={directToken}
+                    onChange={(e) => setDirectToken(e.target.value)}
+                    disabled={connecting}
+                    className="w-full px-3.5 py-2.5 rounded-xl text-xs text-white input-premium disabled:opacity-50"
+                    required
+                    aria-required="true"
+                  />
+                </div>
 
-              <div className="space-y-1.5">
-                <label className="text-[10px] font-bold text-slate-300 uppercase tracking-wider">Custom Account Name (Optional)</label>
-                <input
-                  type="text"
-                  placeholder="My Activewear Shopify Store"
-                  value={directName}
-                  onChange={(e) => setDirectName(e.target.value)}
-                  disabled={connecting}
-                  className="w-full px-3.5 py-2.5 rounded-xl text-xs text-white input-premium disabled:opacity-50"
-                />
-              </div>
+                <div className="space-y-1.5">
+                  <label htmlFor="direct-name" className="text-[10px] font-bold text-slate-300 uppercase tracking-wider">Custom Account Name (Optional)</label>
+                  <input
+                    id="direct-name"
+                    type="text"
+                    placeholder="My Activewear Shopify Store"
+                    value={directName}
+                    onChange={(e) => setDirectName(e.target.value)}
+                    disabled={connecting}
+                    className="w-full px-3.5 py-2.5 rounded-xl text-xs text-white input-premium disabled:opacity-50"
+                  />
+                </div>
 
-              <button
-                type="submit"
-                disabled={connecting}
-                className="w-full mt-2 py-3 px-4 rounded-xl bg-primary hover:bg-primary-hover text-xs font-bold text-white transition flex items-center justify-center gap-1.5 shadow-glow-primary btn-touch disabled:opacity-50"
-              >
-                {connecting ? (
-                  <>
-                    <RefreshCw className="w-3.5 h-3.5 animate-spin" />
-                    Connecting & Syncing...
-                  </>
-                ) : (
-                  <>
-                    Link Live Ad Account
-                    <ArrowRight className="w-4 h-4" />
-                  </>
-                )}
-              </button>
+                <button
+                  type="submit"
+                  disabled={connecting}
+                  aria-label="Link Live Ad Account"
+                  className="w-full mt-2 py-3 px-4 rounded-xl bg-primary hover:bg-primary-hover text-xs font-bold text-white transition flex items-center justify-center gap-1.5 shadow-glow-primary btn-touch disabled:opacity-50 cursor-pointer"
+                >
+                  {connecting ? (
+                    <>
+                      <RefreshCw className="w-3.5 h-3.5 animate-spin" aria-hidden="true" />
+                      Connecting & Syncing...
+                    </>
+                  ) : (
+                    <>
+                      Link Live Ad Account
+                      <ArrowRight className="w-4 h-4" aria-hidden="true" />
+                    </>
+                  )}
+                </button>
+              </fieldset>
             </form>
 
             <div className="p-3.5 rounded-xl bg-white/[0.015] border border-white/[0.05] space-y-1.5">

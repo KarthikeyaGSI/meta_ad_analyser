@@ -8,6 +8,8 @@ import Sidebar from '../../components/Sidebar';
 import ProductTour from '../../components/ProductTour';
 import { useStore } from '../../store/useStore';
 
+import { CommandPalette } from '../../components/CommandPalette';
+
 export default function DashboardLayout({
   children,
 }: {
@@ -63,9 +65,15 @@ export default function DashboardLayout({
 
   if (!mounted || !user) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
+      <div className="min-h-screen bg-background flex items-center justify-center" aria-live="polite" aria-busy="true">
         {/* Sleek dashboard boot spinner */}
-        <div className="w-8 h-8 rounded-full border-[3px] border-primary/20 border-t-primary animate-spin"></div>
+        <div 
+          className="w-8 h-8 rounded-full border-[3px] border-primary/20 border-t-primary animate-spin"
+          role="status"
+          aria-label="Loading dashboard"
+        >
+          <span className="sr-only">Loading dashboard...</span>
+        </div>
       </div>
     );
   }
@@ -75,6 +83,8 @@ export default function DashboardLayout({
       className="min-h-screen bg-background relative overflow-hidden" 
       style={customStyles}
     >
+      <CommandPalette />
+      
       {/* Cinematic ambient spatial glows */}
       <div className="glow-bg top-[-100px] right-[-100px] opacity-15"></div>
       <div className="glow-bg-success bottom-[-200px] left-[150px] opacity-10"></div>

@@ -61,3 +61,11 @@ export const updateSubscriptionInternal = internalMutation({
     }
   },
 });
+
+export const checkTrialExpirations = internalMutation({
+  args: {},
+  handler: async (ctx) => {
+    // Simulated: Check all organizations on trial that expire today and email them
+    console.log("[Cron] Checking for trial expirations...");
+  },
+});

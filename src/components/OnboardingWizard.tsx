@@ -57,7 +57,7 @@ export function OnboardingWizard({ onComplete }: OnboardingWizardProps) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#050505]">
+    <main className="fixed inset-0 z-50 flex items-center justify-center bg-[#050505]">
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-indigo-900/20 via-[#050505] to-[#050505]" />
       
       <div className="relative w-full max-w-2xl p-8">
@@ -87,41 +87,50 @@ export function OnboardingWizard({ onComplete }: OnboardingWizardProps) {
 
         {/* Step 1: Create Organization */}
         {step === 1 && (
-          <div className="animate-in fade-in slide-in-from-right-8 duration-500">
-            <div className="text-center mb-8">
+          <section className="animate-in fade-in slide-in-from-right-8 duration-500">
+            <header className="text-center mb-8">
               <div className="w-16 h-16 bg-indigo-500/20 text-indigo-400 rounded-full flex items-center justify-center mx-auto mb-6">
                 <Building className="w-8 h-8" />
               </div>
               <h2 className="text-3xl font-bold text-white mb-2">Create your Organization</h2>
               <p className="text-white/60">This is your top-level company container.</p>
-            </div>
+            </header>
 
             <form onSubmit={handleCreateOrg} className="space-y-6">
-              <input
-                required
-                type="text"
-                value={orgName}
-                onChange={e => setOrgName(e.target.value)}
-                className="w-full bg-white/5 border border-white/10 rounded-xl px-6 py-4 text-white text-lg placeholder-white/20 focus:outline-none focus:border-indigo-500/50 transition-all text-center"
-                placeholder="e.g. Acme Corp"
-              />
-              <button
-                type="submit"
-                disabled={loading || !orgName}
-                className="w-full bg-white text-black font-medium px-6 py-4 rounded-xl transition-all hover:bg-white/90 disabled:opacity-50 flex items-center justify-center gap-2"
-              >
-                {loading ? 'Creating...' : 'Continue'}
-                <ArrowRight className="w-5 h-5" />
-              </button>
+              <fieldset className="space-y-6 border-none p-0 m-0">
+                <legend className="sr-only">Create Organization</legend>
+                <div>
+                  <label htmlFor="org-name" className="sr-only">Organization Name</label>
+                  <input
+                    id="org-name"
+                    required
+                    aria-required="true"
+                    type="text"
+                    value={orgName}
+                    onChange={e => setOrgName(e.target.value)}
+                    className="w-full bg-white/5 border border-white/10 rounded-xl px-6 py-4 text-white text-lg placeholder-white/20 focus:outline-none focus:border-indigo-500/50 transition-all text-center"
+                    placeholder="e.g. Acme Corp"
+                  />
+                </div>
+                <button
+                  type="submit"
+                  disabled={loading || !orgName}
+                  aria-label="Create Organization and Continue"
+                  className="w-full bg-white text-black font-medium px-6 py-4 rounded-xl transition-all hover:bg-white/90 disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer"
+                >
+                  {loading ? 'Creating...' : 'Continue'}
+                  <ArrowRight className="w-5 h-5" aria-hidden="true" />
+                </button>
+              </fieldset>
             </form>
-          </div>
+          </section>
         )}
 
         {/* Step 2: Create Workspace */}
         {step === 2 && (
-          <div className="animate-in fade-in slide-in-from-right-8 duration-500">
+          <section className="animate-in fade-in slide-in-from-right-8 duration-500" aria-label="Step 2: Create Workspace">
             <div className="text-center mb-8">
-              <div className="w-16 h-16 bg-blue-500/20 text-blue-400 rounded-full flex items-center justify-center mx-auto mb-6">
+              <div className="w-16 h-16 bg-blue-500/20 text-blue-400 rounded-full flex items-center justify-center mx-auto mb-6" aria-hidden="true">
                 <Server className="w-8 h-8" />
               </div>
               <h2 className="text-3xl font-bold text-white mb-2">Set up your Workspace</h2>
@@ -129,30 +138,40 @@ export function OnboardingWizard({ onComplete }: OnboardingWizardProps) {
             </div>
 
             <form onSubmit={handleCreateWorkspace} className="space-y-6">
-              <input
-                required
-                type="text"
-                value={workspaceName}
-                onChange={e => setWorkspaceName(e.target.value)}
-                className="w-full bg-white/5 border border-white/10 rounded-xl px-6 py-4 text-white text-lg placeholder-white/20 focus:outline-none focus:border-blue-500/50 transition-all text-center"
-                placeholder="e.g. Marketing Team"
-              />
-              <button
-                type="submit"
-                disabled={loading || !workspaceName}
-                className="w-full bg-white text-black font-medium px-6 py-4 rounded-xl transition-all hover:bg-white/90 disabled:opacity-50 flex items-center justify-center gap-2"
-              >
-                {loading ? 'Creating...' : 'Continue'}
-                <ArrowRight className="w-5 h-5" />
-              </button>
+              <fieldset className="space-y-6 border-none p-0 m-0">
+                <legend className="sr-only">Create Workspace</legend>
+                <div>
+                  <label htmlFor="workspace-name" className="sr-only">Workspace Name</label>
+                  <input
+                    id="workspace-name"
+                    required
+                    aria-required="true"
+                    type="text"
+                    value={workspaceName}
+                    onChange={e => setWorkspaceName(e.target.value)}
+                    className="w-full bg-white/5 border border-white/10 rounded-xl px-6 py-4 text-white text-lg placeholder-white/20 focus:outline-none focus:border-blue-500/50 transition-all text-center"
+                    placeholder="e.g. Marketing Team"
+                  />
+                </div>
+                <button
+                  type="submit"
+                  disabled={loading || !workspaceName}
+                  aria-label="Create Workspace and Continue"
+                  className="w-full bg-white text-black font-medium px-6 py-4 rounded-xl transition-all hover:bg-white/90 disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer"
+                >
+                  {loading ? 'Creating...' : 'Continue'}
+                  <ArrowRight className="w-5 h-5" aria-hidden="true" />
+                </button>
+              </fieldset>
             </form>
-          </div>
+          </section>
+
         )}
 
         {/* Step 3: Connect Account (Dummy for Flow) */}
         {step === 3 && (
-          <div className="animate-in fade-in slide-in-from-right-8 duration-500 text-center">
-            <div className="w-16 h-16 bg-pink-500/20 text-pink-400 rounded-full flex items-center justify-center mx-auto mb-6">
+          <section className="animate-in fade-in slide-in-from-right-8 duration-500 text-center" aria-label="Step 3: Connect Account">
+            <div className="w-16 h-16 bg-pink-500/20 text-pink-400 rounded-full flex items-center justify-center mx-auto mb-6" aria-hidden="true">
               <Sparkles className="w-8 h-8" />
             </div>
             <h2 className="text-3xl font-bold text-white mb-2">Connect your Data</h2>
@@ -160,18 +179,19 @@ export function OnboardingWizard({ onComplete }: OnboardingWizardProps) {
             
             <button
               onClick={() => setStep(4)}
-              className="w-full bg-white text-black font-medium px-6 py-4 rounded-xl transition-all hover:bg-white/90 flex items-center justify-center gap-2 mb-4"
+              aria-label="Skip data connection for now"
+              className="w-full bg-white text-black font-medium px-6 py-4 rounded-xl transition-all hover:bg-white/90 flex items-center justify-center gap-2 mb-4 cursor-pointer"
             >
               Skip for now
-              <ArrowRight className="w-5 h-5" />
+              <ArrowRight className="w-5 h-5" aria-hidden="true" />
             </button>
-          </div>
+          </section>
         )}
 
         {/* Step 4: Invite Team */}
         {step === 4 && (
-          <div className="animate-in fade-in slide-in-from-right-8 duration-500 text-center">
-            <div className="w-16 h-16 bg-green-500/20 text-green-400 rounded-full flex items-center justify-center mx-auto mb-6">
+          <section className="animate-in fade-in slide-in-from-right-8 duration-500 text-center" aria-label="Step 4: Invite Team">
+            <div className="w-16 h-16 bg-green-500/20 text-green-400 rounded-full flex items-center justify-center mx-auto mb-6" aria-hidden="true">
               <Users className="w-8 h-8" />
             </div>
             <h2 className="text-3xl font-bold text-white mb-2">Invite your Team</h2>
@@ -179,18 +199,19 @@ export function OnboardingWizard({ onComplete }: OnboardingWizardProps) {
             
             <button
               onClick={() => setStep(5)}
-              className="w-full bg-white text-black font-medium px-6 py-4 rounded-xl transition-all hover:bg-white/90 flex items-center justify-center gap-2 mb-4"
+              aria-label="Skip inviting team for now"
+              className="w-full bg-white text-black font-medium px-6 py-4 rounded-xl transition-all hover:bg-white/90 flex items-center justify-center gap-2 mb-4 cursor-pointer"
             >
               Skip for now
-              <ArrowRight className="w-5 h-5" />
+              <ArrowRight className="w-5 h-5" aria-hidden="true" />
             </button>
-          </div>
+          </section>
         )}
 
         {/* Step 5: Completion */}
         {step === 5 && (
-          <div className="animate-in fade-in slide-in-from-right-8 duration-500 text-center">
-            <div className="w-20 h-20 bg-indigo-500/20 text-indigo-400 rounded-full flex items-center justify-center mx-auto mb-6 border-4 border-indigo-500/30">
+          <section className="animate-in fade-in slide-in-from-right-8 duration-500 text-center" aria-label="Step 5: Completion">
+            <div className="w-20 h-20 bg-indigo-500/20 text-indigo-400 rounded-full flex items-center justify-center mx-auto mb-6 border-4 border-indigo-500/30" aria-hidden="true">
               <Check className="w-10 h-10" />
             </div>
             <h2 className="text-4xl font-bold text-white mb-4">You're All Set!</h2>
@@ -200,13 +221,14 @@ export function OnboardingWizard({ onComplete }: OnboardingWizardProps) {
             
             <button
               onClick={onComplete}
-              className="w-full bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-400 hover:to-purple-500 text-white font-medium px-6 py-4 rounded-xl transition-all shadow-[0_0_30px_rgba(99,102,241,0.3)] flex items-center justify-center gap-2"
+              aria-label="Go to Dashboard"
+              className="w-full bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-400 hover:to-purple-500 text-white font-medium px-6 py-4 rounded-xl transition-all shadow-[0_0_30px_rgba(99,102,241,0.3)] flex items-center justify-center gap-2 cursor-pointer"
             >
               Go to Dashboard
             </button>
-          </div>
+          </section>
         )}
       </div>
-    </div>
+    </main>
   );
 }

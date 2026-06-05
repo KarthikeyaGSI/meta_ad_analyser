@@ -198,35 +198,43 @@ export default function LoginPage() {
           )}
 
           <form onSubmit={handleEmailLogin} className="space-y-4 mb-6">
-            <div>
-              <label className="block text-xs font-bold text-slate-400 mb-1">Email Address</label>
-              <input
-                type="email"
-                required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-4 py-3 bg-black/40 border border-white/10 rounded-xl text-white focus:border-primary focus:outline-none transition-colors text-sm"
-                placeholder="admin@vero.co"
-              />
-            </div>
-            <div>
-              <label className="block text-xs font-bold text-slate-400 mb-1">Password</label>
-              <input
-                type="password"
-                required
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-4 py-3 bg-black/40 border border-white/10 rounded-xl text-white focus:border-primary focus:outline-none transition-colors text-sm"
-                placeholder="••••••••"
-              />
-            </div>
-            <NeumorphismButton
-              type="submit"
-              disabled={loading}
-              className="w-full"
-            >
-              {loading ? 'Authenticating...' : 'Sign In with Email'}
-            </NeumorphismButton>
+            <fieldset className="space-y-4 border-none p-0 m-0">
+              <legend className="sr-only">Login with Email</legend>
+              <div>
+                <label htmlFor="email-input" className="block text-xs font-bold text-slate-400 mb-1">Email Address</label>
+                <input
+                  id="email-input"
+                  type="email"
+                  required
+                  aria-required="true"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="w-full px-4 py-3 bg-black/40 border border-white/10 rounded-xl text-white focus:border-primary focus:outline-none transition-colors text-sm"
+                  placeholder="admin@vero.co"
+                />
+              </div>
+              <div>
+                <label htmlFor="password-input" className="block text-xs font-bold text-slate-400 mb-1">Password</label>
+                <input
+                  id="password-input"
+                  type="password"
+                  required
+                  aria-required="true"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="w-full px-4 py-3 bg-black/40 border border-white/10 rounded-xl text-white focus:border-primary focus:outline-none transition-colors text-sm"
+                  placeholder="••••••••"
+                />
+              </div>
+              <NeumorphismButton
+                type="submit"
+                disabled={loading}
+                className="w-full"
+                aria-label="Sign in with Email"
+              >
+                {loading ? 'Authenticating...' : 'Sign In with Email'}
+              </NeumorphismButton>
+            </fieldset>
           </form>
 
           <div className="flex items-center justify-between my-4">
