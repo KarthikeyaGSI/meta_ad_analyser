@@ -5,7 +5,6 @@ import { useMutation } from 'convex/react';
 import { api } from '../../../convex/_generated/api';
 import { Id } from '../../../convex/_generated/dataModel';
 import { X, Sparkles, Building, Globe, Mail, Users, Check } from 'lucide-react';
-import { useStore } from '../../store/useStore';
 
 interface RequestPremiumModalProps {
   isOpen: boolean;
