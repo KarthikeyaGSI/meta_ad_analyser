@@ -175,6 +175,57 @@ export const analyticsApi = {
     return { data: rawAdsets ?? [] };
   },
   getCreatives: async (accountId: string, startDate: string, endDate: string) => {
+    // 🎢 "God Mode" Sandbox Injection
+    const isSandbox = accountId === 'demo-act-id' || accountId === 'demo-cosmetics-id';
+    if (isSandbox) {
+      return {
+        data: [
+          {
+            id: 'c1',
+            name: 'UGC Unboxing TikTok Style',
+            format: 'video',
+            spend: 4250,
+            ctr: 2.1,
+            roas: 3.4,
+            fatigueScore: 2.1,
+            frequency: 1.2,
+            imageUrl: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&q=80&w=400',
+            callToActionType: 'SHOP_NOW',
+            headline: 'The Ultimate Sneaker Drop',
+            body: 'Unboxing the craziest kicks of the year. Grab yours before they sell out.'
+          },
+          {
+            id: 'c2',
+            name: 'Carousel Product Highlight',
+            format: 'carousel',
+            spend: 1800,
+            ctr: 1.4,
+            roas: 1.8,
+            fatigueScore: 8.5,
+            frequency: 4.1,
+            imageUrl: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&q=80&w=400',
+            callToActionType: 'LEARN_MORE',
+            headline: 'Smart Watch Series 9',
+            body: 'Track your fitness, heart rate, and sleep automatically.'
+          },
+          {
+            id: 'c3',
+            name: 'Static Image Offer 20% OFF',
+            format: 'image',
+            spend: 850,
+            ctr: 0.8,
+            roas: 0.9,
+            fatigueScore: 9.2,
+            frequency: 5.8,
+            imageUrl: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&q=80&w=400',
+            callToActionType: 'SHOP_NOW',
+            headline: 'Limited Time 20% OFF!',
+            body: 'Get premium audio for a fraction of the cost. Sale ends tonight.'
+          }
+        ]
+      };
+    }
+
     let rawCreatives;
     if (MetaDirectApi.getToken(accountId)) {
       try {
@@ -187,7 +238,10 @@ export const analyticsApi = {
       const res = await safeFetch(() => apiClient.get(`/accounts/${accountId}/creatives`, { params: { startDate, endDate } }), demoCreatives);
       rawCreatives = res.data;
     }
-    return { data: (rawCreatives ?? []).map(mapCreativeDocument) };
+    
+    // Safety check to prevent .map crashes if API returns { list: [...] }
+    const list = Array.isArray(rawCreatives) ? rawCreatives : (rawCreatives?.list || []);
+    return { data: list.map(mapCreativeDocument) };
   },
   getBreakdowns: async (accountId: string, startDate: string, endDate: string) => {
     let rawBreakdowns;
