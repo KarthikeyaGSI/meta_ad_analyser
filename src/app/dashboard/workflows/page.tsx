@@ -3,7 +3,7 @@
 import React, { useState, useCallback, useMemo, useEffect } from 'react';
 import { ReactFlow, ReactFlowProvider, addEdge, Background, Controls, applyNodeChanges, applyEdgeChanges, Node, Edge, Connection } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
-import { Network, Plus, Play, Save, ChevronRight, GripVertical, AlertTriangle } from 'lucide-react';
+import { Network, Plus, Play, Save, ChevronRight, GripVertical, AlertTriangle, ShieldCheck, FileCode2, X } from 'lucide-react';
 import { useStore } from '../../../store/useStore';
 import TriggerNode from '../../../components/workflow/nodes/TriggerNode';
 import ConditionNode from '../../../components/workflow/nodes/ConditionNode';
@@ -41,6 +41,10 @@ function FlowCanvas() {
   const [edges, setEdges] = useState<Edge[]>(defaultEdges);
   const [isSaved, setIsSaved] = useState(true);
   const [workflowId, setWorkflowId] = useState<any>(null);
+  
+  // New UI States
+  const [showTemplates, setShowTemplates] = useState(false);
+  const { isAuditMode, setAuditMode } = useStore();
 
   // Load from DB when available
   useEffect(() => {
@@ -135,8 +139,73 @@ function FlowCanvas() {
     [setNodes]
   );
 
+  const loadTemplate = (templateName: string) => {
+    if (templateName === '7_day_scale') {
+      setNodes([
+        { id: '1', type: 'trigger', position: { x: 250, y: 100 }, data: { label: 'Active Duration', description: 'Days Active > 7' } },
+        { id: '2', type: 'condition', position: { x: 250, y: 250 }, data: { label: 'High ROAS', description: 'If 7D ROAS > 2.5' } },
+        { id: '3', type: 'action', position: { x: 250, y: 400 }, data: { label: 'Scale Budget', description: 'Increase by 15%' } },
+      ]);
+      setEdges([
+        { id: 'e1-2', source: '1', target: '2', animated: true, style: { stroke: '#6366f1', strokeWidth: 2 } },
+        { id: 'e2-3', source: '2', target: '3', animated: true, style: { stroke: '#10b981', strokeWidth: 2 } },
+      ]);
+    } else if (templateName === 'weekend_stop_loss') {
+      setNodes([
+        { id: '1', type: 'trigger', position: { x: 250, y: 100 }, data: { label: 'Weekend Detected', description: 'Day is Sat/Sun' } },
+        { id: '2', type: 'condition', position: { x: 250, y: 250 }, data: { label: 'Bleeding Budget', description: 'If Spend > $100 & ROAS < 1.0' } },
+        { id: '3', type: 'action', position: { x: 250, y: 400 }, data: { label: 'Pause Ad Set', description: 'Hard Stop' } },
+      ]);
+      setEdges([
+        { id: 'e1-2', source: '1', target: '2', animated: true, style: { stroke: '#6366f1', strokeWidth: 2 } },
+        { id: 'e2-3', source: '2', target: '3', animated: true, style: { stroke: '#ef4444', strokeWidth: 2 } },
+      ]);
+    }
+    setIsSaved(false);
+    setShowTemplates(false);
+  };
+
   return (
-    <div className="flex h-[calc(100vh-120px)] w-full gap-4">
+    <div className="flex h-[calc(100vh-120px)] w-full gap-4 relative">
+      {/* Template Modal */}
+      {showTemplates && (
+        <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="bg-surface border border-white/10 rounded-3xl p-8 max-w-2xl w-full shadow-2xl"
+          >
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-2xl font-black text-white flex items-center gap-2">
+                <FileCode2 className="w-6 h-6 text-primary" />
+                Template Library
+              </h2>
+              <button onClick={() => setShowTemplates(false)} className="text-slate-400 hover:text-white transition">
+                <X className="w-6 h-6" />
+              </button>
+            </div>
+            
+            <div className="grid grid-cols-2 gap-4">
+              <button 
+                onClick={() => loadTemplate('7_day_scale')}
+                className="p-6 rounded-2xl bg-white/5 border border-white/10 hover:border-primary/50 text-left transition group"
+              >
+                <h3 className="text-lg font-bold text-white mb-2 group-hover:text-primary transition">7-Day Scaling Protocol</h3>
+                <p className="text-sm text-slate-400">Automatically scales budget by 15% for adsets running &gt;7 days with ROAS &gt;2.5.</p>
+              </button>
+              
+              <button 
+                onClick={() => loadTemplate('weekend_stop_loss')}
+                className="p-6 rounded-2xl bg-white/5 border border-white/10 hover:border-red-500/50 text-left transition group"
+              >
+                <h3 className="text-lg font-bold text-white mb-2 group-hover:text-red-400 transition">E-Comm Weekend Stop-Loss</h3>
+                <p className="text-sm text-slate-400">Instantly pauses any campaign on Sat/Sun that spends over $100 with ROAS &lt;1.0.</p>
+              </button>
+            </div>
+          </motion.div>
+        </div>
+      )}
+
       {/* SIDEBAR: Nodes Palette */}
       <div className="w-64 flex flex-col gap-4">
         <div className="bg-surface/50 border border-white/10 rounded-2xl p-4 shadow-xl backdrop-blur-xl">
@@ -204,6 +273,26 @@ function FlowCanvas() {
 
         {/* Top Floating Action Bar */}
         <div className="absolute top-4 right-4 flex items-center gap-3 z-10">
+          
+          <div className="flex items-center gap-2 bg-black/60 backdrop-blur px-4 py-2 rounded-xl border border-white/10 mr-4">
+            <span className={`text-xs font-bold ${isAuditMode ? 'text-success' : 'text-slate-500'}`}>Audit Mode</span>
+            <button 
+              onClick={() => setAuditMode(!isAuditMode)}
+              className={`relative w-10 h-5 rounded-full transition-colors ${isAuditMode ? 'bg-success' : 'bg-red-500'}`}
+            >
+              <div className={`absolute top-0.5 w-4 h-4 rounded-full bg-white transition-all ${isAuditMode ? 'left-0.5' : 'left-[22px]'}`} />
+            </button>
+            <span className={`text-xs font-bold ${!isAuditMode ? 'text-red-400' : 'text-slate-500'}`}>Auto-Execute</span>
+          </div>
+
+          <button 
+            onClick={() => setShowTemplates(true)}
+            className="px-4 py-2 rounded-xl text-sm font-bold bg-white/5 hover:bg-white/10 text-white border border-white/10 flex items-center gap-2 transition"
+          >
+            <FileCode2 className="w-4 h-4" />
+            Templates
+          </button>
+
           <button 
             onClick={handleSave}
             className={`px-4 py-2 rounded-xl text-sm font-bold flex items-center gap-2 transition-all ${isSaved ? 'bg-white/5 text-white/50 border border-white/5' : 'bg-surface text-white border border-primary shadow-glow-primary'}`}
@@ -212,9 +301,9 @@ function FlowCanvas() {
             {isSaved ? 'Saved to DB' : 'Save Changes'}
           </button>
           
-          <button className="px-5 py-2 bg-emerald-500 hover:bg-emerald-400 text-white font-bold rounded-xl shadow-[0_0_15px_rgba(16,185,129,0.3)] flex items-center gap-2 transition-colors">
+          <button className={`px-5 py-2 text-white font-bold rounded-xl flex items-center gap-2 transition-colors ${isAuditMode ? 'bg-blue-600 hover:bg-blue-500 shadow-[0_0_15px_rgba(37,99,235,0.3)]' : 'bg-emerald-500 hover:bg-emerald-400 shadow-[0_0_15px_rgba(16,185,129,0.3)]'}`}>
             <Play className="w-4 h-4" />
-            Activate
+            {isAuditMode ? 'Start Auditing' : 'Activate Live'}
           </button>
         </div>
       </div>

@@ -58,6 +58,10 @@ interface VeroState {
   isPremium: boolean;
   setPremium: (val: boolean) => void;
 
+  // Workflow Features
+  isAuditMode: boolean;
+  setAuditMode: (val: boolean) => void;
+
   // Refresh Trigger
   refreshTrigger: number;
   triggerRefresh: () => void;
@@ -163,6 +167,13 @@ export const useStore = create<VeroState>((set) => ({
   setPremium: (val: boolean) => {
     localStorage.setItem('ae_is_premium', JSON.stringify(val));
     set({ isPremium: val });
+  },
+
+  // Workflow Features
+  isAuditMode: getSafeLocalItem('ae_is_audit_mode') ?? true,
+  setAuditMode: (val: boolean) => {
+    localStorage.setItem('ae_is_audit_mode', JSON.stringify(val));
+    set({ isAuditMode: val });
   },
 
   // Global Refresh Signal

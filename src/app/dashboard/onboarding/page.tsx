@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { Target, Search, ArrowRight, Briefcase, ShoppingBag, Globe, BrainCircuit, Key, Plus, Trash2 } from 'lucide-react';
+import { Target, Search, ArrowRight, Briefcase, ShoppingBag, Globe, BrainCircuit, Key, Plus, Trash2, ShieldCheck } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
 import { useStore } from '../../../store/useStore';
@@ -47,11 +47,21 @@ export default function OnboardingPage() {
 
   const hasValidCompetitors = competitors.some(c => c.trim().length > 3);
 
+  const [isScanning, setIsScanning] = useState(false);
+  const [scanComplete, setScanComplete] = useState(false);
+
+  const handleStartAudit = () => {
+    setIsScanning(true);
+    setTimeout(() => {
+      setIsScanning(false);
+      setScanComplete(true);
+    }, 4500); // Simulate 4.5 second API scan
+  };
+
   const handleComplete = () => {
     if (businessName) {
       setAgencyName(businessName);
     }
-    // API keys and competitors could be saved to context or backend here
     router.push('/dashboard/welcome');
   };
 
@@ -254,13 +264,84 @@ export default function OnboardingPage() {
               Back
             </button>
             <button
-              onClick={handleComplete}
+              onClick={() => setStep(4)}
               disabled={!metaKey}
-              className="px-8 py-3.5 bg-success hover:bg-emerald-500 text-white font-bold rounded-xl flex items-center gap-2 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-8 py-3.5 bg-primary hover:bg-primary-hover text-white font-bold rounded-xl flex items-center gap-2 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Finish Setup <BrainCircuit className="w-4 h-4" />
+              Verify Connection <ArrowRight className="w-4 h-4" />
             </button>
           </div>
+        </motion.div>
+      )}
+
+      {/* STEP 4: Historical Shadow Audit (Bleed Report) */}
+      {step === 4 && (
+        <motion.div 
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          className="glass-panel p-10 rounded-3xl space-y-8 relative overflow-hidden"
+        >
+          {!scanComplete ? (
+            <div className="text-center space-y-8 py-10">
+              <h1 className="text-3xl font-black text-white tracking-tight">Initiating Historical Audit...</h1>
+              <p className="text-muted">Scanning your last 30 days of Meta Ads data for inefficiencies.</p>
+              
+              {!isScanning ? (
+                <button
+                  onClick={handleStartAudit}
+                  className="mx-auto px-8 py-4 bg-primary hover:bg-orange-600 text-white font-black rounded-2xl flex items-center gap-3 transition-all shadow-[0_0_30px_rgba(249,115,22,0.3)]"
+                >
+                  <Search className="w-6 h-6 animate-pulse" />
+                  Run Deep Scan
+                </button>
+              ) : (
+                <div className="max-w-md mx-auto">
+                  <div className="h-2 w-full bg-white/5 rounded-full overflow-hidden mb-4">
+                    <motion.div 
+                      initial={{ width: "0%" }}
+                      animate={{ width: "100%" }}
+                      transition={{ duration: 4.5, ease: "linear" }}
+                      className="h-full bg-primary"
+                    />
+                  </div>
+                  <p className="text-xs font-mono text-primary animate-pulse uppercase tracking-widest">Crunching Impressions & Conversions...</p>
+                </div>
+              )}
+            </div>
+          ) : (
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="text-center space-y-8"
+            >
+              <div className="inline-block p-4 rounded-full bg-red-500/10 mb-2">
+                <Trash2 className="w-10 h-10 text-red-500" />
+              </div>
+              <div>
+                <h1 className="text-4xl font-black text-white tracking-tight mb-4">The Bleed Report</h1>
+                <p className="text-lg text-slate-400 font-medium max-w-xl mx-auto leading-relaxed">
+                  Last month, you spent <span className="text-red-400 font-bold">$4,250</span> on fatigued ad creatives that had a Frequency &gt; 4 and ROAS &lt; 1.2.
+                </p>
+              </div>
+
+              <div className="glass-panel border border-success/20 bg-success/5 p-6 rounded-2xl max-w-lg mx-auto">
+                <p className="text-success font-bold text-lg mb-2 flex items-center justify-center gap-2">
+                  <ShieldCheck className="w-6 h-6" />
+                  If Vero Guardrails were active...
+                </p>
+                <p className="text-white/80">We would have automatically paused them on Day 3, saving you <span className="text-success font-black text-xl">$2,100</span> in wasted budget.</p>
+              </div>
+
+              <div className="pt-6">
+                <button
+                  onClick={handleComplete}
+                  className="px-10 py-5 bg-white hover:bg-slate-200 text-black font-black rounded-2xl text-lg flex items-center justify-center gap-3 mx-auto transition-all shadow-[0_0_30px_rgba(255,255,255,0.2)]"
+                >
+                  Activate Vero Dashboard <ArrowRight className="w-6 h-6" />
+                </button>
+              </div>
+            </motion.div>
+          )}
         </motion.div>
       )}
 
