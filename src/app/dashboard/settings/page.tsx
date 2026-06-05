@@ -1,6 +1,8 @@
 'use client';
 
-import { useQuery } from '@tanstack/react-query';
+import { api } from '../../../../convex/_generated/api';
+import { useQuery, useMutation } from 'convex/react';
+import { useQuery as useReactQuery } from '@tanstack/react-query';
 import { 
   Settings, 
   Slack, 
@@ -15,17 +17,54 @@ import {
   Sparkles,
   Facebook
 } from 'lucide-react';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { analyticsApi, authApi } from '../../../services/api';
 import { useStore } from '../../../store/useStore';
 
 export default function SettingsPage() {
   const { setActiveAccount, triggerRefresh, activeAccount, brandColor, setBrandColor, agencyName, setAgencyName, isPremium } = useStore();
   
+  const orgs = useQuery(api.organizations.listForUser);
+  const activeOrg = orgs?.[0];
+  const activeOrgId = activeOrg?._id;
+
+  const updateOrg = useMutation(api.organizations.update);
+  const saveIntegration = useMutation(api.integrations.saveMetaIntegration);
+
   const [slackEnabled, setSlackEnabled] = useState(false);
   const [whatsappEnabled, setWhatsappEnabled] = useState(false);
   const [teamEmails, setTeamEmails] = useState('karthikeya@vero.co, marketing@vero.co');
-  
+  const [customDomain, setCustomDomain] = useState('');
+
+  useEffect(() => {
+    if (activeOrg) {
+      if (activeOrg.name && activeOrg.name !== agencyName) setAgencyName(activeOrg.name);
+      if (activeOrg.customDomain) setCustomDomain(activeOrg.customDomain);
+      if (activeOrg.brandColor) setBrandColor(activeOrg.brandColor as any);
+    }
+  }, [activeOrg]);
+
+  const handleUpdateOrgSettings = (updates: any) => {
+    if (activeOrgId) {
+      updateOrg({ organizationId: activeOrgId, ...updates });
+    }
+  };
+
+  const onAgencyNameChange = (val: string) => {
+    setAgencyName(val);
+    handleUpdateOrgSettings({ name: val });
+  };
+
+  const onCustomDomainChange = (val: string) => {
+    setCustomDomain(val);
+    handleUpdateOrgSettings({ customDomain: val });
+  };
+
+  const onBrandColorChange = (val: 'orange' | 'violet' | 'emerald' | 'ocean' | 'obsidian') => {
+    setBrandColor(val);
+    handleUpdateOrgSettings({ brandColor: val });
+  };
+
   // Meta OAuth Integration states
   const [oauthConnecting, setOauthConnecting] = useState(false);
 
@@ -60,7 +99,7 @@ export default function SettingsPage() {
   };
 
   // Re-fetch accounts query to refresh navbar list on success
-  const { refetch: refetchAccounts } = useQuery({
+  const { refetch: refetchAccounts } = useReactQuery({
     queryKey: ['availableAccounts'],
     queryFn: async () => {
       const res = await analyticsApi.getAccounts();
@@ -103,6 +142,15 @@ export default function SettingsPage() {
 
       console.log("[Settings API Slot] Meta validation: Validated successfully. Posting to backend...");
       
+      if (activeOrgId) {
+        await saveIntegration({
+          organizationId: activeOrgId,
+          accountId: directActId.trim(),
+          accessToken: directToken.trim(),
+          customName: directName.trim() || undefined
+        });
+      }
+
       const res = await analyticsApi.connectDirectToken({
         adAccountId: directActId.trim(),
         accessToken: directToken.trim(),
@@ -244,7 +292,7 @@ export default function SettingsPage() {
                     id="agency-name"
                     type="text"
                     value={agencyName}
-                    onChange={(e) => setAgencyName(e.target.value)}
+                    onChange={(e) => onAgencyNameChange(e.target.value)}
                     className="w-full px-4 py-2.5 rounded-xl text-xs text-white input-premium"
                     disabled={!isPremium}
                   />
@@ -255,6 +303,8 @@ export default function SettingsPage() {
                   <input
                     id="custom-domain"
                     type="text"
+                    value={customDomain}
+                    onChange={(e) => onCustomDomainChange(e.target.value)}
                     placeholder="analytics.youragency.com"
                     className="w-full px-4 py-2.5 rounded-xl text-xs text-white input-premium"
                   />
@@ -287,7 +337,7 @@ export default function SettingsPage() {
                       <button
                         key={colorObj.key}
                         type="button"
-                        onClick={() => setBrandColor(colorObj.key as 'orange' | 'violet' | 'emerald' | 'ocean' | 'obsidian')}
+                        onClick={() => onBrandColorChange(colorObj.key as any)}
                         className={`flex items-center gap-2 px-3.5 py-2 rounded-xl border text-[10px] font-bold transition duration-300 btn-touch ${
                           active 
                             ? `${colorObj.border} bg-white/[0.04] text-white shadow-[0_4px_16px_rgba(0,0,0,0.15)]` 

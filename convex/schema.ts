@@ -159,4 +159,16 @@ export default defineSchema({
     .index("by_org", ["organizationId"])
     .index("by_status", ["status"])
     .index("by_user", ["userId"]),
+
+  integrations: defineTable({
+    organizationId: v.id("organizations"),
+    provider: v.union(v.literal("meta"), v.literal("google"), v.literal("tiktok")),
+    accountId: v.string(),
+    accessToken: v.string(),
+    customName: v.optional(v.string()),
+    status: v.union(v.literal("active"), v.literal("error"), v.literal("disconnected")),
+    lastSyncedAt: v.optional(v.number()),
+    createdAt: v.number(),
+  }).index("by_org", ["organizationId"])
+    .index("by_provider", ["provider"]),
 });

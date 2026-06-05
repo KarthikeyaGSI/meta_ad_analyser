@@ -6,13 +6,17 @@ import { useQuery } from 'convex/react';
 import { api } from '../../../../convex/_generated/api';
 import { Id } from '../../../../convex/_generated/dataModel';
 import { RequestPremiumModal } from '../../../components/RequestPremiumModal';
-// Hardcoding a dummy org ID for now, since we haven't integrated Clerk deeply yet
 // In production, we fetch this from `useOrganization()` or similar
-const dummyOrgId = "jh770d1s4q2p8g0j4z9b22y8v9738m25" as Id<"organizations">;
 
 export default function PremiumDashboard() {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const statusRecord = useQuery(api.premium.getStatus, { organizationId: dummyOrgId });
+  
+  const orgs = useQuery(api.organizations.listForUser);
+  const activeOrgId = orgs?.[0]?._id;
+
+  const statusRecord = useQuery(api.premium.getStatus, 
+    activeOrgId ? { organizationId: activeOrgId } : "skip"
+  );
 
   return (
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -94,11 +98,13 @@ export default function PremiumDashboard() {
         </div>
       )}
 
-      <RequestPremiumModal 
-        isOpen={isModalOpen} 
-        onClose={() => setIsModalOpen(false)} 
-        organizationId={dummyOrgId}
-      />
+      {activeOrgId && (
+        <RequestPremiumModal 
+          isOpen={isModalOpen} 
+          onClose={() => setIsModalOpen(false)} 
+          organizationId={activeOrgId}
+        />
+      )}
     </div>
   );
 }

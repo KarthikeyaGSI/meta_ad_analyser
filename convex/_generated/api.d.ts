@@ -16,6 +16,7 @@ import type * as crm from "../crm.js";
 import type * as crons from "../crons.js";
 import type * as emails from "../emails.js";
 import type * as flags from "../flags.js";
+import type * as integrations from "../integrations.js";
 import type * as lib_auth from "../lib/auth.js";
 import type * as lib_rbac from "../lib/rbac.js";
 import type * as lib_tenant from "../lib/tenant.js";
@@ -44,6 +45,7 @@ declare const fullApi: ApiFromModules<{
   crons: typeof crons;
   emails: typeof emails;
   flags: typeof flags;
+  integrations: typeof integrations;
   "lib/auth": typeof lib_auth;
   "lib/rbac": typeof lib_rbac;
   "lib/tenant": typeof lib_tenant;

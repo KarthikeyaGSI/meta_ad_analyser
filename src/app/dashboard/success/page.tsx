@@ -6,10 +6,13 @@ import { api } from '../../../../convex/_generated/api';
 import { Id } from '../../../../convex/_generated/dataModel';
 import { Activity, Users, ShieldAlert, Zap, Server, Shield, Sparkles, CheckCircle2, Building } from 'lucide-react';
 
-const dummyOrgId = "jh770d1s4q2p8g0j4z9b22y8v9738m25" as Id<"organizations">;
-
 export default function CustomerSuccessDashboard() {
-  const data = useQuery(api.success.getActivationScore, { organizationId: dummyOrgId });
+  const orgs = useQuery(api.organizations.listForUser);
+  const activeOrgId = orgs?.[0]?._id;
+  
+  const data = useQuery(api.success.getActivationScore, 
+    activeOrgId ? { organizationId: activeOrgId } : "skip"
+  );
 
   if (!data) {
     return <div className="animate-pulse flex space-x-4" aria-busy="true" aria-label="Loading metrics"><div className="flex-1 space-y-6 py-1"><div className="h-2 bg-white/10 rounded w-1/4"></div><div className="space-y-3"><div className="grid grid-cols-3 gap-4"><div className="h-24 bg-white/10 rounded col-span-1"></div><div className="h-24 bg-white/10 rounded col-span-1"></div><div className="h-24 bg-white/10 rounded col-span-1"></div></div></div></div></div>;

@@ -7,14 +7,17 @@ import { Id } from '../../../../convex/_generated/dataModel';
 import { Image as ImageIcon, Link, Paintbrush, Mail, CheckCircle2, Lock, Sparkles } from 'lucide-react';
 import { useFeatureFlag } from '../../../hooks/useFeatureFlag';
 
-const dummyOrgId = "jh770d1s4q2p8g0j4z9b22y8v9738m25" as Id<"organizations">;
-
 export default function WhiteLabelDashboard() {
-  const organization = useQuery(api.organizations.get, { organizationId: dummyOrgId });
+  const orgs = useQuery(api.organizations.listForUser);
+  const activeOrgId = orgs?.[0]?._id;
+
+  const organization = useQuery(api.organizations.get, 
+    activeOrgId ? { organizationId: activeOrgId } : "skip"
+  );
   const updateOrg = useMutation(api.organizations.update);
   const generateUploadUrl = useMutation(api.storage.generateUploadUrl);
   
-  const hasWhiteLabel = useFeatureFlag(dummyOrgId, "whiteLabel");
+  const hasWhiteLabel = useFeatureFlag(activeOrgId || ("" as Id<"organizations">), "whiteLabel");
 
   const [brandColor, setBrandColor] = useState('#6366f1');
   const [customDomain, setCustomDomain] = useState('');
@@ -32,10 +35,11 @@ export default function WhiteLabelDashboard() {
   }, [organization]);
 
   const handleSave = async () => {
+    if (!activeOrgId) return;
     setSaving(true);
     try {
       await updateOrg({
-        organizationId: dummyOrgId,
+        organizationId: activeOrgId,
         brandColor,
         customDomain,
         supportEmail
@@ -50,12 +54,12 @@ export default function WhiteLabelDashboard() {
   };
 
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>, type: 'logo' | 'favicon') => {
-    if (!event.target.files || event.target.files.length === 0) return;
+    if (!event.target.files || event.target.files.length === 0 || !activeOrgId) return;
     const file = event.target.files[0];
 
     try {
       // 1. Get secure upload URL from Convex
-      const postUrl = await generateUploadUrl({ organizationId: dummyOrgId });
+      const postUrl = await generateUploadUrl({ organizationId: activeOrgId });
       
       // 2. Upload file directly to Convex Storage
       const result = await fetch(postUrl, {
@@ -67,7 +71,7 @@ export default function WhiteLabelDashboard() {
 
       // 3. Save the storageId to the organization
       await updateOrg({
-        organizationId: dummyOrgId,
+        organizationId: activeOrgId,
         [type === 'logo' ? 'logoId' : 'faviconId']: storageId
       });
     } catch (error) {
