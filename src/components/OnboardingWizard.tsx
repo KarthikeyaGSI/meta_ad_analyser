@@ -2,8 +2,8 @@
 
 import React, { useState } from 'react';
 import { useMutation, useQuery } from 'convex/react';
-import { api } from '../../../convex/_generated/api';
-import { Id } from '../../../convex/_generated/dataModel';
+import { api } from '../../convex/_generated/api';
+import { Id } from '../../convex/_generated/dataModel';
 import { Building, Users, Server, Sparkles, Check, ArrowRight } from 'lucide-react';
 
 interface OnboardingWizardProps {
