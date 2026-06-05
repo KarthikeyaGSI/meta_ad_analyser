@@ -11,6 +11,7 @@ export interface UserSession {
   id: string;
   name: string;
   email?: string;
+  organizationId?: string;
 }
 
 export interface AdAccount {

@@ -229,6 +229,32 @@ export const analyticsApi = {
       insightsWorking: true,
       accountId: data.adAccountId
     }),
+  getMetrics: async (accountId: string, startDate: string, endDate: string) => {
+    // 🎢 "God Mode" Sandbox Injection
+    const isSandbox = accountId === 'demo-act-id' || accountId === 'demo-cosmetics-id';
+    if (isSandbox) {
+      return {
+        data: {
+          summary: {
+            spend: 12450.50,
+            revenue: 38590.20,
+            roas: 3.1,
+            cpa: 24.5,
+            leads: 450,
+            impressions: 1250000,
+            clicks: 18500
+          },
+          timeseries: Array.from({ length: 30 }).map((_, i) => ({
+            date: new Date(Date.now() - (29 - i) * 86400000).toISOString().split('T')[0],
+            spend: 300 + Math.random() * 200,
+            revenue: 900 + Math.random() * 800,
+            roas: 2.5 + Math.random() * 1.5
+          }))
+        }
+      };
+    }
+    return api.get(`/analytics/${accountId}/metrics`, { params: { startDate, endDate } });
+  },
   exportCsvUrl: (accountId: string, startDate: string, endDate: string) => 
     `${API_BASE_URL}/accounts/${accountId}/export?startDate=${startDate}&endDate=${endDate}`,
   executeAutopilotRule: async (accountId: string, recommendationId: string) => 

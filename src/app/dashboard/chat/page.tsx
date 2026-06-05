@@ -1,189 +1,109 @@
 'use client';
 
-import { Send, Bot, User, ArrowRight, BrainCircuit, MessageSquare, AlertTriangle } from 'lucide-react';
-import React, { useRef, useEffect, useState } from 'react';
+import { useChat } from '@ai-sdk/react';
+import { Bot, Send, User, Sparkles, AlertTriangle } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { useEffect, useRef } from 'react';
 import { useStore } from '../../../store/useStore';
+import ReactMarkdown from 'react-markdown';
 
-export default function AiChatAnalyst() {
-  const { activeAccount } = useStore();
-  const chatEndRef = useRef<HTMLDivElement>(null);
+export default function ChatDashboard() {
+  const { isPremium } = useStore();
+  const { messages, input, handleInputChange, handleSubmit, isLoading } = useChat({
+    api: '/api/chat',
+    initialMessages: [
+      {
+        id: '1',
+        role: 'assistant',
+        content: 'Hi! I am Vero AI. I can analyze your active campaigns, identify creative fatigue, and help you deploy deterministic automation guardrails. What would you like to investigate today?'
+      }
+    ]
+  });
 
-  const [messages, setMessages] = useState<{ role: string; content: string }[]>([]);
-  const [input, setInput] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<{message: string} | null>(null);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!input.trim() || !activeAccount) return;
-
-    const userMessage = { role: 'user', content: input };
-    setMessages(prev => [...prev, userMessage]);
-    setInput('');
-    setIsLoading(true);
-    setError(null);
-
-    try {
-      const res = await fetch('/api/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          messages: [...messages, userMessage],
-          accountId: activeAccount.id,
-        })
-      });
-
-      if (!res.ok) throw new Error('Failed to fetch response');
-      
-      const data = await res.json();
-      setMessages(prev => [...prev, { role: 'assistant', content: data.text || 'Simulated AI Response' }]);
-    } catch (err: any) {
-      setError({ message: err.message || 'An error occurred' });
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleQuickPrompt = (promptText: string) => {
-    setInput(promptText);
-    setTimeout(() => {
-      const form = document.getElementById('chat-form');
-      if (form) form.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
-    }, 100);
-  };
+  if (!isPremium) return null; // Guarded by Sidebar UpgradeModal
 
   return (
-    <>
-      {/* HEADER */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-3xl font-extrabold text-white tracking-tight flex items-center gap-2">
-            AI Chat Analyst <BrainCircuit className="w-6 h-6 text-primary animate-pulse" />
-          </h1>
-          <p className="text-sm text-muted">Consult Vero Copilot on campaign ROAS, audience fatigue, and scaling opportunities.</p>
-        </div>
+    <div className="p-8 pb-24 max-w-5xl mx-auto h-[calc(100vh-80px)] flex flex-col">
+      <div className="mb-6">
+        <h1 className="text-3xl font-extrabold text-white flex items-center gap-3">
+          <Bot className="w-8 h-8 text-primary" />
+          Agentic AI Assistant
+        </h1>
+        <p className="text-muted mt-1">Talk to your Meta ad data. Get deterministic insights instantly.</p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 mt-6">
-        {/* LEFT COLUMN: QUICK PROMPTS */}
-        <div className="lg:col-span-1 space-y-6">
-          <div className="glass-panel p-5 rounded-3xl space-y-4">
-            <div className="flex items-center gap-2 pb-2.5 border-b border-white/[0.06]">
-              <MessageSquare className="w-4 h-4 text-primary" />
-              <h3 className="text-xs font-extrabold text-white uppercase tracking-wider">Quick Suggestions</h3>
+      <div className="flex-1 bg-surface/50 border border-white/10 rounded-2xl overflow-hidden shadow-2xl backdrop-blur-xl flex flex-col">
+        {/* Chat Area */}
+        <div className="flex-1 overflow-y-auto p-6 space-y-6">
+          {messages.map((m) => (
+            <motion.div 
+              key={m.id} 
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className={`flex gap-4 max-w-[85%] ${m.role === 'user' ? 'ml-auto flex-row-reverse' : ''}`}
+            >
+              <div className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 ${m.role === 'user' ? 'bg-white/10' : 'bg-primary/20 border border-primary/30'}`}>
+                {m.role === 'user' ? <User className="w-5 h-5 text-white/70" /> : <Sparkles className="w-5 h-5 text-primary" />}
+              </div>
+              <div className={`p-4 rounded-2xl text-sm leading-relaxed ${
+                m.role === 'user' 
+                  ? 'bg-primary text-white shadow-glow-primary rounded-tr-sm' 
+                  : 'bg-white/5 text-white/90 border border-white/10 rounded-tl-sm'
+              }`}>
+                {m.role === 'assistant' ? (
+                  <div className="prose prose-invert prose-p:leading-relaxed prose-pre:bg-black/50 prose-pre:border-white/10 max-w-none">
+                    <ReactMarkdown>{m.content}</ReactMarkdown>
+                  </div>
+                ) : (
+                  m.content
+                )}
+              </div>
+            </motion.div>
+          ))}
+          {isLoading && (
+            <div className="flex gap-4 max-w-[85%]">
+              <div className="w-10 h-10 rounded-full bg-primary/20 border border-primary/30 flex items-center justify-center shrink-0">
+                <Sparkles className="w-5 h-5 text-primary animate-pulse" />
+              </div>
+              <div className="p-4 rounded-2xl bg-white/5 text-white/50 border border-white/10 rounded-tl-sm flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-primary/50 animate-bounce"></span>
+                <span className="w-2 h-2 rounded-full bg-primary/50 animate-bounce" style={{ animationDelay: '0.2s' }}></span>
+                <span className="w-2 h-2 rounded-full bg-primary/50 animate-bounce" style={{ animationDelay: '0.4s' }}></span>
+              </div>
             </div>
-            
-            <div className="flex flex-col gap-2">
-              <button
-                onClick={() => handleQuickPrompt('Which campaign is doing best and ready to scale?')}
-                className="p-2.5 rounded-xl border border-white/[0.06] hover:border-primary/30 bg-white/[0.01] hover:bg-white/[0.03] text-left text-[10px] font-medium text-slate-300 hover:text-white transition flex items-center justify-between group"
-              >
-                Scale Win Opportunities
-                <ArrowRight className="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 group-hover:translate-x-0.5 text-primary transition-all" />
-              </button>
-              <button
-                onClick={() => handleQuickPrompt('Perform a creative fatigue audit on my active visual assets')}
-                className="p-2.5 rounded-xl border border-white/[0.06] hover:border-primary/30 bg-white/[0.01] hover:bg-white/[0.03] text-left text-[10px] font-medium text-slate-300 hover:text-white transition flex items-center justify-between group"
-              >
-                Creative Fatigue Audit
-                <ArrowRight className="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 group-hover:translate-x-0.5 text-primary transition-all" />
-              </button>
-              <button
-                onClick={() => handleQuickPrompt('Isolate my worst performing campaign and draft action steps')}
-                className="p-2.5 rounded-xl border border-white/[0.06] hover:border-primary/30 bg-white/[0.01] hover:bg-white/[0.03] text-left text-[10px] font-medium text-slate-300 hover:text-white transition flex items-center justify-between group"
-              >
-                Isolate Budget Bleeds
-                <ArrowRight className="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 group-hover:translate-x-0.5 text-primary transition-all" />
-              </button>
-            </div>
-          </div>
+          )}
+          <div ref={messagesEndRef} />
         </div>
 
-        {/* RIGHT 3 COLUMNS: CHAT */}
-        <div className="lg:col-span-3 glass-panel rounded-3xl h-[600px] flex flex-col justify-between overflow-hidden">
-          <div className="flex-1 overflow-y-auto p-6 space-y-4">
-            {messages.length === 0 && (
-              <div className="flex items-center justify-center h-full text-center text-muted">
-                <div className="flex flex-col items-center gap-3">
-                  <Bot className="w-12 h-12 text-primary/50" />
-                  <p className="text-sm">Hello! I am your Vero AI Chat Analyst.<br/>Ask me about your campaign performance.</p>
-                </div>
-              </div>
-            )}
-            
-            {messages.map((msg: { role: string; content: string }, index: number) => {
-              const isAi = msg.role === 'assistant';
-              return (
-                <div key={index} className={`flex gap-3.5 ${isAi ? 'justify-start' : 'justify-end'}`}>
-                  {isAi && (
-                    <div className="p-2.5 h-10 w-10 rounded-xl bg-white/[0.03] border border-white/[0.06] text-primary flex items-center justify-center shrink-0">
-                      <Bot className="w-5 h-5" />
-                    </div>
-                  )}
-                  <div className={`p-4.5 rounded-2xl max-w-[85%] space-y-1.5 ${
-                    isAi 
-                      ? 'bg-white/[0.015] border border-white/[0.05] text-slate-200' 
-                      : 'bg-primary/10 border border-primary/20 text-white shadow-glow-primary'
-                  }`}>
-                    <div className="text-xs leading-relaxed font-semibold whitespace-pre-wrap prose prose-invert max-w-none">
-                      {msg.content}
-                    </div>
-                  </div>
-                  {!isAi && (
-                    <div className="p-2.5 h-10 w-10 rounded-xl bg-primary/15 border border-primary/25 text-primary flex items-center justify-center shrink-0">
-                      <User className="w-5 h-5" />
-                    </div>
-                  )}
-                </div>
-              );
-            })}
-            
-            {isLoading && (
-              <div className="flex gap-3.5 justify-start">
-                <div className="p-2.5 h-10 w-10 rounded-xl bg-white/[0.03] border border-white/[0.06] text-primary flex items-center justify-center shrink-0">
-                  <Bot className="w-5 h-5 animate-spin" />
-                </div>
-                <div className="p-4 rounded-2xl bg-white/[0.01] border border-white/[0.05] flex items-center gap-1.5 py-3">
-                  <div className="w-2 h-2 rounded-full bg-primary/50 animate-bounce"></div>
-                  <div className="w-2 h-2 rounded-full bg-primary/50 animate-bounce [animation-delay:0.2s]"></div>
-                  <div className="w-2 h-2 rounded-full bg-primary/50 animate-bounce [animation-delay:0.4s]"></div>
-                </div>
-              </div>
-            )}
-            
-            {error && (
-              <div className="p-4 rounded-xl bg-danger/10 border border-danger/20 text-danger text-xs font-semibold flex items-center gap-2">
-                <AlertTriangle className="w-4 h-4" />
-                Error: {error.message}
-              </div>
-            )}
-            
-            <div ref={chatEndRef}></div>
-          </div>
-
-          <form id="chat-form" onSubmit={handleSubmit} className="p-4 border-t border-white/[0.06] bg-white/[0.005] flex items-center gap-3">
+        {/* Input Area */}
+        <div className="p-4 bg-black/40 border-t border-white/10">
+          <form onSubmit={handleSubmit} className="relative">
             <input
-              type="text"
-              placeholder={activeAccount ? "Ask AI Chat Analyst..." : "Select an account to chat"}
-              value={input || ''}
-              onChange={(e) => setInput(e.target.value)}
-              disabled={isLoading || !activeAccount}
-              className="flex-1 px-4 py-3.5 rounded-xl bg-white/[0.02] border border-white/[0.06] focus:border-primary/50 text-xs text-white placeholder-muted focus:outline-none transition disabled:opacity-50"
+              value={input}
+              onChange={handleInputChange}
+              placeholder="Ask why ROAS dropped, or ask to build a workflow..."
+              className="w-full bg-white/5 border border-white/10 rounded-xl py-4 pl-4 pr-14 text-white placeholder:text-white/30 focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all"
             />
-            <button
-              type="submit"
-              disabled={isLoading || !(input || '').trim() || !activeAccount}
-              className="p-3.5 rounded-xl bg-primary hover:bg-primary-hover text-white transition disabled:opacity-50 shadow-glow-primary shrink-0"
+            <button 
+              type="submit" 
+              disabled={isLoading || !input.trim()}
+              className="absolute right-2 top-1/2 -translate-y-1/2 p-2.5 bg-primary hover:bg-primary-hover text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
             >
               <Send className="w-4 h-4" />
             </button>
           </form>
+          <div className="mt-3 flex items-center gap-2 text-[10px] text-muted-foreground justify-center">
+            <AlertTriangle className="w-3 h-3 text-warning/70" />
+            Vero AI can make mistakes. Please verify automation rules in the Workflow builder before activating.
+          </div>
         </div>
       </div>
-    </>
+    </div>
   );
 }
