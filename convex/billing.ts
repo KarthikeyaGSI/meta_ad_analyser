@@ -29,7 +29,13 @@ export const updateSubscriptionInternal = internalMutation({
   args: {
     stripeCustomerId: v.string(),
     stripeSubscriptionId: v.string(),
-    plan: v.string(),
+    plan: v.union(
+      v.literal("free"),
+      v.literal("starter"),
+      v.literal("growth"),
+      v.literal("pro"),
+      v.literal("enterprise")
+    ),
     status: v.union(v.literal("active"), v.literal("past_due"), v.literal("canceled"), v.literal("trialing")),
     renewalDate: v.number(),
   },
