@@ -46,6 +46,7 @@
     "@tanstack/react-start": "^1.168.20",
     "@upstash/ratelimit": "^2.0.8",
     "@upstash/redis": "^1.38.0",
+    "@xyflow/react": "^12.11.0",
     "ai": "^6.0.191",
     "appwrite": "latest",
     "axios": "^1.6.8",
