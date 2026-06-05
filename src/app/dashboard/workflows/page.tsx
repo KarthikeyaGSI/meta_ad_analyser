@@ -19,6 +19,19 @@ export default function WorkflowsPage() {
     setRules(rules.map(r => r.id === id ? { ...r, status: r.status === 'active' ? 'paused' : 'active' } : r));
   };
 
+  const handleCreateRule = () => {
+    const newRule = {
+      id: Date.now(),
+      name: 'Custom Auto Rule',
+      condition: 'If CPC > $2.00',
+      action: 'Send Email Alert',
+      status: 'active',
+      runs: 0,
+      lastTriggered: 'Never'
+    };
+    setRules([...rules, newRule]);
+  };
+
   if (!isPremium) return null; // Guarded by Sidebar UpgradeModal
 
   return (
@@ -32,7 +45,10 @@ export default function WorkflowsPage() {
           <p className="text-muted mt-1">24/7 AI-driven campaign management and guardrails.</p>
         </div>
         
-        <button className="px-6 py-2.5 bg-primary text-white font-bold rounded-xl shadow-glow-primary hover:bg-primary-hover flex items-center gap-2 transition-colors">
+        <button 
+          onClick={handleCreateRule}
+          className="px-6 py-2.5 bg-primary text-white font-bold rounded-xl shadow-glow-primary hover:bg-primary-hover flex items-center gap-2 transition-colors cursor-pointer"
+        >
           <Plus className="w-4 h-4" />
           Create New Rule
         </button>
