@@ -48,13 +48,13 @@ export default function SettingsPage() {
       } else {
         setErrorMsg('No Meta App ID discovered in .env. Booting sandbox OAuth verification callback...');
         setTimeout(() => {
-          window.location.href = '/auth/callback?code=mock_code_1077709497594167';
+        window.location.href = '/auth/callback?code=mock_code_generic';
         }, 1500);
       }
     } catch {
       setErrorMsg('Failed to connect via Meta OAuth. Redirecting to callback simulator...');
       setTimeout(() => {
-        window.location.href = '/auth/callback?code=mock_code_1077709497594167';
+        window.location.href = '/auth/callback?code=mock_code_generic';
       }, 1500);
     }
   };
@@ -398,7 +398,7 @@ export default function SettingsPage() {
                 Target Ad Account Pacing
               </span>
               <p className="text-[10px] text-slate-400 leading-normal">
-                Verifies target ad account ID <span className="font-semibold text-white">1077709497594167</span> on authentication.
+                Verifies Meta OAuth token on authentication.
               </p>
             </div>
           </div>

@@ -48,7 +48,6 @@ function AuthCallbackContent() {
     hasSpendData: false
   });
 
-  const TARGET_ACCOUNT_ID = '1077709497594167';
 
   useEffect(() => {
     const handleCallback = async () => {
@@ -111,22 +110,18 @@ function AuthCallbackContent() {
           setUser({ token, id: user.id, name: user.name, email: user.email });
         }
 
-        // Set the targeted account as the active workspace
+        // Set the first available account as the active workspace
         if (accounts && accounts.length > 0) {
-          const matchedAcc = accounts.find((a: { id: string; name: string; actId: string }) => a.actId.includes(TARGET_ACCOUNT_ID));
+          const matchedAcc = accounts[0];
           
-          if (matchedAcc) {
-            setActiveAccount(matchedAcc);
+          setActiveAccount(matchedAcc);
+          
+          // Check if it's new
+          const hasExistingData = await analyticsApi.getCampaigns(matchedAcc.id, '2023-01-01', '2023-12-31', { limit: 1 })
+            .catch(() => null);
             
-            // Check if it's new
-            const hasExistingData = await analyticsApi.getCampaigns(matchedAcc.id, '2023-01-01', '2023-12-31', { limit: 1 })
-              .catch(() => null);
-              
-            if (!hasExistingData?.data?.list?.length) {
-              await analyticsApi.triggerSync(matchedAcc.id);
-            }
-          } else {
-            setActiveAccount(accounts[0]);
+          if (!hasExistingData?.data?.list?.length) {
+            await analyticsApi.triggerSync(matchedAcc.id);
           }
           
           triggerRefresh();
@@ -202,7 +197,7 @@ function AuthCallbackContent() {
                 <div className="p-2.5 rounded-xl bg-success/10 border border-success/20 text-[10px] font-bold text-success uppercase tracking-wider">
                   Meta Ads connection verified successfully.
                 </div>
-                <p className="text-[11px] text-muted">Active ad account: act_{TARGET_ACCOUNT_ID}</p>
+                <p className="text-[11px] text-muted">Active ad account successfully linked.</p>
               </>
             )}
 
@@ -284,7 +279,7 @@ function AuthCallbackContent() {
               <div className="flex items-center justify-between">
                 <span className="text-muted font-medium">Account Verified:</span>
                 {debug.accountVerified 
-                  ? <span className="text-success font-bold flex items-center gap-1"><Check className="w-3.5 h-3.5" /> {TARGET_ACCOUNT_ID}</span>
+                  ? <span className="text-success font-bold flex items-center gap-1"><Check className="w-3.5 h-3.5" /> Verified</span>
                   : <span className="text-muted font-bold">Pending</span>}
               </div>
 
@@ -325,7 +320,7 @@ function AuthCallbackContent() {
                 Target Verification
               </span>
               <p className="text-[10px] text-muted font-semibold leading-relaxed">
-                Tethered and synced with Meta Account ID: <span className="text-white font-bold">{TARGET_ACCOUNT_ID}</span>
+                Tethered and synced with active Meta Account.
               </p>
             </div>
           )}

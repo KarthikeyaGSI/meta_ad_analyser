@@ -13,7 +13,8 @@ import {
   TrendingDown, 
   ArrowUpRight 
 } from 'lucide-react';
-import React, { useEffect, useState } from 'react';
+import gsap from 'gsap';
+import React, { useEffect, useState, useRef } from 'react';
 import { 
   AreaChart, 
   Area, 
@@ -51,8 +52,27 @@ export default function DashboardOverview() {
   const [mounted, setMounted] = useState(false);
   const [syncError, setSyncError] = useState('');
 
+  const containerRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
     setMounted(true);
+    
+    // Premium GSAP Staggered Entrance
+    if (containerRef.current) {
+      gsap.fromTo(
+        containerRef.current.querySelectorAll('.gsap-stagger'),
+        { opacity: 0, y: 30, scale: 0.98 },
+        { 
+          opacity: 1, 
+          y: 0, 
+          scale: 1,
+          duration: 0.8, 
+          stagger: 0.08, 
+          ease: "power4.out",
+          delay: 0.1
+        }
+      );
+    }
   }, []);
 
   // 1. Fetch Overview KPIs
@@ -233,9 +253,9 @@ export default function DashboardOverview() {
   }
 
   return (
-    <>
+    <div ref={containerRef} className="space-y-6">
       {/* HEADER SECTION */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 gsap-stagger">
         <div>
           <h1 className="text-3xl font-black text-white tracking-tight flex items-center gap-2">
             Workspace Overview <span className="text-sm font-semibold text-muted tracking-wider">{isDemoMode ? '(Demo Sandbox)' : '(Live Meta Account)'}</span> <Sparkles className="w-4 h-4 text-primary animate-pulse" />
@@ -247,7 +267,7 @@ export default function DashboardOverview() {
       </div>
 
       {/* DEVELOPER DASHBOARD STATUS PANEL */}
-      <div className="glass-panel-premium p-5 rounded-3xl border border-white/[0.07] flex flex-col md:flex-row md:items-center justify-between gap-6 relative overflow-hidden shadow-glass-shadow hover:shadow-glass-shadow-premium">
+      <div className="glass-panel-premium p-5 rounded-3xl border border-white/[0.07] flex flex-col md:flex-row md:items-center justify-between gap-6 relative overflow-hidden shadow-glass-shadow hover:shadow-glass-shadow-premium gsap-stagger">
         {/* Soft edge ambient flare */}
         <div className="absolute right-0 top-0 w-32 h-32 rounded-full bg-primary/5 blur-2xl pointer-events-none"></div>
         
@@ -334,7 +354,7 @@ export default function DashboardOverview() {
       </div>
 
       {/* KPI METRIC CARDS */}
-      <div id="tour-scale-radar" className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+      <div id="tour-scale-radar" className="grid grid-cols-2 lg:grid-cols-4 gap-6 gsap-stagger">
         <MetricCard
           title="Ad Spend"
           value={overviewLoading ? '...' : formatCurrency(overview?.spend || 0)}
@@ -399,7 +419,7 @@ export default function DashboardOverview() {
       </div>
 
       {/* CHARTS GRAPH CONTAINER */}
-      <div className="glass-panel p-6 rounded-3xl relative overflow-hidden shadow-glass-shadow hover:shadow-glass-shadow-premium">
+      <div className="glass-panel-premium p-6 rounded-3xl relative overflow-hidden shadow-glass-shadow hover:shadow-glass-shadow-premium gsap-stagger">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 border-b border-white/[0.04] pb-4">
           <div>
             <h3 className="text-base font-bold text-white tracking-tight">Performance Insights History</h3>
@@ -495,7 +515,7 @@ export default function DashboardOverview() {
       </div>
 
       {/* DOUBLE COLUMN: TOP VS WORST CAMPAIGNS LEADERBOARD */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 gsap-stagger">
         
         {/* TOP PERFORMING CAMPAIGNS */}
         <div className="glass-panel p-6 rounded-3xl flex flex-col justify-between">
@@ -594,6 +614,6 @@ export default function DashboardOverview() {
         </div>
 
       </div>
-    </>
+    </div>
   );
 }
