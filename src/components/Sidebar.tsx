@@ -1,223 +1,163 @@
 'use client';
 
-import { motion } from 'framer-motion';
-import { 
-  BarChart3, 
-  Layers, 
-  FolderLock, 
-  Image, 
-  BrainCircuit, 
-  Settings, 
-  ChevronLeft, 
-  ChevronRight, 
-  LogOut, 
-  Gauge, 
-  Sparkles,
-  MessageSquare,
-  Users,
-  Network,
-  Crown
+import React from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import {
+  BarChart3, Layers, Image, Settings, ChevronLeft, ChevronRight,
+  LogOut, Gauge, MessageSquare, Network, Users, BrainCircuit, Lock,
+  ArrowRight, ShieldAlert
 } from 'lucide-react';
 import { usePathname, useRouter } from 'next/navigation';
-import React, { useState } from 'react';
+import Link from 'next/link';
 import { useStore } from '../store/useStore';
-import UpgradeModal from './UpgradeModal';
+
+type MenuItem = {
+  name: string;
+  icon: React.ElementType;
+  path: string;
+  premium?: boolean;
+};
+
+const NAV_ITEMS: MenuItem[] = [
+  { name: 'Overview',           icon: Gauge,         path: '/dashboard' },
+  { name: 'Campaigns',          icon: Layers,        path: '/dashboard/campaigns' },
+  { name: 'Ad Sets',            icon: BarChart3,     path: '/dashboard/adsets' },
+  { name: 'Creatives',          icon: Image,         path: '/dashboard/creatives' },
+  { name: 'Analytics',          icon: BarChart3,     path: '/dashboard/analytics' },
+  { name: 'AI Recommendations', icon: BrainCircuit,  path: '/dashboard/ai-insights', premium: true },
+  { name: 'AI Chat',            icon: MessageSquare, path: '/dashboard/chat',         premium: true },
+  { name: 'Automations',        icon: Network,       path: '/dashboard/workflows',    premium: true },
+  { name: 'Competitors',        icon: ShieldAlert,   path: '/dashboard/competitors',  premium: true },
+  { name: 'Leads',              icon: Users,         path: '/dashboard/leads',        premium: true },
+  { name: 'Audience',           icon: Users,         path: '/dashboard/audience',     premium: true },
+];
+
+const NAV_BOTTOM: MenuItem[] = [
+  { name: 'Settings', icon: Settings, path: '/dashboard/settings' },
+];
 
 export default function Sidebar() {
-  const pathname = usePathname();
-  const router = useRouter();
+  const pathname  = usePathname();
+  const router    = useRouter();
   const { user, logout, sidebarCollapsed: collapsed, setSidebarCollapsed: setCollapsed, isPremium, agencyName } = useStore();
-  const [upgradeModalOpen, setUpgradeModalOpen] = useState(false);
-  const [upgradeFeatureName, setUpgradeFeatureName] = useState('');
 
-  const handleSupportClick = () => {
-    if (!isPremium) {
-      setUpgradeFeatureName('Priority Support');
-      setUpgradeModalOpen(true);
-    } else {
-      window.location.href = 'mailto:business.marketingko@gmail.com?subject=Priority Support Request';
-    }
-  };
+  const handleLogout = () => { logout(); router.push('/login'); };
 
-  type MenuItem = { name: string; icon: any; path: string; premium?: boolean; badge?: string };
+  const renderNavItem = (item: MenuItem) => {
+    const isActive  = pathname === item.path || (item.path !== '/dashboard' && pathname.startsWith(item.path));
+    const isLocked  = item.premium && !isPremium;
+    const Icon      = item.icon;
 
-  const menuItems: MenuItem[] = [
-    { name: 'Overview', icon: Gauge, path: '/dashboard' },
-    { name: 'Campaigns', icon: Layers, path: '/dashboard/campaigns' },
-    { name: 'Ad Sets', icon: FolderLock, path: '/dashboard/adsets' },
-    { name: 'Creatives', icon: Image, path: '/dashboard/creatives' },
-    { name: 'Analytics', icon: BarChart3, path: '/dashboard/analytics' },
-    { name: 'Leads Intelligence', icon: Users, path: '/dashboard/leads', premium: true },
-    { name: 'Audience Insights', icon: Users, path: '/dashboard/audience', premium: true },
-    { name: 'AI Recommendations', icon: BrainCircuit, path: '/dashboard/ai-insights', premium: true },
-    { name: 'AI Chat Analyst', icon: MessageSquare, path: '/dashboard/chat', premium: true },
-    { name: 'Automation & Rules', icon: Network, path: '/dashboard/workflows', premium: true },
-    { name: 'Competitor Tracking', icon: Layers, path: '/dashboard/competitors', premium: true },
-    { name: 'Settings', icon: Settings, path: '/dashboard/settings' },
-  ];
-
-  const handleLogout = () => {
-    logout();
-    router.push('/login');
-  };
-
-  const handleNavigation = (path: string, isPremiumFeature?: boolean, featureName?: string) => {
-    if (isPremiumFeature && !isPremium) {
-      setUpgradeFeatureName(featureName || 'Premium Feature');
-      setUpgradeModalOpen(true);
-      return;
-    }
-    router.push(path);
+    return (
+      <button
+        key={item.path}
+        onClick={() => router.push(item.path)}
+        title={collapsed ? item.name : undefined}
+        className={[
+          'nav-item w-full relative',
+          isActive ? 'nav-item-active' : '',
+          collapsed ? 'justify-center px-2' : '',
+        ].join(' ')}
+      >
+        {isActive && (
+          <motion.div
+            layoutId="nav-active"
+            className="absolute inset-0 rounded-[10px] bg-[#4f6ef7]/8 border border-[#4f6ef7]/15"
+            transition={{ duration: 0.2 }}
+          />
+        )}
+        <Icon className={`w-4 h-4 shrink-0 relative z-10 ${isActive ? 'text-[#818cf8]' : ''}`} />
+        {!collapsed && (
+          <span className="flex-1 text-left truncate relative z-10">{item.name}</span>
+        )}
+        {!collapsed && isLocked && (
+          <Lock className="w-3 h-3 text-[#535a65] shrink-0 relative z-10" />
+        )}
+      </button>
+    );
   };
 
   return (
     <motion.aside
-      id="tour-sidebar"
       initial={false}
-      animate={{ width: collapsed ? 80 : 260 }}
-      transition={{ duration: 0.4, cubicBezier: [0.16, 1, 0.3, 1] }}
-      className="fixed left-4 top-4 bottom-4 z-30 rounded-3xl border border-white/[0.06] bg-white/[0.015] backdrop-blur-3xl flex flex-col justify-between shadow-[0_16px_48px_rgba(0,0,0,0.55),inset_0_1px_0_0_rgba(255,255,255,0.04)]"
+      animate={{ width: collapsed ? 60 : 240 }}
+      transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+      className="fixed left-0 top-0 bottom-0 z-30 flex flex-col border-r border-white/[0.07] bg-[#0a0b0d]"
     >
-      <div className="flex flex-col h-full overflow-hidden">
-        {/* LOGO AREA */}
-        <div className="h-16 flex items-center justify-between px-6 border-b border-white/[0.04] shrink-0">
-          <div className="flex items-center gap-3 overflow-hidden">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-primary to-orange-400 flex items-center justify-center shadow-glow-primary">
-              <Sparkles className="w-4 h-4 text-white" />
-            </div>
-            {!collapsed && (
-              <span className="text-white font-bold text-sm tracking-wide truncate">
-                {agencyName}
-              </span>
-            )}
-          </div>
-          <button 
-            onClick={() => setCollapsed(!collapsed)}
-            className="p-1 rounded bg-white/[0.02] border border-white/[0.06] hover:bg-white/[0.06] hover:border-white/[0.1] transition btn-touch"
-          >
-            {collapsed ? <ChevronRight className="w-4 h-4 text-muted" /> : <ChevronLeft className="w-4 h-4 text-muted" />}
-          </button>
-        </div>
-
-        {/* NAVIGATION LIST */}
-        <nav className="flex-1 overflow-y-auto mt-4 px-3 space-y-1 scrollbar-none">
-          {menuItems.map((item) => {
-            const isActive = pathname === item.path;
-            const Icon = item.icon;
-            const isLocked = item.premium && !isPremium;
-            return (
-              <button
-                key={item.path}
-                onClick={() => handleNavigation(item.path, item.premium, item.name)}
-                className={`
-                  w-full flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 group relative
-                  ${isActive 
-                    ? 'bg-primary/10 text-primary font-medium' 
-                    : 'text-muted hover:text-white hover:bg-white/[0.03]'
-                  }
-                  ${collapsed ? 'justify-center' : ''}
-                `}
-                title={collapsed ? item.name : undefined}
-              >
-                {isActive && (
-                  <motion.div
-                    layoutId="active-indicator"
-                    className="absolute left-0 w-1 h-5 bg-primary rounded-r-full"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                  />
-                )}
-                
-                <Icon className={`w-4 h-4 shrink-0 ${isActive ? 'text-primary' : 'group-hover:text-white transition-colors'}`} />
-                
-                {!collapsed && (
-                  <div className="flex items-center justify-between flex-1 overflow-hidden">
-                    <span className="text-[11px] truncate">{item.name}</span>
-                    <div className="flex items-center gap-1.5 shrink-0">
-                      {isLocked && (
-                        <span className="flex items-center justify-center w-5 h-5 rounded-md bg-white/5 border border-white/10 group-hover:bg-primary/20 group-hover:border-primary/30 transition-colors">
-                          <FolderLock className="w-2.5 h-2.5 text-primary" />
-                        </span>
-                      )}
-                      {item.badge && (
-                        <span className={`text-[8px] uppercase font-bold px-1.5 py-0.5 rounded-md
-                          ${item.badge === 'Beta' ? 'bg-indigo-500/10 text-indigo-400 border border-indigo-500/20' : ''}
-                          ${item.badge === 'New' ? 'bg-orange-500/10 text-orange-400 border border-orange-500/20' : ''}
-                        `}>
-                          {item.badge}
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                )}
-              </button>
-            );
-          })}
-        </nav>
-
-        {/* PRIORITY SUPPORT */}
+      {/* Logo */}
+      <div className={`h-14 flex items-center border-b border-white/[0.06] shrink-0 ${collapsed ? 'justify-center px-4' : 'px-4 justify-between'}`}>
         {!collapsed && (
-          <div className="px-4 mt-4">
-            <button 
-              onClick={handleSupportClick}
-              className={`w-full py-2.5 rounded-xl text-[10px] font-bold shadow-sm transition-all flex items-center justify-center gap-2 ${
-                isPremium 
-                  ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 hover:bg-emerald-500/20' 
-                  : 'bg-white/5 text-muted border border-white/10 hover:text-white hover:bg-white/10'
-              }`}
-            >
-              <MessageSquare className="w-3.5 h-3.5" />
-              PRIORITY SUPPORT
-              {!isPremium && <FolderLock className="w-3 h-3 ml-1 text-primary" />}
-            </button>
+          <div className="flex items-center gap-2 overflow-hidden">
+            <div className="w-6 h-6 rounded-md bg-[#4f6ef7] flex items-center justify-center shrink-0">
+              <BarChart3 className="w-3.5 h-3.5 text-white" />
+            </div>
+            <span className="text-sm font-semibold text-[#f1f3f5] truncate">{agencyName || 'Vero'}</span>
           </div>
         )}
-
-        {/* CTA UPGRADE BUTTON */}
-        {!collapsed && !isPremium && (
-          <div className="px-4 mb-4 mt-2">
-            <button 
-              onClick={() => { setUpgradeFeatureName('All Premium Features'); setUpgradeModalOpen(true); }}
-              className="w-full py-2.5 rounded-xl bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-400 hover:to-orange-500 text-white text-[10px] font-bold shadow-glow-primary transition-all flex items-center justify-center gap-2"
-            >
-              <Crown className="w-3.5 h-3.5" />
-              UPGRADE FEATURES
-            </button>
+        {collapsed && (
+          <div className="w-7 h-7 rounded-md bg-[#4f6ef7] flex items-center justify-center">
+            <BarChart3 className="w-4 h-4 text-white" />
           </div>
         )}
+        <button
+          onClick={() => setCollapsed(!collapsed)}
+          className="p-1.5 rounded-md hover:bg-white/[0.05] text-[#535a65] hover:text-[#8b92a0] transition-colors shrink-0"
+        >
+          {collapsed
+            ? <ChevronRight className="w-3.5 h-3.5" />
+            : <ChevronLeft  className="w-3.5 h-3.5" />
+          }
+        </button>
       </div>
 
-      {/* FOOTER USER PROFILE */}
-      <div className="p-3 border-t border-white/[0.04] bg-white/[0.005] shrink-0">
-        <div className={`flex items-center gap-3 overflow-hidden ${collapsed ? 'justify-center' : ''}`}>
-          <div className="w-8.5 h-8.5 rounded-full bg-orange-900/40 border border-primary/20 flex items-center justify-center font-bold text-xs text-primary shadow-[0_2px_8px_rgba(99,102,241,0.15)]">
-            {user?.name ? user.name[0].toUpperCase() : 'G'}
+      {/* Main nav */}
+      <nav className="flex-1 overflow-y-auto py-3 px-2 space-y-0.5">
+        {NAV_ITEMS.map(renderNavItem)}
+
+        {!collapsed && !isPremium && (
+          <div className="mt-3 mx-1">
+            <div className="p-3 rounded-xl border border-[#4f6ef7]/20 bg-[#4f6ef7]/5">
+              <p className="text-xs font-medium text-[#818cf8] mb-2">Upgrade to Premium</p>
+              <p className="text-[11px] text-[#535a65] mb-3 leading-relaxed">
+                Unlock AI recommendations, automations, and competitor tracking.
+              </p>
+              <Link
+                href="/dashboard/premium"
+                className="flex items-center justify-center gap-1.5 w-full h-7 bg-[#4f6ef7]/20 hover:bg-[#4f6ef7]/30 text-[#818cf8] text-xs font-medium rounded-lg transition-colors"
+              >
+                Apply for access <ArrowRight className="w-3 h-3" />
+              </Link>
+            </div>
+          </div>
+        )}
+      </nav>
+
+      {/* Bottom nav */}
+      <div className="border-t border-white/[0.06] px-2 py-2 space-y-0.5">
+        {NAV_BOTTOM.map(renderNavItem)}
+
+        {/* User row */}
+        <div className={`flex items-center gap-2.5 px-2.5 py-2 mt-1 ${collapsed ? 'justify-center' : ''}`}>
+          <div className="w-7 h-7 rounded-full bg-[#4f6ef7]/20 border border-[#4f6ef7]/30 flex items-center justify-center text-xs font-semibold text-[#818cf8] shrink-0">
+            {user?.name ? user.name[0].toUpperCase() : 'U'}
           </div>
           {!collapsed && (
-            <div className="flex-1 min-w-0">
-              <p className="text-[11px] font-bold text-white truncate">{user?.name || 'Guest User'}</p>
-              <p className="text-[9px] text-muted truncate">{user?.email || 'demo@vero.co'}</p>
-            </div>
-          )}
-          {!collapsed && (
-            <button 
-              onClick={handleLogout}
-              className="p-1.5 rounded hover:bg-red-500/10 text-muted hover:text-danger transition btn-touch"
-              title="Logout Account"
-            >
-              <LogOut className="w-4 h-4" />
-            </button>
+            <>
+              <div className="flex-1 min-w-0">
+                <p className="text-xs font-medium text-[#f1f3f5] truncate">{user?.name ?? 'User'}</p>
+                <p className="text-[10px] text-[#535a65] truncate">{user?.email ?? ''}</p>
+              </div>
+              <button
+                onClick={handleLogout}
+                className="p-1.5 rounded-md hover:bg-red-500/10 text-[#535a65] hover:text-red-400 transition-colors"
+                title="Sign out"
+              >
+                <LogOut className="w-3.5 h-3.5" />
+              </button>
+            </>
           )}
         </div>
       </div>
-      
-      {/* UPGRADE MODAL INTEGRATION */}
-      <UpgradeModal 
-        isOpen={upgradeModalOpen} 
-        onClose={() => setUpgradeModalOpen(false)} 
-        featureName={upgradeFeatureName} 
-      />
     </motion.aside>
   );
 }

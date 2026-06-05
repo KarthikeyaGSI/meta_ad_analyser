@@ -1,256 +1,460 @@
 'use client';
 
-import { motion } from 'framer-motion';
-import { ArrowRight, ShieldCheck, Search, Activity, Target, Zap, Cpu, ArrowUpRight, CheckCircle2 } from 'lucide-react';
-import Link from 'next/link';
 import React, { useState } from 'react';
-import { NetworkBackground } from '../components/ui/NetworkBackground';
+import Link from 'next/link';
+import { motion } from 'framer-motion';
+import {
+  ArrowRight, ShieldCheck, AlertTriangle, TrendingUp, BarChart3,
+  CheckCircle2, Clock, Search, ChevronDown
+} from 'lucide-react';
 
-export default function RootPage() {
-  const [demoUrl, setDemoUrl] = useState('');
-  const [isSearching, setIsSearching] = useState(false);
+const FADE_UP = {
+  hidden: { opacity: 0, y: 16 },
+  visible: (i = 0) => ({
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.4, delay: i * 0.08, ease: [0.16, 1, 0.3, 1] },
+  }),
+};
 
-  const handleDemoSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!demoUrl) return;
-    setIsSearching(true);
-    setTimeout(() => {
-      // Direct to onboarding with prefilled data in a real app
-      window.location.href = '/dashboard/onboarding';
-    }, 800);
-  };
+const FINDINGS = [
+  {
+    severity: 'critical',
+    title: 'Audience fatigue in 3 ad sets',
+    detail: 'Frequency > 4.2 on "Lookalike US 1%" — CPA has risen 34% over 14 days.',
+    impact: '+$2,140 wasted spend / month',
+    action: 'Pause and refresh creative',
+  },
+  {
+    severity: 'critical',
+    title: 'Zero-conversion campaign still spending',
+    detail: '"Brand Awareness Q4" has spent $890 with 0 purchases in 21 days.',
+    impact: '$890 unrecoverable spend',
+    action: 'Pause campaign immediately',
+  },
+  {
+    severity: 'warning',
+    title: 'Rising CPM — auction pressure detected',
+    detail: 'CPM increased 31% over 7 days without matching impression growth.',
+    impact: 'Estimated +18% CPA if trend continues',
+    action: 'Broaden target audience or shift placements',
+  },
+  {
+    severity: 'opportunity',
+    title: 'Underscaled winner identified',
+    detail: '"Retargeting 30D" is at 4.1 ROAS with daily budget cap hit every day.',
+    impact: 'Estimated +$3,800 revenue at 2× budget',
+    action: 'Increase budget by 20–30%',
+  },
+];
 
+const FAQS = [
+  {
+    q: 'How does Vero detect wasted ad spend?',
+    a: 'Vero connects to your Meta Ads account via the official Graph API and applies a library of deterministic audit rules — checking for audience fatigue, zero-conversion spend, rising CPM anomalies, underscaled winners, and more. Every finding is mapped to an estimated dollar impact.',
+  },
+  {
+    q: 'How often does Vero audit my account?',
+    a: 'Audits run automatically after every data sync. By default, accounts sync every 6 hours. You can also trigger a manual audit at any time from the dashboard.',
+  },
+  {
+    q: 'Is my Meta token stored securely?',
+    a: 'Yes. Access tokens are encrypted at rest. Vero requests read-only permissions — we cannot modify your campaigns. All data is processed under SOC 2-compatible practices.',
+  },
+  {
+    q: 'What is the Account Health Score?',
+    a: 'It is a 0–100 composite score calculated from the number and severity of audit findings relative to your total active spend. A score above 80 means your account is healthy; below 60 signals immediate attention is needed.',
+  },
+  {
+    q: 'Do you support Google Ads or TikTok?',
+    a: 'Meta Ads is the current focus. Google Ads and TikTok Ads integrations are on the roadmap for H2 2025.',
+  },
+];
+
+function FaqItem({ q, a }: { q: string; a: string }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <div className="border border-white/[0.07] rounded-xl overflow-hidden">
+      <button
+        onClick={() => setOpen(!open)}
+        className="w-full flex items-center justify-between p-5 text-left hover:bg-white/[0.02] transition-colors"
+      >
+        <span className="text-sm font-medium text-[#f1f3f5]">{q}</span>
+        <ChevronDown
+          className={`w-4 h-4 text-[#535a65] shrink-0 ml-4 transition-transform duration-200 ${open ? 'rotate-180' : ''}`}
+        />
+      </button>
+      {open && (
+        <div className="px-5 pb-5 text-sm text-[#8b92a0] leading-relaxed border-t border-white/[0.05]">
+          <div className="pt-4">{a}</div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+const severityConfig = {
+  critical:    { dot: 'bg-red-400',    badge: 'badge-critical',    label: 'Critical' },
+  warning:     { dot: 'bg-amber-400',  badge: 'badge-warning',     label: 'Warning' },
+  opportunity: { dot: 'bg-[#4f6ef7]', badge: 'badge-accent',      label: 'Opportunity' },
+} as const;
+
+export default function HomePage() {
   const jsonLd = {
     '@context': 'https://schema.org',
     '@graph': [
       {
         '@type': 'Organization',
         name: 'Vero',
-        url: 'https://vero.yourdomain.com',
-        logo: 'https://vero.yourdomain.com/logo.png',
-        description: 'Vero discovers hidden advertising intelligence and winning Meta ad patterns.'
+        url: 'https://vero.ai',
+        description: 'Automated Meta Ads audits and monitoring for agencies and performance marketers.',
       },
       {
         '@type': 'SoftwareApplication',
-        name: 'Vero Ad Intelligence',
+        name: 'Vero',
         applicationCategory: 'BusinessApplication',
         operatingSystem: 'Web',
-        offers: {
-          '@type': 'Offer',
-          price: '0',
-          priceCurrency: 'USD'
-        }
+        description: 'Automated Meta Ads audit and account health monitoring platform.',
+        offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
       },
       {
         '@type': 'FAQPage',
-        mainEntity: [
-          {
-            '@type': 'Question',
-            name: 'What is Vero?',
-            acceptedAnswer: {
-              '@type': 'Answer',
-              text: 'Vero is a Meta ad intelligence platform that analyzes winning active ads, tracks competitors, and discovers scalable creative patterns.'
-            }
-          },
-          {
-            '@type': 'Question',
-            name: 'Who is this for?',
-            acceptedAnswer: {
-              '@type': 'Answer',
-              text: 'Performance marketers, media buyers, DTC brands, and agencies looking for a competitive edge in their ad campaigns.'
-            }
-          }
-        ]
-      }
-    ]
+        mainEntity: FAQS.map(({ q, a }) => ({
+          '@type': 'Question',
+          name: q,
+          acceptedAnswer: { '@type': 'Answer', text: a },
+        })),
+      },
+    ],
   };
 
   return (
-    <div className="min-h-screen bg-[#050505] text-white selection:bg-primary/30 font-sans overflow-x-hidden">
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
-      
-      {/* Navbar */}
-      <nav className="fixed top-0 w-full z-50 border-b border-white/5 bg-[#050505]/80 backdrop-blur-xl">
-        <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+    <div className="min-h-screen bg-[#0a0b0d] text-[#f1f3f5]">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+
+      {/* ── Navigation ──────────────────────────────────────────────────────── */}
+      <header className="fixed top-0 inset-x-0 z-50 border-b border-white/[0.06] bg-[#0a0b0d]/90 backdrop-blur-xl">
+        <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
+          <div className="flex items-center gap-2.5">
+            <div className="w-7 h-7 rounded-lg bg-[#4f6ef7] flex items-center justify-center">
+              <BarChart3 className="w-4 h-4 text-white" />
+            </div>
+            <span className="text-[15px] font-semibold tracking-tight text-white">Vero</span>
+          </div>
+
+          <nav className="hidden md:flex items-center gap-6">
+            {['Product', 'Pricing', 'Security', 'Docs'].map((item) => (
+              <a key={item} href={`#${item.toLowerCase()}`}
+                className="text-sm text-[#8b92a0] hover:text-white transition-colors">
+                {item}
+              </a>
+            ))}
+          </nav>
+
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-xl bg-white flex items-center justify-center">
-              <Activity className="w-5 h-5 text-black" />
-            </div>
-            <span className="text-xl font-black tracking-tight text-white">Vero</span>
-          </div>
-          <div className="hidden md:flex items-center gap-8 text-sm font-medium text-slate-400">
-            <a href="#demo" className="hover:text-white transition">Product Tour</a>
-            <a href="#features" className="hover:text-white transition">Capabilities</a>
-            <a href="#premium" className="hover:text-white transition">Premium</a>
-          </div>
-          <div className="flex items-center gap-6">
-            <Link href="/login" className="text-sm font-semibold text-slate-300 hover:text-white transition">Sign In</Link>
-            <Link href="/dashboard/premium" className="hidden sm:flex px-5 py-2.5 bg-white/10 hover:bg-white/20 text-white font-semibold rounded-full text-sm transition-all items-center gap-2">
-              Apply for Premium
+            <Link href="/login"
+              className="text-sm text-[#8b92a0] hover:text-white transition-colors font-medium">
+              Sign in
+            </Link>
+            <Link href="/dashboard/onboarding"
+              className="h-9 px-4 bg-[#4f6ef7] hover:bg-[#3d5de0] text-white text-sm font-medium
+                         rounded-lg flex items-center gap-1.5 transition-colors">
+              Connect Meta Account
+              <ArrowRight className="w-3.5 h-3.5" />
             </Link>
           </div>
         </div>
-      </nav>
+      </header>
 
-      {/* Hero Section */}
-      <main className="pt-32 pb-20 px-6 relative min-h-[90vh] flex flex-col items-center justify-center">
-        <NetworkBackground />
-        
-        <div className="max-w-5xl mx-auto text-center relative z-10">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-xs font-bold text-slate-300 mb-8 backdrop-blur-md"
-          >
-            <Zap className="w-4 h-4 text-amber-400" />
-            The Ultimate Advertising Intelligence Network
-          </motion.div>
-          
-          <motion.h1 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="text-5xl md:text-7xl font-black tracking-tighter leading-[1.05] mb-8"
-          >
-            See Which Meta Ads Are Winning <br className="hidden md:block" />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-slate-200 to-slate-500">
-              Before Your Competitors Do.
-            </span>
-          </motion.h1>
-          
-          <motion.p 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="text-lg md:text-xl text-slate-400 max-w-3xl mx-auto font-medium leading-relaxed mb-12"
-          >
-            Analyze active Meta ads, discover creative patterns, uncover winning hooks, and make faster campaign decisions using real advertising intelligence.
-          </motion.p>
-          
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
-            className="flex flex-col sm:flex-row items-center justify-center gap-4"
-          >
-            <Link href="/dashboard/onboarding" className="w-full sm:w-auto px-8 py-4 bg-white hover:bg-slate-200 text-black font-bold rounded-2xl text-lg transition-all flex items-center justify-center gap-2">
-              Analyze Ads <ArrowRight className="w-5 h-5" />
-            </Link>
-            <Link href="/dashboard/premium" className="w-full sm:w-auto px-8 py-4 bg-white/5 border border-white/10 hover:bg-white/10 text-white font-bold rounded-2xl text-lg transition-all flex items-center justify-center gap-2 group">
-              Apply for Premium Access
-            </Link>
-          </motion.div>
-          <motion.p 
-            initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5 }}
-            className="mt-4 text-xs font-semibold text-slate-500 uppercase tracking-widest"
-          >
-            Limited onboarding spots available.
-          </motion.p>
-        </div>
-      </main>
+      {/* ── Hero ────────────────────────────────────────────────────────────── */}
+      <section className="pt-40 pb-28 px-6 max-w-6xl mx-auto text-center">
+        <motion.div variants={FADE_UP} initial="hidden" animate="visible" custom={0}>
+          <span className="inline-flex items-center gap-2 text-xs font-medium text-[#8b92a0]
+                           border border-white/[0.08] bg-white/[0.03] rounded-full px-3.5 py-1.5 mb-8">
+            <span className="status-dot status-dot-live" />
+            Automated Meta Ads Audits & Monitoring
+          </span>
+        </motion.div>
 
-      {/* Product-Led Demo Section */}
-      <section id="demo" className="py-24 px-6 relative z-10 border-t border-white/5 bg-[#0a0a0a]">
-        <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-black mb-4">Instant Intelligence Demo</h2>
-            <p className="text-slate-400">Enter any competitor's brand name or Meta Ad Library URL to instantly reveal their strategy.</p>
-          </div>
-          
-          <div className="glass-panel p-2 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl shadow-2xl relative">
-            <form onSubmit={handleDemoSearch} className="flex flex-col md:flex-row gap-2">
-              <div className="relative flex-1">
-                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
-                <input 
-                  type="text" 
-                  value={demoUrl}
-                  onChange={(e) => setDemoUrl(e.target.value)}
-                  placeholder="e.g. Gymshark, AG1, or paste URL..." 
-                  className="w-full h-14 bg-transparent pl-12 pr-4 text-white placeholder-slate-500 focus:outline-none text-lg"
-                />
-              </div>
-              <button 
-                type="submit"
-                className="h-14 px-8 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-xl transition-all flex items-center justify-center gap-2"
-                disabled={isSearching}
-              >
-                {isSearching ? 'Analyzing Network...' : 'Reveal Ads'}
-              </button>
-            </form>
-          </div>
-        </div>
+        <motion.h1
+          variants={FADE_UP} initial="hidden" animate="visible" custom={1}
+          className="text-5xl md:text-[64px] font-bold tracking-tight leading-[1.08] mb-6"
+        >
+          Stop Wasting<br />
+          <span className="text-[#8b92a0]">Meta Ad Spend.</span>
+        </motion.h1>
+
+        <motion.p
+          variants={FADE_UP} initial="hidden" animate="visible" custom={2}
+          className="text-lg text-[#8b92a0] max-w-2xl mx-auto leading-relaxed mb-10"
+        >
+          Automatically detect performance issues, audience fatigue, rising costs, and missed
+          scaling opportunities before they impact profitability.
+        </motion.p>
+
+        <motion.div
+          variants={FADE_UP} initial="hidden" animate="visible" custom={3}
+          className="flex flex-col sm:flex-row items-center justify-center gap-3"
+        >
+          <Link href="/dashboard/onboarding"
+            className="h-11 px-6 bg-[#4f6ef7] hover:bg-[#3d5de0] text-white font-medium text-sm
+                       rounded-xl flex items-center gap-2 transition-colors w-full sm:w-auto justify-center">
+            Connect Meta Account
+            <ArrowRight className="w-4 h-4" />
+          </Link>
+          <Link href="/dashboard"
+            className="h-11 px-6 bg-white/[0.05] hover:bg-white/[0.08] text-[#f1f3f5]
+                       border border-white/[0.08] hover:border-white/[0.14] font-medium text-sm
+                       rounded-xl flex items-center gap-2 transition-all w-full sm:w-auto justify-center">
+            View Demo Audit
+          </Link>
+        </motion.div>
+
+        <motion.p
+          variants={FADE_UP} initial="hidden" animate="visible" custom={4}
+          className="mt-5 text-xs text-[#535a65]"
+        >
+          Read-only access. No campaign modifications. Cancel anytime.
+        </motion.p>
       </section>
 
-      {/* Trust Section */}
-      <section className="py-12 border-t border-white/5 bg-black">
-        <div className="max-w-7xl mx-auto px-6 text-center">
-          <p className="text-sm font-bold text-slate-500 uppercase tracking-widest mb-8">Trusted By Industry Leaders</p>
-          <div className="flex flex-wrap justify-center gap-8 md:gap-16 opacity-50 grayscale">
-            <span className="text-xl font-black">Agencies</span>
-            <span className="text-xl font-black">Performance Marketers</span>
-            <span className="text-xl font-black">Media Buyers</span>
-            <span className="text-xl font-black">DTC Brands</span>
-            <span className="text-xl font-black">Consultants</span>
-          </div>
-        </div>
-      </section>
-
-      {/* Capabilities Section */}
-      <section id="features" className="py-32 px-6 border-t border-white/5 bg-[#050505]">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-20">
-            <h2 className="text-4xl md:text-5xl font-black tracking-tight mb-6">Discover the Unseen.</h2>
-            <p className="text-xl text-slate-400 max-w-2xl mx-auto">Vero maps the competitive landscape so you don't have to guess what works.</p>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-6">
-            <div className="p-8 rounded-3xl bg-white/5 border border-white/10 hover:bg-white/10 transition group">
-              <Target className="w-8 h-8 text-indigo-400 mb-6" />
-              <h3 className="text-2xl font-bold mb-4">Winning Ads Discovery</h3>
-              <p className="text-slate-400 leading-relaxed">Instantly identify which creatives are driving the most volume for your competitors. Stop wasting budget on untested angles.</p>
-            </div>
-            
-            <div className="p-8 rounded-3xl bg-white/5 border border-white/10 hover:bg-white/10 transition group">
-              <Activity className="w-8 h-8 text-emerald-400 mb-6" />
-              <h3 className="text-2xl font-bold mb-4">Competitor Intelligence</h3>
-              <p className="text-slate-400 leading-relaxed">Track brands in real-time. Know exactly when they launch new campaigns, scale budgets, or pivot their messaging.</p>
-            </div>
-
-            <div className="p-8 rounded-3xl bg-white/5 border border-white/10 hover:bg-white/10 transition group">
-              <Cpu className="w-8 h-8 text-orange-400 mb-6" />
-              <h3 className="text-2xl font-bold mb-4">Creative Pattern Analysis</h3>
-              <p className="text-slate-400 leading-relaxed">Extract the underlying frameworks of viral ads. We break down the hooks, the offers, and the exact visual language that converts.</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Premium Features */}
-      <section id="premium" className="py-32 px-6 border-t border-white/5 bg-gradient-to-b from-black to-[#0a0a0a]">
-        <div className="max-w-4xl mx-auto text-center space-y-8">
-          <ShieldCheck className="w-16 h-16 text-indigo-500 mx-auto" />
-          <h2 className="text-4xl md:text-5xl font-black tracking-tight">Enterprise Intelligence</h2>
-          <p className="text-lg text-slate-400 font-medium max-w-2xl mx-auto">
-            Scale your agency with white-label reports, API access, and dedicated data pipelines. Get the infrastructure you need to outpace the market.
+      {/* ── Social proof ─────────────────────────────────────────────────────── */}
+      <section className="border-y border-white/[0.06] py-10 px-6">
+        <div className="max-w-6xl mx-auto">
+          <p className="text-center text-xs font-medium text-[#535a65] uppercase tracking-widest mb-8">
+            Used by growth teams at
           </p>
-          <div className="pt-8">
-            <Link href="/dashboard/premium" className="px-10 py-5 bg-white hover:bg-slate-200 text-black font-black rounded-2xl text-lg transition-all inline-flex items-center gap-3">
-              Apply for Premium Access <ArrowUpRight className="w-6 h-6" />
-            </Link>
+          <div className="flex flex-wrap items-center justify-center gap-10 opacity-40 grayscale">
+            {['Agencies', 'Media Buyers', 'DTC Brands', 'Ecommerce Teams', 'Consultants'].map((label) => (
+              <span key={label} className="text-sm font-semibold text-[#8b92a0]">{label}</span>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* Footer / FAQ / Final CTA */}
-      <footer className="py-12 px-6 border-t border-white/10 bg-black text-center">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
+      {/* ── How it works ─────────────────────────────────────────────────────── */}
+      <section id="product" className="py-28 px-6">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl font-semibold mb-3">Audit complete in 60 seconds</h2>
+            <p className="text-[#8b92a0] text-base max-w-xl mx-auto">
+              Connect your Meta account, we import the data, run the audit, and surface every issue immediately.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-4 gap-4">
+            {[
+              { step: '01', icon: <Search className="w-5 h-5" />, title: 'Connect Meta', detail: 'Authorize read-only access to your Meta Ads account.' },
+              { step: '02', icon: <Clock className="w-5 h-5" />, title: 'Import Data', detail: 'We pull all campaigns, ad sets, and 90 days of performance data.' },
+              { step: '03', icon: <AlertTriangle className="w-5 h-5" />, title: 'Run Audit', detail: '40+ deterministic rules check for waste, fatigue, and missed opportunities.' },
+              { step: '04', icon: <CheckCircle2 className="w-5 h-5" />, title: 'Get Findings', detail: 'Receive an Account Health Score and a prioritized list of actions.' },
+            ].map(({ step, icon, title, detail }) => (
+              <div key={step} className="card p-5 flex flex-col gap-4">
+                <div className="flex items-center justify-between">
+                  <div className="w-9 h-9 rounded-lg bg-white/[0.04] border border-white/[0.08] flex items-center justify-center text-[#8b92a0]">
+                    {icon}
+                  </div>
+                  <span className="text-xs font-medium text-[#535a65]">{step}</span>
+                </div>
+                <div>
+                  <p className="text-sm font-semibold text-[#f1f3f5] mb-1">{title}</p>
+                  <p className="text-xs text-[#8b92a0] leading-relaxed">{detail}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Account Health Monitor ───────────────────────────────────────────── */}
+      <section id="product" className="py-20 px-6 border-t border-white/[0.06]">
+        <div className="max-w-6xl mx-auto">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            <div>
+              <p className="text-xs font-medium text-[#4f6ef7] uppercase tracking-widest mb-4">Account Health</p>
+              <h2 className="text-3xl font-semibold mb-5 leading-snug">
+                Know the health of your account at a glance.
+              </h2>
+              <p className="text-[#8b92a0] leading-relaxed mb-8">
+                The Account Health Score is a live composite metric that synthesizes every audit finding
+                into a single number. Drop below 60 and you know it is time to act.
+              </p>
+              <ul className="space-y-3">
+                {[
+                  'Critical issues surfaced with exact dollar impact',
+                  'Warnings show trends before they become costly',
+                  'Opportunities quantify potential revenue gains',
+                  'Score history tracks improvement over time',
+                ].map((item) => (
+                  <li key={item} className="flex items-start gap-3 text-sm text-[#8b92a0]">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-400 mt-0.5 shrink-0" />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Health score illustration */}
+            <div className="card p-6">
+              <div className="flex items-center justify-between mb-6 pb-4 border-b border-white/[0.06]">
+                <div>
+                  <p className="stat-label">Account Health Score</p>
+                  <p className="stat-value mt-1">74<span className="text-xl text-[#535a65]">/100</span></p>
+                </div>
+                <span className="badge badge-warning">Needs attention</span>
+              </div>
+
+              <div className="grid grid-cols-3 gap-4 mb-6">
+                {[
+                  { label: 'Critical', value: '2', color: 'text-red-400' },
+                  { label: 'Warnings', value: '3', color: 'text-amber-400' },
+                  { label: 'Opportunities', value: '2', color: 'text-[#4f6ef7]' },
+                ].map(({ label, value, color }) => (
+                  <div key={label} className="text-center p-3 rounded-lg bg-white/[0.03] border border-white/[0.06]">
+                    <p className={`text-xl font-bold ${color}`}>{value}</p>
+                    <p className="text-[11px] text-[#535a65] mt-0.5">{label}</p>
+                  </div>
+                ))}
+              </div>
+
+              <div className="space-y-2">
+                {[
+                  { severity: 'critical', title: 'Audience fatigue in Lookalike US 1%', impact: '~$2,140/mo' },
+                  { severity: 'warning', title: 'Rising CPM — auction pressure detected', impact: '+18% CPA' },
+                  { severity: 'opportunity', title: 'Retargeting 30D hitting budget cap daily', impact: '+$3,800 revenue' },
+                ].map(({ severity, title, impact }, i) => {
+                  const { dot, badge, label } = severityConfig[severity as keyof typeof severityConfig];
+                  return (
+                    <div key={i} className="flex items-center gap-3 p-3 rounded-lg bg-white/[0.02] border border-white/[0.05]">
+                      <div className={`status-dot ${dot} shrink-0`} />
+                      <p className="text-xs text-[#8b92a0] flex-1 truncate">{title}</p>
+                      <span className={`badge ${badge} shrink-0`}>{impact}</span>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Example Findings ─────────────────────────────────────────────────── */}
+      <section id="pricing" className="py-20 px-6 border-t border-white/[0.06]">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-semibold mb-3">What a typical audit finds</h2>
+            <p className="text-[#8b92a0] max-w-xl mx-auto text-base">
+              Real findings from real accounts. Every issue includes the root cause, estimated impact, and a concrete action.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-4">
+            {FINDINGS.map(({ severity, title, detail, impact, action }, i) => {
+              const { dot, badge, label } = severityConfig[severity as keyof typeof severityConfig];
+              return (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, y: 12 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.06, duration: 0.35 }}
+                  className="card p-5 flex gap-4"
+                >
+                  <div className={`severity-bar severity-${severity}`} />
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 mb-2">
+                      <span className={`badge ${badge}`}>{label}</span>
+                    </div>
+                    <p className="text-sm font-medium text-[#f1f3f5] mb-1">{title}</p>
+                    <p className="text-xs text-[#8b92a0] leading-relaxed mb-3">{detail}</p>
+                    <div className="flex flex-wrap gap-2">
+                      <span className="inline-flex items-center gap-1.5 text-xs bg-white/[0.04] border border-white/[0.07] text-[#8b92a0] rounded-md px-2.5 py-1">
+                        <TrendingUp className="w-3 h-3" /> {impact}
+                      </span>
+                      <span className="inline-flex items-center gap-1.5 text-xs bg-white/[0.04] border border-white/[0.07] text-[#8b92a0] rounded-md px-2.5 py-1">
+                        <ArrowRight className="w-3 h-3" /> {action}
+                      </span>
+                    </div>
+                  </div>
+                </motion.div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Security ─────────────────────────────────────────────────────────── */}
+      <section id="security" className="py-20 px-6 border-t border-white/[0.06]">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-semibold mb-3">Built for security-conscious teams</h2>
+            <p className="text-[#8b92a0] max-w-xl mx-auto">
+              We take a conservative approach to data access and retention.
+            </p>
+          </div>
+          <div className="grid md:grid-cols-3 gap-4">
+            {[
+              { icon: <ShieldCheck className="w-5 h-5 text-emerald-400" />, title: 'Read-only Meta access', body: 'Vero requests the minimum permissions required. We can never create, pause, or modify your campaigns.' },
+              { icon: <ShieldCheck className="w-5 h-5 text-emerald-400" />, title: 'Encrypted token storage', body: 'Access tokens are encrypted at rest using AES-256. They are never logged or exposed in client-side code.' },
+              { icon: <ShieldCheck className="w-5 h-5 text-emerald-400" />, title: 'Meta API compliance', body: 'All data access adheres to Meta\'s Platform Terms and Data Policy. You can revoke access at any time from your Meta Business Manager.' },
+            ].map(({ icon, title, body }) => (
+              <div key={title} className="card p-6">
+                <div className="mb-4">{icon}</div>
+                <p className="text-sm font-medium text-[#f1f3f5] mb-2">{title}</p>
+                <p className="text-xs text-[#8b92a0] leading-relaxed">{body}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── FAQ ──────────────────────────────────────────────────────────────── */}
+      <section className="py-20 px-6 border-t border-white/[0.06]">
+        <div className="max-w-2xl mx-auto">
+          <h2 className="text-3xl font-semibold text-center mb-10">Frequently asked questions</h2>
+          <div className="space-y-2">
+            {FAQS.map(({ q, a }) => <FaqItem key={q} q={q} a={a} />)}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Final CTA ────────────────────────────────────────────────────────── */}
+      <section className="py-24 px-6 border-t border-white/[0.06]">
+        <div className="max-w-2xl mx-auto text-center">
+          <h2 className="text-4xl font-semibold mb-5">Ready to audit your account?</h2>
+          <p className="text-[#8b92a0] mb-8 text-base">
+            Connect in 60 seconds. See your first findings immediately.
+          </p>
+          <Link href="/dashboard/onboarding"
+            className="inline-flex items-center gap-2 h-12 px-8 bg-[#4f6ef7] hover:bg-[#3d5de0]
+                       text-white font-medium text-sm rounded-xl transition-colors">
+            Connect Meta Account
+            <ArrowRight className="w-4 h-4" />
+          </Link>
+          <p className="mt-4 text-xs text-[#535a65]">
+            Free to start. Limited onboarding spots available.
+          </p>
+        </div>
+      </section>
+
+      {/* ── Footer ───────────────────────────────────────────────────────────── */}
+      <footer className="border-t border-white/[0.06] py-10 px-6">
+        <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2">
-            <Activity className="w-5 h-5 text-white" />
-            <span className="font-bold">Vero Intelligence</span>
+            <div className="w-6 h-6 rounded-md bg-[#4f6ef7] flex items-center justify-center">
+              <BarChart3 className="w-3.5 h-3.5 text-white" />
+            </div>
+            <span className="text-sm font-medium">Vero</span>
           </div>
-          <div className="text-sm text-slate-500">
-            © {new Date().getFullYear()} Vero Inc. All rights reserved.
+          <div className="flex items-center gap-6 text-xs text-[#535a65]">
+            <Link href="/privacy-policy" className="hover:text-[#8b92a0] transition-colors">Privacy</Link>
+            <Link href="/terms-of-condition" className="hover:text-[#8b92a0] transition-colors">Terms</Link>
+            <Link href="/faq" className="hover:text-[#8b92a0] transition-colors">FAQ</Link>
           </div>
+          <p className="text-xs text-[#535a65]">© {new Date().getFullYear()} Vero Inc. All rights reserved.</p>
         </div>
       </footer>
     </div>

@@ -177,7 +177,7 @@ export default defineSchema({
     .index("by_provider", ["provider"]),
 
   workflows: defineTable({
-    organizationId: v.optional(v.string()), // string because we might not have convex auth linked yet
+    organizationId: v.optional(v.string()),
     name: v.string(),
     description: v.optional(v.string()),
     nodes: v.any(),
@@ -186,4 +186,98 @@ export default defineSchema({
     createdAt: v.number(),
     updatedAt: v.number(),
   }).index("by_org", ["organizationId"]),
+
+  // ── Background sync job tracking ──────────────────────────────────────────
+  syncJobs: defineTable({
+    organizationId: v.id("organizations"),
+    integrationId: v.id("integrations"),
+    type: v.union(v.literal("full"), v.literal("incremental")),
+    status: v.union(
+      v.literal("queued"),
+      v.literal("running"),
+      v.literal("completed"),
+      v.literal("failed"),
+      v.literal("retrying")
+    ),
+    retryCount: v.number(),
+    maxRetries: v.number(),
+    startedAt: v.optional(v.number()),
+    completedAt: v.optional(v.number()),
+    errorDetails: v.optional(v.string()),
+    itemsProcessed: v.optional(v.number()),
+    createdAt: v.number(),
+  })
+    .index("by_org", ["organizationId"])
+    .index("by_status", ["status"])
+    .index("by_org_and_status", ["organizationId", "status"]),
+
+  // ── Per-job log entries ───────────────────────────────────────────────────
+  syncLogs: defineTable({
+    syncJobId: v.id("syncJobs"),
+    organizationId: v.id("organizations"),
+    level: v.union(v.literal("info"), v.literal("warn"), v.literal("error")),
+    message: v.string(),
+    metadata: v.optional(v.any()),
+    timestamp: v.number(),
+  })
+    .index("by_job", ["syncJobId"])
+    .index("by_org", ["organizationId"]),
+
+  // ── Account health snapshots ──────────────────────────────────────────────
+  healthMetrics: defineTable({
+    organizationId: v.id("organizations"),
+    integrationId: v.id("integrations"),
+    healthScore: v.number(),           // 0–100
+    spendAtRisk: v.number(),           // USD
+    criticalIssues: v.number(),
+    warnings: v.number(),
+    opportunities: v.number(),
+    issues: v.array(v.object({
+      type: v.string(),
+      severity: v.union(v.literal("critical"), v.literal("warning"), v.literal("opportunity")),
+      title: v.string(),
+      description: v.string(),
+      estimatedImpact: v.string(),
+      recommendedAction: v.string(),
+      affectedEntityId: v.optional(v.string()),
+      affectedEntityName: v.optional(v.string()),
+    })),
+    computedAt: v.number(),
+  })
+    .index("by_org", ["organizationId"])
+    .index("by_integration", ["integrationId"])
+    .index("by_org_and_time", ["organizationId", "computedAt"]),
+
+  // ── Historical audit runs ─────────────────────────────────────────────────
+  auditRuns: defineTable({
+    organizationId: v.id("organizations"),
+    integrationId: v.id("integrations"),
+    triggeredBy: v.union(v.literal("user"), v.literal("cron"), v.literal("sync")),
+    status: v.union(v.literal("running"), v.literal("completed"), v.literal("failed")),
+    healthScoreBefore: v.optional(v.number()),
+    healthScoreAfter: v.optional(v.number()),
+    findingsCount: v.number(),
+    startedAt: v.number(),
+    completedAt: v.optional(v.number()),
+    errorDetails: v.optional(v.string()),
+  })
+    .index("by_org", ["organizationId"])
+    .index("by_integration", ["integrationId"]),
+
+  // ── Notification queue ────────────────────────────────────────────────────
+  notificationQueue: defineTable({
+    organizationId: v.id("organizations"),
+    channel: v.union(v.literal("email"), v.literal("slack"), v.literal("webhook")),
+    type: v.string(),
+    payload: v.any(),
+    status: v.union(v.literal("pending"), v.literal("sent"), v.literal("failed")),
+    retryCount: v.number(),
+    scheduledFor: v.number(),
+    sentAt: v.optional(v.number()),
+    errorDetails: v.optional(v.string()),
+    createdAt: v.number(),
+  })
+    .index("by_org", ["organizationId"])
+    .index("by_status", ["status"])
+    .index("by_scheduled", ["scheduledFor"]),
 });
