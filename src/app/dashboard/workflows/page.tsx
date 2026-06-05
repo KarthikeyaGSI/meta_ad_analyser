@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useCallback, useMemo } from 'react';
+import React, { useState, useCallback, useMemo, useEffect } from 'react';
 import { ReactFlow, ReactFlowProvider, addEdge, Background, Controls, applyNodeChanges, applyEdgeChanges, Node, Edge, Connection } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import { Network, Plus, Play, Save, ChevronRight, GripVertical, AlertTriangle } from 'lucide-react';
@@ -9,6 +9,8 @@ import TriggerNode from '../../../components/workflow/nodes/TriggerNode';
 import ConditionNode from '../../../components/workflow/nodes/ConditionNode';
 import ActionNode from '../../../components/workflow/nodes/ActionNode';
 import { motion } from 'framer-motion';
+import { useQuery, useMutation } from 'convex/react';
+import { api } from '../../../../convex/_generated/api';
 
 const nodeTypes = {
   trigger: TriggerNode,
@@ -16,21 +18,58 @@ const nodeTypes = {
   action: ActionNode,
 };
 
-const initialNodes: Node[] = [
+const defaultNodes: Node[] = [
   { id: '1', type: 'trigger', position: { x: 250, y: 100 }, data: { label: 'Spend Anomaly', description: 'If Spend > $100 in 1 hour' } },
   { id: '2', type: 'condition', position: { x: 250, y: 250 }, data: { label: 'Check ROAS', description: 'If ROAS < 0.8' } },
   { id: '3', type: 'action', position: { x: 250, y: 400 }, data: { label: 'Pause Ad Set', description: 'Stop bleeding budget' } },
 ];
 
-const initialEdges: Edge[] = [
+const defaultEdges: Edge[] = [
   { id: 'e1-2', source: '1', target: '2', animated: true, style: { stroke: '#6366f1', strokeWidth: 2 } },
   { id: 'e2-3', source: '2', target: '3', animated: true, style: { stroke: '#10b981', strokeWidth: 2 } },
 ];
 
 function FlowCanvas() {
-  const [nodes, setNodes] = useState<Node[]>(initialNodes);
-  const [edges, setEdges] = useState<Edge[]>(initialEdges);
+  const { user } = useStore();
+  const orgId = user?.organizationId || 'default-org';
+  
+  // Real-time sync with database
+  const savedWorkflows = useQuery(api.workflows.getWorkflows, { organizationId: orgId });
+  const saveWorkflow = useMutation(api.workflows.saveWorkflow);
+  
+  const [nodes, setNodes] = useState<Node[]>(defaultNodes);
+  const [edges, setEdges] = useState<Edge[]>(defaultEdges);
   const [isSaved, setIsSaved] = useState(true);
+  const [workflowId, setWorkflowId] = useState<any>(null);
+
+  // Load from DB when available
+  useEffect(() => {
+    if (savedWorkflows && savedWorkflows.length > 0) {
+      const dbWorkflow = savedWorkflows[0];
+      setWorkflowId(dbWorkflow._id);
+      if (dbWorkflow.nodes?.length) setNodes(dbWorkflow.nodes);
+      if (dbWorkflow.edges?.length) setEdges(dbWorkflow.edges);
+      setIsSaved(true);
+    }
+  }, [savedWorkflows]);
+
+  const handleSave = async () => {
+    setIsSaved(true);
+    try {
+      const newId = await saveWorkflow({
+        id: workflowId,
+        organizationId: orgId,
+        name: 'Main Automation',
+        nodes,
+        edges,
+        status: 'active'
+      });
+      if (!workflowId) setWorkflowId(newId);
+    } catch (e) {
+      console.error("Failed to save workflow:", e);
+      setIsSaved(false);
+    }
+  };
 
   const onNodesChange = useCallback(
     (changes: any) => {
@@ -77,7 +116,7 @@ function FlowCanvas() {
 
       const { type, label } = JSON.parse(rawData);
 
-      // Simplified position calculation (in production use ReactFlow instance project)
+      // Simplified position calculation
       const position = {
         x: event.clientX - reactFlowBounds.left - 100,
         y: event.clientY - reactFlowBounds.top - 50,
@@ -166,11 +205,11 @@ function FlowCanvas() {
         {/* Top Floating Action Bar */}
         <div className="absolute top-4 right-4 flex items-center gap-3 z-10">
           <button 
-            onClick={() => setIsSaved(true)}
+            onClick={handleSave}
             className={`px-4 py-2 rounded-xl text-sm font-bold flex items-center gap-2 transition-all ${isSaved ? 'bg-white/5 text-white/50 border border-white/5' : 'bg-surface text-white border border-primary shadow-glow-primary'}`}
           >
             <Save className="w-4 h-4" />
-            {isSaved ? 'Saved' : 'Save Changes'}
+            {isSaved ? 'Saved to DB' : 'Save Changes'}
           </button>
           
           <button className="px-5 py-2 bg-emerald-500 hover:bg-emerald-400 text-white font-bold rounded-xl shadow-[0_0_15px_rgba(16,185,129,0.3)] flex items-center gap-2 transition-colors">

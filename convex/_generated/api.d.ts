@@ -28,6 +28,7 @@ import type * as storage from "../storage.js";
 import type * as success from "../success.js";
 import type * as users from "../users.js";
 import type * as webhooks from "../webhooks.js";
+import type * as workflows from "../workflows.js";
 import type * as workspaces from "../workspaces.js";
 
 import type {
@@ -57,6 +58,7 @@ declare const fullApi: ApiFromModules<{
   success: typeof success;
   users: typeof users;
   webhooks: typeof webhooks;
+  workflows: typeof workflows;
   workspaces: typeof workspaces;
 }>;
 

@@ -175,4 +175,15 @@ export default defineSchema({
     createdAt: v.number(),
   }).index("by_org", ["organizationId"])
     .index("by_provider", ["provider"]),
+
+  workflows: defineTable({
+    organizationId: v.optional(v.string()), // string because we might not have convex auth linked yet
+    name: v.string(),
+    description: v.optional(v.string()),
+    nodes: v.any(),
+    edges: v.any(),
+    status: v.union(v.literal("draft"), v.literal("active"), v.literal("paused")),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  }).index("by_org", ["organizationId"]),
 });
