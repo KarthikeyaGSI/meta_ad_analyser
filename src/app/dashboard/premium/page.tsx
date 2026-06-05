@@ -3,8 +3,8 @@
 import React, { useState } from 'react';
 import { Sparkles, Clock, CheckCircle2, MessageSquare, ArrowRight } from 'lucide-react';
 import { useQuery } from 'convex/react';
-import { api } from '../../../../convex/_generated/api';
-import { Id } from '../../../../convex/_generated/dataModel';
+import { api } from '@convex/_generated/api';
+import { Id } from '@convex/_generated/dataModel';
 import { RequestPremiumModal } from '../../../components/RequestPremiumModal';
 // In production, we fetch this from `useOrganization()` or similar
 

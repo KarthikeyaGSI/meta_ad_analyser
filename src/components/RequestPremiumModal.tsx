@@ -2,8 +2,8 @@
 
 import React, { useState } from 'react';
 import { useMutation } from 'convex/react';
-import { api } from '../../convex/_generated/api';
-import { Id } from '../../convex/_generated/dataModel';
+import { api } from '@convex/_generated/api';
+import { Id } from '@convex/_generated/dataModel';
 import { X, Sparkles, Building, Globe, Mail, Users, Check } from 'lucide-react';
 
 interface RequestPremiumModalProps {
@@ -79,8 +79,8 @@ export function RequestPremiumModal({ isOpen, onClose, organizationId }: Request
                 <Sparkles className="w-6 h-6" />
               </div>
               <div>
-                <h2 className="text-xl font-bold text-white">Upgrade to Premium</h2>
-                <p className="text-sm text-white/60">Unlock white labeling, API access, and enterprise features.</p>
+                <h2 className="text-xl font-bold text-white">Apply for Premium Access</h2>
+                <p className="text-sm text-white/60">Unlock white labeling, API access, and enterprise features. Limited onboarding spots available.</p>
               </div>
             </div>
 
@@ -182,10 +182,10 @@ export function RequestPremiumModal({ isOpen, onClose, organizationId }: Request
                 <button
                   type="submit"
                   disabled={loading}
-                  aria-label="Submit Premium Request"
+                  aria-label="Submit Premium Application"
                   className="w-full bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-400 hover:to-purple-500 text-white font-medium px-6 py-3 rounded-xl transition-all shadow-[0_0_20px_rgba(99,102,241,0.3)] hover:shadow-[0_0_30px_rgba(99,102,241,0.5)] disabled:opacity-50 mt-4 cursor-pointer"
                 >
-                  {loading ? 'Submitting...' : 'Request Premium Access'}
+                  {loading ? 'Submitting...' : 'Apply for Premium Access'}
                 </button>
               </fieldset>
             </form>

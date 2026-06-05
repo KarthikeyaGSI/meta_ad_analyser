@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { useQuery, useMutation } from 'convex/react';
-import { api } from '../../../../convex/_generated/api';
+import { api } from '@convex/_generated/api';
 import { Share2, Users, Gift, Link2, Copy, CheckCircle2 } from 'lucide-react';
 
 export default function ReferralsDashboard() {

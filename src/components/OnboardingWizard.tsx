@@ -2,8 +2,8 @@
 
 import React, { useState } from 'react';
 import { useMutation, useQuery } from 'convex/react';
-import { api } from '../../convex/_generated/api';
-import { Id } from '../../convex/_generated/dataModel';
+import { api } from '@convex/_generated/api';
+import { Id } from '@convex/_generated/dataModel';
 import { Building, Users, Server, Sparkles, Check, ArrowRight } from 'lucide-react';
 
 interface OnboardingWizardProps {
@@ -174,7 +174,7 @@ export function OnboardingWizard({ onComplete }: OnboardingWizardProps) {
               <Sparkles className="w-8 h-8" />
             </div>
             <h2 className="text-3xl font-bold text-white mb-2">Connect your Meta Account</h2>
-            <p className="text-white/60 mb-8">We'll scan your last 30 days of data to find wasted spend.</p>
+            <p className="text-white/60 mb-8">We'll scan thousands of active campaigns to find winning creative patterns for your brand.</p>
             
             <button
               onClick={() => {
@@ -203,20 +203,20 @@ export function OnboardingWizard({ onComplete }: OnboardingWizardProps) {
               <div className="w-16 h-16 bg-emerald-500/20 text-emerald-400 rounded-full flex items-center justify-center mx-auto mb-6" aria-hidden="true">
                 <Check className="w-8 h-8" />
               </div>
-              <h2 className="text-3xl font-bold text-white mb-2">Historical Audit Complete</h2>
-              <p className="text-emerald-400/80 font-medium">We scanned your last 30 days of ad spend.</p>
+              <h2 className="text-3xl font-bold text-white mb-2">Intelligence Profile Built</h2>
+              <p className="text-emerald-400/80 font-medium">We analyzed active ads in your niche.</p>
             </div>
             
             <div className="bg-emerald-500/5 border border-emerald-500/20 rounded-2xl p-6 mb-8">
-              <h3 className="text-lg font-bold text-white mb-4">If Vero's guardrails were active last month:</h3>
+              <h3 className="text-lg font-bold text-white mb-4">Your Intelligence Summary:</h3>
               <ul className="space-y-4">
                 <li className="flex items-start gap-3">
                   <div className="w-6 h-6 rounded-full bg-emerald-500/20 flex items-center justify-center shrink-0 mt-0.5">
                     <Check className="w-3.5 h-3.5 text-emerald-400" />
                   </div>
                   <div>
-                    <p className="text-white font-medium">You would have saved <span className="text-emerald-400 font-bold">$1,240.00</span></p>
-                    <p className="text-sm text-white/50">By pausing 4 fatigued ad sets that exceeded frequency limits.</p>
+                    <p className="text-white font-medium">Found <span className="text-emerald-400 font-bold">14 winning hooks</span></p>
+                    <p className="text-sm text-white/50">Currently scaling across top competitors.</p>
                   </div>
                 </li>
                 <li className="flex items-start gap-3">
@@ -224,8 +224,8 @@ export function OnboardingWizard({ onComplete }: OnboardingWizardProps) {
                     <Check className="w-3.5 h-3.5 text-emerald-400" />
                   </div>
                   <div>
-                    <p className="text-white font-medium">You would have captured <span className="text-emerald-400 font-bold">12% more ROAS</span></p>
-                    <p className="text-sm text-white/50">By instantly scaling 2 winning audiences when CPA dropped.</p>
+                    <p className="text-white font-medium">Identified <span className="text-emerald-400 font-bold">3 tired creative formats</span></p>
+                    <p className="text-sm text-white/50">Patterns showing severe ad fatigue in your industry.</p>
                   </div>
                 </li>
               </ul>

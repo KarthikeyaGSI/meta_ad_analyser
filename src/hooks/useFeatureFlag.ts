@@ -1,6 +1,6 @@
 import { useQuery } from "convex/react";
-import { api } from "../../convex/_generated/api";
-import { Id } from "../../convex/_generated/dataModel";
+import { api } from '@convex/_generated/api';
+import { Id } from '@convex/_generated/dataModel';
 
 /**
  * A hook to evaluate if a specific feature flag is enabled for the active organization.

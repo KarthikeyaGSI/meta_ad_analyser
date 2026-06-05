@@ -10,7 +10,7 @@ import ConditionNode from '../../../components/workflow/nodes/ConditionNode';
 import ActionNode from '../../../components/workflow/nodes/ActionNode';
 import { motion } from 'framer-motion';
 import { useQuery, useMutation } from 'convex/react';
-import { api } from '../../../../convex/_generated/api';
+import { api } from '@convex/_generated/api';
 
 const nodeTypes = {
   trigger: TriggerNode,
