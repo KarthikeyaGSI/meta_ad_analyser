@@ -76,7 +76,11 @@ export const update = mutation({
     logoId: v.optional(v.id("_storage")),
     faviconId: v.optional(v.id("_storage")),
     brandColor: v.optional(v.string()),
-    supportEmail: v.optional(v.string())
+    supportEmail: v.optional(v.string()),
+    alertPreferences: v.optional(v.object({
+      slack: v.union(v.literal("all"), v.literal("critical"), v.literal("none")),
+      whatsapp: v.union(v.literal("all"), v.literal("critical"), v.literal("none")),
+    }))
   },
   handler: async (ctx, args) => {
     const { membership, organization } = await requireTenantAccess(ctx, args.organizationId);
@@ -89,6 +93,7 @@ export const update = mutation({
       favicon: args.faviconId ?? organization.favicon,
       brandColor: args.brandColor ?? organization.brandColor,
       supportEmail: args.supportEmail ?? organization.supportEmail,
+      alertPreferences: args.alertPreferences ?? organization.alertPreferences,
     });
   },
 });

@@ -165,32 +165,85 @@ export function OnboardingWizard({ onComplete }: OnboardingWizardProps) {
               </fieldset>
             </form>
           </section>
-
         )}
 
-        {/* Step 3: Connect Account (Dummy for Flow) */}
+        {/* Step 3: Connect Account */}
         {step === 3 && (
           <section className="animate-in fade-in slide-in-from-right-8 duration-500 text-center" aria-label="Step 3: Connect Account">
             <div className="w-16 h-16 bg-pink-500/20 text-pink-400 rounded-full flex items-center justify-center mx-auto mb-6" aria-hidden="true">
               <Sparkles className="w-8 h-8" />
             </div>
-            <h2 className="text-3xl font-bold text-white mb-2">Connect your Data</h2>
-            <p className="text-white/60 mb-8">We integrate with Meta, Google, and more.</p>
+            <h2 className="text-3xl font-bold text-white mb-2">Connect your Meta Account</h2>
+            <p className="text-white/60 mb-8">We'll scan your last 30 days of data to find wasted spend.</p>
             
             <button
+              onClick={() => {
+                setLoading(true);
+                setTimeout(() => { setLoading(false); setStep(4); }, 1500); // Mock connection delay
+              }}
+              aria-label="Connect Meta"
+              className="w-full bg-blue-600 text-white font-medium px-6 py-4 rounded-xl transition-all hover:bg-blue-500 flex items-center justify-center gap-2 mb-4 cursor-pointer"
+            >
+              {loading ? 'Connecting...' : 'Connect Meta Ads'}
+              <ArrowRight className="w-5 h-5" aria-hidden="true" />
+            </button>
+            <button
               onClick={() => setStep(4)}
-              aria-label="Skip data connection for now"
-              className="w-full bg-white text-black font-medium px-6 py-4 rounded-xl transition-all hover:bg-white/90 flex items-center justify-center gap-2 mb-4 cursor-pointer"
+              className="text-sm text-white/40 hover:text-white"
             >
               Skip for now
-              <ArrowRight className="w-5 h-5" aria-hidden="true" />
             </button>
           </section>
         )}
 
-        {/* Step 4: Invite Team */}
+        {/* Step 4: Historical Audit (The "Aha!" Moment) */}
         {step === 4 && (
-          <section className="animate-in fade-in slide-in-from-right-8 duration-500 text-center" aria-label="Step 4: Invite Team">
+          <section className="animate-in fade-in slide-in-from-right-8 duration-500" aria-label="Step 4: Historical Audit">
+            <div className="text-center mb-8">
+              <div className="w-16 h-16 bg-emerald-500/20 text-emerald-400 rounded-full flex items-center justify-center mx-auto mb-6" aria-hidden="true">
+                <Check className="w-8 h-8" />
+              </div>
+              <h2 className="text-3xl font-bold text-white mb-2">Historical Audit Complete</h2>
+              <p className="text-emerald-400/80 font-medium">We scanned your last 30 days of ad spend.</p>
+            </div>
+            
+            <div className="bg-emerald-500/5 border border-emerald-500/20 rounded-2xl p-6 mb-8">
+              <h3 className="text-lg font-bold text-white mb-4">If Vero's guardrails were active last month:</h3>
+              <ul className="space-y-4">
+                <li className="flex items-start gap-3">
+                  <div className="w-6 h-6 rounded-full bg-emerald-500/20 flex items-center justify-center shrink-0 mt-0.5">
+                    <Check className="w-3.5 h-3.5 text-emerald-400" />
+                  </div>
+                  <div>
+                    <p className="text-white font-medium">You would have saved <span className="text-emerald-400 font-bold">$1,240.00</span></p>
+                    <p className="text-sm text-white/50">By pausing 4 fatigued ad sets that exceeded frequency limits.</p>
+                  </div>
+                </li>
+                <li className="flex items-start gap-3">
+                  <div className="w-6 h-6 rounded-full bg-emerald-500/20 flex items-center justify-center shrink-0 mt-0.5">
+                    <Check className="w-3.5 h-3.5 text-emerald-400" />
+                  </div>
+                  <div>
+                    <p className="text-white font-medium">You would have captured <span className="text-emerald-400 font-bold">12% more ROAS</span></p>
+                    <p className="text-sm text-white/50">By instantly scaling 2 winning audiences when CPA dropped.</p>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            
+            <button
+              onClick={() => setStep(5)}
+              className="w-full bg-white text-black font-medium px-6 py-4 rounded-xl transition-all hover:bg-white/90 flex items-center justify-center gap-2 cursor-pointer"
+            >
+              Continue
+              <ArrowRight className="w-5 h-5" />
+            </button>
+          </section>
+        )}
+
+        {/* Step 5: Invite Team */}
+        {step === 5 && (
+          <section className="animate-in fade-in slide-in-from-right-8 duration-500 text-center" aria-label="Step 5: Invite Team">
             <div className="w-16 h-16 bg-green-500/20 text-green-400 rounded-full flex items-center justify-center mx-auto mb-6" aria-hidden="true">
               <Users className="w-8 h-8" />
             </div>
@@ -198,33 +251,12 @@ export function OnboardingWizard({ onComplete }: OnboardingWizardProps) {
             <p className="text-white/60 mb-8">SaaS works better together.</p>
             
             <button
-              onClick={() => setStep(5)}
-              aria-label="Skip inviting team for now"
-              className="w-full bg-white text-black font-medium px-6 py-4 rounded-xl transition-all hover:bg-white/90 flex items-center justify-center gap-2 mb-4 cursor-pointer"
-            >
-              Skip for now
-              <ArrowRight className="w-5 h-5" aria-hidden="true" />
-            </button>
-          </section>
-        )}
-
-        {/* Step 5: Completion */}
-        {step === 5 && (
-          <section className="animate-in fade-in slide-in-from-right-8 duration-500 text-center" aria-label="Step 5: Completion">
-            <div className="w-20 h-20 bg-indigo-500/20 text-indigo-400 rounded-full flex items-center justify-center mx-auto mb-6 border-4 border-indigo-500/30" aria-hidden="true">
-              <Check className="w-10 h-10" />
-            </div>
-            <h2 className="text-4xl font-bold text-white mb-4">You're All Set!</h2>
-            <p className="text-white/60 text-lg mb-8">
-              Your enterprise platform is ready. Would you like to request Premium access to unlock advanced features?
-            </p>
-            
-            <button
               onClick={onComplete}
-              aria-label="Go to Dashboard"
-              className="w-full bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-400 hover:to-purple-500 text-white font-medium px-6 py-4 rounded-xl transition-all shadow-[0_0_30px_rgba(99,102,241,0.3)] flex items-center justify-center gap-2 cursor-pointer"
+              aria-label="Finish Onboarding"
+              className="w-full bg-white text-black font-medium px-6 py-4 rounded-xl transition-all hover:bg-white/90 flex items-center justify-center gap-2 cursor-pointer"
             >
-              Go to Dashboard
+              Enter Dashboard
+              <ArrowRight className="w-5 h-5" aria-hidden="true" />
             </button>
           </section>
         )}

@@ -11,19 +11,13 @@ import {
   AlertTriangle, 
   Sparkles, 
   TrendingDown, 
-  ArrowUpRight 
+  ArrowUpRight,
+  Activity,
+  Pause,
+  RefreshCw
 } from 'lucide-react';
 import gsap from 'gsap';
 import React, { useEffect, useState, useRef } from 'react';
-import { 
-  AreaChart, 
-  Area, 
-  XAxis, 
-  YAxis, 
-  CartesianGrid, 
-  Tooltip, 
-  ResponsiveContainer 
-} from 'recharts';
 import MetricCard from '../../components/MetricCard';
 import { analyticsApi } from '../../services/api';
 import { useStore } from '../../store/useStore';
@@ -418,99 +412,81 @@ export default function DashboardOverview() {
         />
       </div>
 
-      {/* CHARTS GRAPH CONTAINER */}
+      {/* ACTION FEED (REAL-TIME EXECUTION LOG) */}
       <div className="glass-panel-premium p-6 rounded-3xl relative overflow-hidden shadow-glass-shadow hover:shadow-glass-shadow-premium gsap-stagger">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 border-b border-white/[0.04] pb-4">
           <div>
-            <h3 className="text-base font-bold text-white tracking-tight">Performance Insights History</h3>
-            <p className="text-xs text-muted">Chronological trends over your selected date range.</p>
+            <h3 className="text-base font-bold text-white tracking-tight flex items-center gap-2">
+              <Activity className="w-5 h-5 text-emerald-400" />
+              Real-Time Execution Feed
+            </h3>
+            <p className="text-xs text-muted">Live view of guardrails and automations protecting your ad spend.</p>
           </div>
-          
-          {/* TAB BAR SELECTORS */}
-          <div className="flex p-1 rounded-xl bg-white/[0.02] border border-white/[0.06] overflow-hidden">
-            {Object.keys(chartConfigs).map((tab) => {
-              const selected = activeChartTab === tab;
-              const label = tab.toUpperCase();
-              return (
-                <button
-                  key={tab}
-                  onClick={() => setActiveChartTab(tab as 'spend' | 'roas' | 'ctr' | 'purchases')}
-                  className={`px-3 py-1 rounded-lg text-[10px] font-bold transition-all duration-300 btn-touch ${
-                    selected 
-                      ? 'bg-white/[0.06] text-white border border-white/[0.08] shadow-[0_2px_8px_rgba(0,0,0,0.2)]' 
-                      : 'text-muted hover:text-white'
-                  }`}
-                >
-                  {label}
-                </button>
-              );
-            })}
+          <div className="flex items-center gap-2">
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+            </span>
+            <span className="text-[10px] text-emerald-400 font-bold uppercase tracking-wider">Live</span>
           </div>
         </div>
 
-        {/* RECHARTS AREA CHART */}
-        <div className="h-80 w-full">
-          {chartsLoading || !mounted ? (
-            <div className="w-full h-full flex items-center justify-center">
-              <div className="w-8 h-8 rounded-full border-2 border-primary/20 border-t-primary animate-spin"></div>
+        <div className="space-y-4">
+          {/* Feed Item 1 */}
+          <div className="p-4 rounded-2xl bg-white/[0.015] border border-white/[0.05] flex items-start gap-4">
+            <div className="mt-1 p-2 bg-red-500/10 rounded-full border border-red-500/20">
+              <Pause className="w-4 h-4 text-red-500" />
             </div>
-          ) : (chartData || []).length === 0 ? (
-            <div className="w-full h-full flex flex-col items-center justify-center text-muted">
-              <AlertTriangle className="w-8 h-8 mb-2 text-warning" />
-              <span>No historical sync logs discovered in this range.</span>
+            <div className="flex-1">
+              <div className="flex justify-between items-start mb-1">
+                <h4 className="text-sm font-bold text-white">Paused Ad Set: "Lookalike US 1%"</h4>
+                <span className="text-xs text-muted">2 mins ago</span>
+              </div>
+              <p className="text-xs text-muted mb-2">Triggered by <span className="text-white font-medium">Stop-Loss Guard</span>: Spend &gt; $50 &amp; ROAS &lt; 1.0</p>
+              <div className="flex items-center gap-3">
+                <span className="inline-flex items-center gap-1 text-[10px] bg-red-500/10 text-red-400 px-2 py-1 rounded-md font-medium">
+                  Saved ~$140 today
+                </span>
+                <span className="inline-flex items-center gap-1 text-[10px] bg-indigo-500/10 text-indigo-400 px-2 py-1 rounded-md font-medium">
+                  Slack Alert Sent
+                </span>
+              </div>
             </div>
-          ) : (
-            <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                <defs>
-                  <linearGradient id="colorMetric" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor={activeConf.color} stopOpacity={0.15}/>
-                    <stop offset="95%" stopColor={activeConf.color} stopOpacity={0.0}/>
-                  </linearGradient>
-                </defs>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255,255,255,0.015)" />
-                <XAxis 
-                  dataKey="date" 
-                  stroke="rgba(255,255,255,0.15)" 
-                  tickLine={false} 
-                  style={{ fontSize: 9, fontWeight: 500 }}
-                  tickFormatter={(val) => {
-                    const parts = val.split('-');
-                    return parts.length === 3 ? `${parts[1]}/${parts[2]}` : val;
-                  }}
-                />
-                <YAxis 
-                  stroke="rgba(255,255,255,0.15)" 
-                  tickLine={false} 
-                  style={{ fontSize: 9, fontWeight: 500 }}
-                  tickFormatter={(val) => formatCompact(val)}
-                />
-                <Tooltip
-                  contentStyle={{ 
-                    backgroundColor: 'rgba(14, 16, 23, 0.85)', 
-                    borderColor: 'rgba(255,255,255,0.08)',
-                    borderRadius: '16px',
-                    boxShadow: '0 16px 40px 0 rgba(0,0,0,0.5)',
-                    color: '#F8FAFC',
-                    backdropFilter: 'blur(16px)',
-                    fontSize: 10
-                  }}
-                  formatter={(val: number) => [activeConf.formatter(val), activeConf.label]}
-                  labelStyle={{ fontSize: 10, fontWeight: 'bold', color: '#94A3B8', marginBottom: 4 }}
-                />
-                <Area 
-                  type="monotone" 
-                  dataKey={activeChartTab} 
-                  stroke={activeConf.color} 
-                  strokeWidth={2}
-                  fillOpacity={1} 
-                  fill="url(#colorMetric)" 
-                  dot={false}
-                  activeDot={{ r: 4, stroke: '#08090C', strokeWidth: 1.5 }}
-                />
-              </AreaChart>
-            </ResponsiveContainer>
-          )}
+          </div>
+
+          {/* Feed Item 2 */}
+          <div className="p-4 rounded-2xl bg-white/[0.015] border border-white/[0.05] flex items-start gap-4">
+            <div className="mt-1 p-2 bg-emerald-500/10 rounded-full border border-emerald-500/20">
+              <ArrowUpRight className="w-4 h-4 text-emerald-500" />
+            </div>
+            <div className="flex-1">
+              <div className="flex justify-between items-start mb-1">
+                <h4 className="text-sm font-bold text-white">Scaled Budget: "Retargeting 30D"</h4>
+                <span className="text-xs text-muted">15 mins ago</span>
+              </div>
+              <p className="text-xs text-muted mb-2">Triggered by <span className="text-white font-medium">Winner Scaler</span>: ROAS &gt; 3.0 &amp; CPA &lt; $15</p>
+              <div className="flex items-center gap-3">
+                <span className="inline-flex items-center gap-1 text-[10px] bg-emerald-500/10 text-emerald-400 px-2 py-1 rounded-md font-medium">
+                  Budget +15%
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* Feed Item 3 */}
+          <div className="p-4 rounded-2xl bg-white/[0.015] border border-white/[0.05] flex items-start gap-4">
+            <div className="mt-1 p-2 bg-amber-500/10 rounded-full border border-amber-500/20">
+              <RefreshCw className="w-4 h-4 text-amber-500" />
+            </div>
+            <div className="flex-1">
+              <div className="flex justify-between items-start mb-1">
+                <h4 className="text-sm font-bold text-white">Creative Rotation: "Video Ad 03"</h4>
+                <span className="text-xs text-muted">1 hour ago</span>
+              </div>
+              <p className="text-xs text-muted mb-2">Triggered by <span className="text-white font-medium">Fatigue Manager</span>: Frequency &gt; 3.5</p>
+            </div>
+          </div>
+
         </div>
       </div>
 

@@ -116,10 +116,10 @@ export default function LoginPage() {
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.4 }}
-            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-semibold"
+            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-red-500/10 border border-red-500/20 text-red-400 text-xs font-bold uppercase tracking-wider"
           >
-            <Sparkles className="w-3.5 h-3.5" />
-            Decision Intelligence SaaS for Meta Marketing
+            <ShieldCheck className="w-3.5 h-3.5" />
+            Over $12M Ad Spend Protected
           </motion.div>
 
           <motion.h1 
@@ -128,14 +128,14 @@ export default function LoginPage() {
             transition={{ duration: 0.5 }}
             className="text-4xl md:text-5xl lg:text-6xl font-black text-white leading-[1.08] tracking-tight"
           >
-            Auditing Meta Spend. <br/>
-            <span className="bg-gradient-to-r from-primary via-orange-400 to-success bg-clip-text text-transparent">
-              Scaling ROAS.
+            Stop Bleeding <br/>
+            <span className="bg-gradient-to-r from-red-500 via-orange-400 to-yellow-500 bg-clip-text text-transparent">
+              Meta Ad Budget.
             </span>
           </motion.h1>
 
           <p className="text-muted text-base md:text-lg leading-relaxed max-w-md">
-            Vero connects with your ad accounts to isolate audience ad fatigue, spot auction CPM spikes, and surface high-performing scaling opportunities using deterministic logic.
+            Skip the vague AI suggestions. Apply hard, deterministic guardrails that instantly pause fatigued ads, flag anomalies, and scale winning audiences—while you sleep.
           </p>
 
           {/* SaaS Moat points */}

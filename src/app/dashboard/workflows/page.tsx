@@ -45,13 +45,44 @@ export default function WorkflowsPage() {
           <p className="text-muted mt-1">24/7 AI-driven campaign management and guardrails.</p>
         </div>
         
-        <button 
-          onClick={handleCreateRule}
-          className="px-6 py-2.5 bg-primary text-white font-bold rounded-xl shadow-glow-primary hover:bg-primary-hover flex items-center gap-2 transition-colors cursor-pointer"
-        >
-          <Plus className="w-4 h-4" />
-          Create New Rule
-        </button>
+        <div className="flex items-center gap-3">
+          {/* Templates Dropdown/Buttons */}
+          <div className="hidden md:flex items-center gap-2 mr-4">
+            <span className="text-xs font-semibold text-white/50 uppercase tracking-wider mr-2">Templates:</span>
+            <button 
+              onClick={() => {
+                setRules([...rules, { id: Date.now(), name: 'D2C E-comm Stop Loss', condition: 'If Spend > $100 & ROAS < 0.8', action: 'Pause Ad Set', status: 'active', runs: 0, lastTriggered: 'Never' }]);
+              }}
+              className="px-3 py-1.5 bg-white/5 hover:bg-white/10 text-white text-xs font-medium rounded-lg transition-colors"
+            >
+              D2C Stop Loss
+            </button>
+            <button 
+              onClick={() => {
+                setRules([...rules, { id: Date.now() + 1, name: 'Lead Gen Fatigue Rotator', condition: 'If Frequency > 3 & CPA > $40', action: 'Rotate Creative', status: 'active', runs: 0, lastTriggered: 'Never' }]);
+              }}
+              className="px-3 py-1.5 bg-white/5 hover:bg-white/10 text-white text-xs font-medium rounded-lg transition-colors"
+            >
+              Fatigue Rotator
+            </button>
+            <button 
+              onClick={() => {
+                setRules([...rules, { id: Date.now() + 2, name: 'The Winner Scaler', condition: 'If ROAS > 3.5 & Spend > $50', action: 'Increase Budget 20%', status: 'active', runs: 0, lastTriggered: 'Never' }]);
+              }}
+              className="px-3 py-1.5 bg-white/5 hover:bg-white/10 text-white text-xs font-medium rounded-lg transition-colors"
+            >
+              Winner Scaler
+            </button>
+          </div>
+          
+          <button 
+            onClick={handleCreateRule}
+            className="px-6 py-2.5 bg-primary text-white font-bold rounded-xl shadow-glow-primary hover:bg-primary-hover flex items-center gap-2 transition-colors cursor-pointer"
+          >
+            <Plus className="w-4 h-4" />
+            Custom Rule
+          </button>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">

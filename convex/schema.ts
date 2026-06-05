@@ -26,6 +26,10 @@ export default defineSchema({
     customDomain: v.optional(v.string()),
     brandColor: v.optional(v.string()),
     supportEmail: v.optional(v.string()),
+    alertPreferences: v.optional(v.object({
+      slack: v.union(v.literal("all"), v.literal("critical"), v.literal("none")),
+      whatsapp: v.union(v.literal("all"), v.literal("critical"), v.literal("none")),
+    })),
     whiteLabelEnabled: v.boolean(),
     ownerId: v.id("users"),
     plan: v.union(v.literal("free"), v.literal("starter"), v.literal("growth"), v.literal("pro"), v.literal("enterprise")),

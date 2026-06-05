@@ -31,8 +31,8 @@ export default function SettingsPage() {
   const updateOrg = useMutation(api.organizations.update);
   const saveIntegration = useMutation(api.integrations.saveMetaIntegration);
 
-  const [slackEnabled, setSlackEnabled] = useState(false);
-  const [whatsappEnabled, setWhatsappEnabled] = useState(false);
+  const [slackPref, setSlackPref] = useState<'all' | 'critical' | 'none'>('all');
+  const [whatsappPref, setWhatsappPref] = useState<'all' | 'critical' | 'none'>('critical');
   const [teamEmails, setTeamEmails] = useState('karthikeya@vero.co, marketing@vero.co');
   const [customDomain, setCustomDomain] = useState('');
 
@@ -41,8 +41,22 @@ export default function SettingsPage() {
       if (activeOrg.name && activeOrg.name !== agencyName) setAgencyName(activeOrg.name);
       if (activeOrg.customDomain) setCustomDomain(activeOrg.customDomain);
       if (activeOrg.brandColor) setBrandColor(activeOrg.brandColor as any);
+      if (activeOrg.alertPreferences) {
+        setSlackPref(activeOrg.alertPreferences.slack);
+        setWhatsappPref(activeOrg.alertPreferences.whatsapp);
+      }
     }
   }, [activeOrg]);
+
+  const handleSlackPref = (val: 'all' | 'critical' | 'none') => {
+    setSlackPref(val);
+    handleUpdateOrgSettings({ alertPreferences: { slack: val, whatsapp: whatsappPref } });
+  };
+
+  const handleWhatsappPref = (val: 'all' | 'critical' | 'none') => {
+    setWhatsappPref(val);
+    handleUpdateOrgSettings({ alertPreferences: { slack: slackPref, whatsapp: val } });
+  };
 
   const handleUpdateOrgSettings = (updates: any) => {
     if (activeOrgId) {
@@ -224,52 +238,50 @@ export default function SettingsPage() {
             </div>
 
             <div className="space-y-4">
-              {/* Slack Channel */}
-              <div className="p-4 rounded-2xl bg-white/[0.015] border border-white/[0.05] flex items-center justify-between gap-4">
+              <div className="p-4 rounded-2xl bg-white/[0.015] border border-white/[0.05] flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div className="flex items-center gap-3.5">
-                  <div className="p-2.5 rounded-xl bg-purple-500/10 border border-purple-500/20 text-purple-400">
+                  <div className="p-2.5 rounded-xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-400">
                     <Slack className="w-5 h-5" />
                   </div>
                   <div>
-                    <h4 className="text-sm font-semibold text-white">Slack Hook Integrations</h4>
-                    <p className="text-[11px] text-muted">Post warnings to #marketing-alerts when creative saturation triggers are tripped.</p>
+                    <h4 className="text-sm font-semibold text-white">Slack Workspace</h4>
+                    <p className="text-[11px] text-muted">Route automation alerts to a Slack channel</p>
                   </div>
                 </div>
-                {/* Switch */}
-                <button
-                  onClick={() => setSlackEnabled(!slackEnabled)}
-                  className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
-                    slackEnabled ? 'bg-primary' : 'bg-white/10'
-                  }`}
-                >
-                  <span className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-lg ring-0 transition duration-200 ease-in-out ${
-                    slackEnabled ? 'translate-x-5' : 'translate-x-0'
-                  }`}></span>
-                </button>
+                <div className="flex gap-2">
+                  <select 
+                    value={slackPref}
+                    onChange={(e) => handleSlackPref(e.target.value as any)}
+                    className="bg-white/5 border border-white/10 rounded-lg text-xs text-white px-3 py-1.5 focus:outline-none focus:border-primary/50"
+                  >
+                    <option value="all">All Alerts</option>
+                    <option value="critical">Critical Only</option>
+                    <option value="none">Muted</option>
+                  </select>
+                </div>
               </div>
 
-              {/* WhatsApp alerts */}
-              <div className="p-4 rounded-2xl bg-white/[0.015] border border-white/[0.05] flex items-center justify-between gap-4">
+              <div className="p-4 rounded-2xl bg-white/[0.015] border border-white/[0.05] flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div className="flex items-center gap-3.5">
                   <div className="p-2.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400">
                     <MessageSquare className="w-5 h-5" />
                   </div>
                   <div>
-                    <h4 className="text-sm font-semibold text-white">WhatsApp Anomaly Broadcasts</h4>
-                    <p className="text-[11px] text-muted">Receive high-priority WhatsApp alerts when a campaign&apos;s ROAS falls below target levels.</p>
+                    <h4 className="text-sm font-semibold text-white">WhatsApp Business</h4>
+                    <p className="text-[11px] text-muted">Receive SMS/WhatsApp notifications</p>
                   </div>
                 </div>
-                {/* Switch */}
-                <button
-                  onClick={() => setWhatsappEnabled(!whatsappEnabled)}
-                  className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
-                    whatsappEnabled ? 'bg-primary' : 'bg-white/10'
-                  }`}
-                >
-                  <span className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-lg ring-0 transition duration-200 ease-in-out ${
-                    whatsappEnabled ? 'translate-x-5' : 'translate-x-0'
-                  }`}></span>
-                </button>
+                <div className="flex gap-2">
+                  <select 
+                    value={whatsappPref}
+                    onChange={(e) => handleWhatsappPref(e.target.value as any)}
+                    className="bg-white/5 border border-white/10 rounded-lg text-xs text-white px-3 py-1.5 focus:outline-none focus:border-primary/50"
+                  >
+                    <option value="all">All Alerts</option>
+                    <option value="critical">Critical Only</option>
+                    <option value="none">Muted</option>
+                  </select>
+                </div>
               </div>
             </div>
           </div>
@@ -355,7 +367,7 @@ export default function SettingsPage() {
             </div>
           </div>
 
-          {/* 3. TEAM MANAGEMENT & OMNI-CHANNEL (PREMIUM) */}
+          {/* 4. TEAM MANAGEMENT & OMNI-CHANNEL (PREMIUM) */}
           {isPremium && (
             <>
               {/* Unlimited Team Seats */}
