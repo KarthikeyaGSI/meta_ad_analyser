@@ -31,7 +31,8 @@ export async function POST(req: Request) {
       system: 'You are Vero AI, a deterministic advertising guardrail assistant. You help performance marketers optimize their Meta Ads. Speak precisely, cite metrics, and offer automated workflows as solutions.',
     });
 
-    return result.toDataStreamResponse ? result.toDataStreamResponse() : (result as any).toTextStreamResponse();
+    // @ts-ignore - The method name changes depending on the specific AI SDK version (toTextStreamResponse or toDataStreamResponse)
+    return result.toTextStreamResponse ? result.toTextStreamResponse() : result.toDataStreamResponse();
   } catch (error) {
     console.error("Chat API Error:", error);
     return new Response(JSON.stringify({ error: "Failed to process chat" }), { status: 500 });
