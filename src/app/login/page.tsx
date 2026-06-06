@@ -38,7 +38,16 @@ export default function LoginPage() {
       
     } catch (err: any) {
       setStatus('error');
-      setErrorMessage(err.message);
+      
+      let msg = err.message || 'An unknown error occurred';
+      
+      if (msg === 'Failed to fetch') {
+        msg = 'Network error: The authentication service is unavailable or unreachable.';
+      } else if (msg.toLowerCase().includes('invalid')) {
+        msg = 'Invalid email or password.';
+      }
+      
+      setErrorMessage(msg);
     }
   };
 
