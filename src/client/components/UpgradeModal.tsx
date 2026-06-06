@@ -2,7 +2,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Sparkles, X, Lock, KeyRound, CheckCircle2 } from 'lucide-react';
 import React, { useState } from 'react';
 import { useStore } from '../store/useStore';
-import { apiClient } from '../services/api';
+import { apiClient } from '../../services/api';
 
 interface UpgradeModalProps {
   isOpen: boolean;
