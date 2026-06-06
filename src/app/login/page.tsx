@@ -86,6 +86,7 @@ export default function LoginPage() {
           <AnimatePresence mode="wait">
             {status === 'error' && (
               <motion.div 
+                key="error-message"
                 initial={{ opacity: 0, height: 0 }}
                 animate={{ opacity: 1, height: 'auto' }}
                 exit={{ opacity: 0, height: 0 }}
@@ -104,7 +105,7 @@ export default function LoginPage() {
           >
             <AnimatePresence mode="wait">
               {status === 'idle' || status === 'error' ? (
-                <motion.div 
+                <motion.span 
                   key="idle"
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -113,9 +114,9 @@ export default function LoginPage() {
                 >
                   <span>Sign In</span>
                   <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                </motion.div>
+                </motion.span>
               ) : status === 'loading' ? (
-                <motion.div 
+                <motion.span 
                   key="loading"
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -124,16 +125,16 @@ export default function LoginPage() {
                 >
                   <Loader2 className="w-4 h-4 animate-spin" />
                   <span>Signing In...</span>
-                </motion.div>
+                </motion.span>
               ) : (
-                <motion.div 
+                <motion.span 
                   key="success"
                   initial={{ opacity: 0, scale: 0.8 }}
                   animate={{ opacity: 1, scale: 1 }}
                   className="flex items-center space-x-2 text-green-600"
                 >
                   <span>Success!</span>
-                </motion.div>
+                </motion.span>
               )}
             </AnimatePresence>
           </button>

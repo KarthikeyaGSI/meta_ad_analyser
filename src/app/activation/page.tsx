@@ -85,6 +85,7 @@ export default function ActivationPage() {
           <AnimatePresence mode="wait">
             {status === 'error' && (
               <motion.div 
+                key="error-message"
                 initial={{ opacity: 0, height: 0 }}
                 animate={{ opacity: 1, height: 'auto' }}
                 exit={{ opacity: 0, height: 0 }}
@@ -103,7 +104,7 @@ export default function ActivationPage() {
           >
             <AnimatePresence mode="wait">
               {status === 'idle' || status === 'error' ? (
-                <motion.div 
+                <motion.span 
                   key="idle"
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -112,9 +113,9 @@ export default function ActivationPage() {
                 >
                   <span>Activate License</span>
                   <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                </motion.div>
+                </motion.span>
               ) : status === 'validating' ? (
-                <motion.div 
+                <motion.span 
                   key="validating"
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -123,9 +124,9 @@ export default function ActivationPage() {
                 >
                   <Loader2 className="w-4 h-4 animate-spin" />
                   <span>Validating...</span>
-                </motion.div>
+                </motion.span>
               ) : (
-                <motion.div 
+                <motion.span 
                   key="success"
                   initial={{ opacity: 0, scale: 0.8 }}
                   animate={{ opacity: 1, scale: 1 }}
@@ -133,7 +134,7 @@ export default function ActivationPage() {
                 >
                   <ShieldCheck className="w-4 h-4" />
                   <span>Activated Successfully</span>
-                </motion.div>
+                </motion.span>
               )}
             </AnimatePresence>
           </button>
