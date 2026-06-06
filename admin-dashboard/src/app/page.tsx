@@ -20,9 +20,15 @@ export default async function AdminDashboard() {
     <div className="min-h-screen bg-neutral-950 text-white p-8">
       <div className="max-w-6xl mx-auto space-y-8">
         <header className="flex items-center justify-between border-b border-white/10 pb-6">
-          <div>
-            <h1 className="text-3xl font-semibold tracking-tight text-white">Console</h1>
-            <p className="text-neutral-400 mt-1">Platform metrics and license activities</p>
+          <div className="flex items-center justify-between w-full">
+            <div>
+              <h1 className="text-3xl font-semibold tracking-tight text-white">Console</h1>
+              <p className="text-neutral-400 mt-1">Platform metrics and license activities</p>
+            </div>
+            <a href="/keys" className="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors flex items-center">
+              <Key className="w-4 h-4 mr-2" />
+              Generate Keys
+            </a>
           </div>
         </header>
 
