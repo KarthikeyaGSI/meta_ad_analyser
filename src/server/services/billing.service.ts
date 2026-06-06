@@ -29,6 +29,7 @@ export class BillingService {
     // Create Subscription
     const [subscription] = await db.insert(subscriptions).values({
       customerId: customer.id,
+      organizationId,
       planId: plan.id,
       status: 'active',
       currentPeriodStart,
@@ -40,6 +41,7 @@ export class BillingService {
     const keyHash = LicenseService.hashKey(licenseKey);
 
     const [license] = await db.insert(licenses).values({
+      organizationId,
       subscriptionId: subscription.id,
       planId: plan.id,
       keyHash,
