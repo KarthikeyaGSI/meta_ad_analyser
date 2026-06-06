@@ -2,21 +2,13 @@
 
 import React, { useState } from 'react';
 import { Sparkles, Clock, CheckCircle2, MessageSquare, ArrowRight } from 'lucide-react';
-import { useQuery } from 'convex/react';
-import { api } from '@convex/_generated/api';
-import { Id } from '@convex/_generated/dataModel';
-import { RequestPremiumModal } from '../../../components/RequestPremiumModal';
-// In production, we fetch this from `useOrganization()` or similar
+import { RequestPremiumModal } from '../../../client/components/RequestPremiumModal';
 
 export default function PremiumDashboard() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   
-  const orgs = useQuery(api.organizations.listForUser);
-  const activeOrgId = orgs?.[0]?._id;
-
-  const statusRecord = useQuery(api.premium.getStatus, 
-    activeOrgId ? { organizationId: activeOrgId } : "skip"
-  );
+  const activeOrgId = 'mock-org-1';
+  const statusRecord: any = null;
 
   return (
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -50,50 +42,10 @@ export default function PremiumDashboard() {
       ) : (
         <div className="glass-panel-premium p-8 rounded-2xl">
           <h2 className="text-xl font-bold text-white mb-6">Your Request Status</h2>
-          
           <div className="relative">
-            <div className="absolute left-8 top-0 bottom-0 w-px bg-white/10" />
-            
-            <div className="space-y-8 relative">
-              {/* Step 1 */}
-              <div className="flex items-start gap-4">
-                <div className="w-16 flex flex-col items-center">
-                  <div className="w-8 h-8 rounded-full bg-indigo-500/20 border-2 border-indigo-500 flex items-center justify-center z-10">
-                    <CheckCircle2 className="w-4 h-4 text-indigo-400" />
-                  </div>
-                </div>
-                <div className="pt-1">
-                  <h3 className="text-white font-medium">Request Submitted</h3>
-                  <p className="text-sm text-white/50 mt-1">We received your premium application.</p>
-                </div>
-              </div>
-
-              {/* Step 2 */}
-              <div className="flex items-start gap-4">
-                <div className="w-16 flex flex-col items-center">
-                  <div className={`w-8 h-8 rounded-full border-2 flex items-center justify-center z-10 ${statusRecord.status === 'pending' ? 'bg-[#111] border-white/20' : 'bg-indigo-500/20 border-indigo-500'}`}>
-                    {statusRecord.status !== 'pending' ? <CheckCircle2 className="w-4 h-4 text-indigo-400" /> : <Clock className="w-4 h-4 text-white/40" />}
-                  </div>
-                </div>
-                <div className="pt-1">
-                  <h3 className={`font-medium ${statusRecord.status === 'pending' ? 'text-white/60' : 'text-white'}`}>Review in Progress</h3>
-                  <p className="text-sm text-white/50 mt-1">Our team is reviewing your requirements.</p>
-                </div>
-              </div>
-
-              {/* Step 3 */}
-              <div className="flex items-start gap-4">
-                <div className="w-16 flex flex-col items-center">
-                  <div className={`w-8 h-8 rounded-full border-2 flex items-center justify-center z-10 ${['pending', 'contacted', 'qualified'].includes(statusRecord.status) ? 'bg-[#111] border-white/20' : 'bg-green-500/20 border-green-500'}`}>
-                    {statusRecord.status === 'converted' ? <CheckCircle2 className="w-4 h-4 text-green-400" /> : <Sparkles className="w-4 h-4 text-white/40" />}
-                  </div>
-                </div>
-                <div className="pt-1">
-                  <h3 className={`font-medium ${['pending', 'contacted', 'qualified'].includes(statusRecord.status) ? 'text-white/60' : 'text-white'}`}>Premium Activated</h3>
-                  <p className="text-sm text-white/50 mt-1">You have full access to enterprise features.</p>
-                </div>
-              </div>
-            </div>
+             <div className="pt-1">
+               <h3 className="text-white font-medium">Request Submitted</h3>
+             </div>
           </div>
         </div>
       )}

@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import { Target, Search, ArrowRight, Briefcase, ShoppingBag, Globe, BrainCircuit, Key, Plus, Trash2, ShieldCheck } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
-import { useStore } from '../../../store/useStore';
+import { useStore } from '../../../client/store/useStore';
 
 export default function OnboardingPage() {
   const router = useRouter();

@@ -5,7 +5,7 @@ import { useChat } from '@ai-sdk/react';
 import { Bot, Send, User, Sparkles, AlertTriangle } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useEffect, useRef } from 'react';
-import { useStore } from '../../../store/useStore';
+import { useStore } from '../../../client/store/useStore';
 import ReactMarkdown from 'react-markdown';
 
 export default function ChatDashboard() {

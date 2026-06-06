@@ -5,8 +5,8 @@ import { BarChart3, AlertTriangle, Monitor, Smartphone, Layers3, Users2 } from '
 import React, { useEffect, useState } from 'react';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 import { analyticsApi } from '../../../services/api';
-import { useStore } from '../../../store/useStore';
-import { formatCurrency, formatPercent, formatNumber } from '../../../utils/formatters';
+import { useStore } from '../../../client/store/useStore';
+import { formatCurrency, formatPercent, formatNumber } from '../../../shared/utils/formatters';
 
 export default function AnalyticsBreakdowns() {
   const { activeAccount, dateRange, refreshTrigger } = useStore();

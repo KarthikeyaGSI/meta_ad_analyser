@@ -4,7 +4,7 @@ import { motion, useScroll, useTransform } from 'framer-motion';
 import { useRef } from 'react';
 import { ShieldCheck, Rocket, BrainCircuit, HeadphonesIcon } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import NeumorphismButton from '../../../components/NeumorphismButton';
+import NeumorphismButton from '../../../client/components/NeumorphismButton';
 
 export default function WelcomePage() {
   const containerRef = useRef<HTMLDivElement>(null);

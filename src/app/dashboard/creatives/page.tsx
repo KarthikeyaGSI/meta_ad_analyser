@@ -5,8 +5,8 @@ import { motion } from 'framer-motion';
 import { Image as ImageIcon, AlertTriangle, Flame, ShieldAlert } from 'lucide-react';
 import React from 'react';
 import { analyticsApi } from '../../../services/api';
-import { useStore } from '../../../store/useStore';
-import { formatCurrency, formatPercent, formatRoas } from '../../../utils/formatters';
+import { useStore } from '../../../client/store/useStore';
+import { formatCurrency, formatPercent, formatRoas } from '../../../shared/utils/formatters';
 
 export default function CreativesExplorer() {
   const { activeAccount, dateRange, refreshTrigger, isPremium } = useStore();

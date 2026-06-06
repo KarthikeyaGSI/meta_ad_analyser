@@ -4,8 +4,8 @@ import { useQuery } from '@tanstack/react-query';
 import { Search, ChevronUp, ChevronDown, Download, AlertTriangle, Play, Pause, Layers } from 'lucide-react';
 import React, { useState } from 'react';
 import { analyticsApi } from '../../../services/api';
-import { useStore } from '../../../store/useStore';
-import { formatCurrency, formatPercent, formatRoas, formatNumber } from '../../../utils/formatters';
+import { useStore } from '../../../client/store/useStore';
+import { formatCurrency, formatPercent, formatRoas, formatNumber } from '../../../shared/utils/formatters';
 
 export default function CampaignsExplorer() {
   const { activeAccount, dateRange, refreshTrigger } = useStore();

@@ -19,18 +19,17 @@ import {
 } from 'lucide-react';
 import React, { useState, useEffect } from 'react';
 import { analyticsApi, authApi } from '../../../services/api';
-import { useStore } from '../../../store/useStore';
+import { useStore } from '../../../client/store/useStore';
 
 export default function SettingsPage() {
   const { setActiveAccount, triggerRefresh, activeAccount, brandColor, setBrandColor, agencyName, setAgencyName, isPremium } = useStore();
   
-  const orgs = useQuery(api.organizations.listForUser);
-  const activeOrg = orgs?.[0];
+  const orgs: any[] = [];
+  const activeOrg: any = orgs?.[0];
   const activeOrgId = activeOrg?._id;
 
-  const updateOrg = useMutation(api.organizations.update);
-  const saveIntegration = useMutation(api.integrations.saveMetaIntegration);
-
+  const updateOrg = async (opts: any) => {};
+  const saveIntegration = async (opts: any) => {};
   const [slackPref, setSlackPref] = useState<'all' | 'critical' | 'none'>('all');
   const [whatsappPref, setWhatsappPref] = useState<'all' | 'critical' | 'none'>('critical');
   const [teamEmails, setTeamEmails] = useState('karthikeya@vero.co, marketing@vero.co');

@@ -2,8 +2,8 @@
 
 import { Users, MapPin, DollarSign, Target } from 'lucide-react';
 import React from 'react';
-import leadsData from '../../../data/leadsData.json';
-import { formatCurrency } from '../../../utils/formatters';
+import leadsData from '../../../shared/data/leadsData.json';
+import { formatCurrency } from '../../../shared/utils/formatters';
 
 export default function LeadsDashboard() {
   const totalLeads = leadsData.length;

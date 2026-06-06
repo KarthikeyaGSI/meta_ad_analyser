@@ -14,8 +14,8 @@ import {
 import { useRouter, useSearchParams } from 'next/navigation';
 import React, { useEffect, useState, Suspense } from 'react';
 import { authApi, analyticsApi } from '../../../services/api';
-import { useStore } from '../../../store/useStore';
-import { MetaAuthResponse } from '../../../types/auth';
+import { useStore } from '../../../client/store/useStore';
+import { MetaAuthResponse } from '../../../shared/types/auth';
 
 
 interface DebugState {

@@ -3,10 +3,10 @@
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { useRouter, usePathname } from 'next/navigation';
-import Navbar from '../../components/Navbar';
-import Sidebar from '../../components/Sidebar';
-import { useStore } from '../../store/useStore';
-import { CommandPalette } from '../../components/CommandPalette';
+import Navbar from '../../client/components/Navbar';
+import Sidebar from '../../client/components/Sidebar';
+import { useStore } from '../../client/store/useStore';
+import { CommandPalette } from '../../client/components/CommandPalette';
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const router    = useRouter();

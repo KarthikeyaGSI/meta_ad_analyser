@@ -1,14 +1,14 @@
 'use client';
 
 import React, { useState } from 'react';
-import { useQuery, useMutation } from 'convex/react';
-import { api } from '@convex/_generated/api';
+// import { useQuery, useMutation } from 'convex/react';
+// import { api } from '@convex/_generated/api';
 import { Share2, Users, Gift, Link2, Copy, CheckCircle2 } from 'lucide-react';
 
 export default function ReferralsDashboard() {
-  const code = useQuery(api.referrals.getMyCode);
-  const referrals = useQuery(api.referrals.getMyReferrals);
-  const generateCode = useMutation(api.referrals.generateCode);
+  const code = 'MOCK-CODE';
+  const referrals: any[] = [];
+  const generateCode = async () => 'NEW-CODE';
   
   const [copied, setCopied] = useState(false);
 

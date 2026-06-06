@@ -3,7 +3,7 @@
 import { motion } from 'framer-motion';
 import { Target, Search, Plus, Eye, TrendingUp, AlertTriangle, ExternalLink, Image as ImageIcon } from 'lucide-react';
 import React, { useState } from 'react';
-import { useStore } from '../../../store/useStore';
+import { useStore } from '../../../client/store/useStore';
 
 const dummyCompetitors = [
   { id: 1, name: 'Gymshark', url: 'gymshark.com', activeAds: 142, estSpend: '$450k/mo', trend: '+12%', longestAd: '45 days', newAdsThisWeek: 18 },

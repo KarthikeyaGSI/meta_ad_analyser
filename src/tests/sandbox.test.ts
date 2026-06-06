@@ -1,4 +1,4 @@
-import { enableSandbox } from '../lib/runtime';
+import { enableSandbox } from '../shared/lib/runtime';
 import { safeFetch } from '../services/api';
 
 // Mock the apiClient to ensure it is not called when sandbox is enabled

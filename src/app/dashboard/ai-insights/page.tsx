@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 import { BrainCircuit, AlertTriangle, AlertOctagon, TrendingUp, HelpCircle, CheckCircle2 } from 'lucide-react';
 import React from 'react';
 import { analyticsApi } from '../../../services/api';
-import { useStore } from '../../../store/useStore';
+import { useStore } from '../../../client/store/useStore';
 
 export default function AiInsights() {
   const { activeAccount, refreshTrigger } = useStore();

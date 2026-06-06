@@ -7,10 +7,9 @@ import { Id } from '@convex/_generated/dataModel';
 import { Shield, Users, Building, Sparkles, Activity, CheckCircle2, Clock } from 'lucide-react';
 
 export default function AdminDashboard() {
-  const organizations = useQuery(api.admin.getAllOrganizations);
-  const requests = useQuery(api.admin.getAllPremiumRequests);
-  const updateStatus = useMutation(api.admin.updatePremiumRequestStatus);
-
+  const organizations: any[] = [];
+  const requests: any[] = [];
+  const updateStatus = async (opts: any) => {};
   const [activeTab, setActiveTab] = useState<'requests' | 'organizations'>('requests');
 
   const handleApproveRequest = async (requestId: Id<"premiumRequests">) => {

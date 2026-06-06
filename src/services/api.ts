@@ -1,7 +1,7 @@
 import axios from 'axios';
-import { demoAccounts, demoOverview, demoCharts, demoCampaigns, demoAdsets, demoCreatives, demoBreakdowns, demoAiRecommendations } from '../data/demoData';
-import { enableSandbox } from '../lib/runtime';
-import { useStore } from '../store/useStore';
+import { demoAccounts, demoOverview, demoCharts, demoCampaigns, demoAdsets, demoCreatives, demoBreakdowns, demoAiRecommendations } from '../shared/data/demoData';
+import { enableSandbox } from '../shared/lib/runtime';
+import { useStore } from '../client/store/useStore';
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
 
 export const apiClient = axios.create({
@@ -68,7 +68,7 @@ import {
   mapInsightDocument,
   mapAnalyticsOverview,
   mapAIRecommendation
-} from '../utils/mappers';
+} from '../shared/utils/mappers';
 
 export const authApi = {
   register: (data: Record<string, unknown>) => safeFetch(() => apiClient.post('/auth/register', data), { success: true, token: 'demo_token' }),

@@ -3,9 +3,9 @@
 import { motion } from 'framer-motion';
 import { Palette, Printer, Building2, Upload, FileText } from 'lucide-react';
 import React, { useRef } from 'react';
-import { useStore } from '../../../store/useStore';
-import NeumorphismButton from '../../../components/NeumorphismButton';
-import { formatCurrency, formatPercent, formatRoas } from '../../../utils/formatters';
+import { useStore } from '../../../client/store/useStore';
+import NeumorphismButton from '../../../client/components/NeumorphismButton';
+import { formatCurrency, formatPercent, formatRoas } from '../../../shared/utils/formatters';
 
 export default function WhiteLabelPage() {
   const { brandColor, setBrandColor, agencyName, setAgencyName, isPremium, isDemoMode } = useStore();

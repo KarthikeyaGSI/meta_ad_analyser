@@ -4,8 +4,8 @@ import { useQuery } from '@tanstack/react-query';
 import { FolderLock, AlertTriangle, Users, Play, Pause } from 'lucide-react';
 import React from 'react';
 import { analyticsApi } from '../../../services/api';
-import { useStore } from '../../../store/useStore';
-import { formatCurrency, formatRoas, formatNumber } from '../../../utils/formatters';
+import { useStore } from '../../../client/store/useStore';
+import { formatCurrency, formatRoas, formatNumber } from '../../../shared/utils/formatters';
 
 export default function AdsetsExplorer() {
   const { activeAccount, dateRange, refreshTrigger } = useStore();
