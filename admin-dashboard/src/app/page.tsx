@@ -30,7 +30,7 @@ export default async function AdminDashboard() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <div className="bg-neutral-900 border border-white/5 p-6 rounded-xl">
             <div className="flex items-center text-neutral-400 mb-4"><Users className="w-4 h-4 mr-2" /> Total Licenses</div>
-            <div className="text-3xl font-semibold">{totalLicenses}</div>
+            <div className="text-3xl font-semibold">{String(totalLicenses)}</div>
           </div>
           {/* Add more metrics mapping here later */}
         </div>

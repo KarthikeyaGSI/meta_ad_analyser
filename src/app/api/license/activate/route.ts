@@ -12,13 +12,13 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { key, deviceFingerprint } = await request.json();
+    const { key, deviceFingerprint, organizationId } = await request.json();
     
     if (!key || !deviceFingerprint) {
       return NextResponse.json({ error: 'Missing required parameters' }, { status: 400 });
     }
 
-    const activation = await LicenseService.validateActivation(key, deviceFingerprint, session.user.id);
+    const activation = await LicenseService.validateActivation(key, deviceFingerprint, session.user.id, organizationId || '');
     
     return NextResponse.json({ success: true, activation });
   } catch (error: any) {
