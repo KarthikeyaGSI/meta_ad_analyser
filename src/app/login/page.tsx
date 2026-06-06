@@ -41,7 +41,7 @@ export default function LoginPage() {
       
       let msg = err.message || 'An unknown error occurred';
       
-      if (msg === 'Failed to fetch') {
+      if (msg.toLowerCase().includes('failed to fetch') || msg.toLowerCase().includes('network error')) {
         msg = 'Network error: The authentication service is unavailable or unreachable.';
       } else if (msg.toLowerCase().includes('invalid')) {
         msg = 'Invalid email or password.';
