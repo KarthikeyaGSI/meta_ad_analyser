@@ -42,7 +42,7 @@ export class LicenseService {
     return jwt;
   }
 
-  static async validateActivation(key: string, deviceFingerprint: string, userId: string, organizationId: string) {
+  static async validateActivation(key: string, deviceFingerprint: string, userId: string) {
     const hashedKey = this.hashKey(key);
     
     // Find license (soft delete aware)
@@ -97,7 +97,7 @@ export class LicenseService {
 
     // Audit log
     await db.insert(auditLogs).values({
-      organizationId,
+      organizationId: license.organizationId,
       userId,
       action: 'LICENSE_ACTIVATION',
       entityType: 'license',
@@ -115,7 +115,7 @@ export class LicenseService {
     await redis.set(`active_license:${activation.id}`, JSON.stringify({
       status: 'active',
       plan: plan.code,
-      organizationId,
+      organizationId: license.organizationId,
     }), { ex: 86400 }); // 24h cache, DB becomes fallback
 
     return { activation, jwtToken };

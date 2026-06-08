@@ -28,7 +28,7 @@ export async function POST(request: Request) {
         features: ['all'],
       };
     } else {
-      activation = await LicenseService.validateActivation(key, deviceFingerprint, session.user.id, organizationId || '');
+      activation = await LicenseService.validateActivation(key, deviceFingerprint, session.user.id);
     }
     
     return NextResponse.json({ success: true, activation });
