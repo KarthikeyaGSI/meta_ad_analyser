@@ -35,11 +35,9 @@ export default function ActivationPage() {
       }
 
       setStatus('success');
-      // Set cookie to satisfy middleware (using a simple document.cookie for client-side demo, better handled via API response Set-Cookie)
-      document.cookie = "vero.license_valid=true; path=/; max-age=86400";
       
       setTimeout(() => {
-        router.push('/dashboard');
+        window.location.href = '/dashboard';
       }, 1500);
       
     } catch (err: any) {
