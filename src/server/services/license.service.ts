@@ -124,4 +124,27 @@ export class LicenseService {
 
     return { activation, jwtToken };
   }
+
+  static async syncLicense(userId: string) {
+    const userActivations = await db.select()
+      .from(licenseActivations)
+      .where(and(eq(licenseActivations.userId, userId), eq(licenseActivations.status, 'active')));
+
+    if (userActivations.length === 0) return null;
+    const activation = userActivations[0];
+
+    // Check if expired
+    if (new Date() > new Date(activation.expiresAt)) {
+      await db.update(licenseActivations).set({ status: 'expired' }).where(eq(licenseActivations.id, activation.id));
+      return null;
+    }
+
+    const [license] = await db.select().from(licenses).where(eq(licenses.id, activation.licenseId));
+    if (!license || license.status !== 'active') return null;
+
+    const [plan] = await db.select().from(plans).where(eq(plans.id, license.planId));
+    
+    const jwtToken = await this.generateLicenseJWT(activation, license, plan.code);
+    return { activation, jwtToken };
+  }
 }

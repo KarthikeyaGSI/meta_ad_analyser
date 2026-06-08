@@ -31,6 +31,13 @@ export default function LoginPage() {
         throw new Error(error.message || 'Invalid credentials');
       }
 
+      // Attempt to sync their existing license into a cookie
+      try {
+        await fetch('/api/license/sync', { method: 'POST' });
+      } catch (e) {
+        // Silently fail, middleware will catch them
+      }
+
       setStatus('success');
       setTimeout(() => {
         window.location.href = '/dashboard';
