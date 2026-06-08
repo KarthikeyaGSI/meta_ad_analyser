@@ -5,7 +5,7 @@ import { jwtVerify } from 'jose';
 const JWT_SECRET = new TextEncoder().encode(process.env.JWT_SECRET || 'fallback_secret_for_development_only');
 
 export async function middleware(request: NextRequest) {
-  const sessionToken = request.cookies.get("better-auth.session_token");
+  const sessionToken = request.cookies.get("better-auth.session_token") || request.cookies.get("__Secure-better-auth.session_token");
   const licenseToken = request.cookies.get("vero.license_jwt");
 
   const path = request.nextUrl.pathname;
