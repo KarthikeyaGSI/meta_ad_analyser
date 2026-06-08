@@ -1,7 +1,7 @@
 import { pgTable, uuid, text, timestamp, integer, boolean, jsonb } from 'drizzle-orm/pg-core';
 
 export const organizations = pgTable('organizations', {
-  id: uuid('id').primaryKey().defaultRandom(),
+  id: text('id').primaryKey(),
   name: text('name').notNull(),
   slug: text('slug').notNull().unique(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
@@ -10,26 +10,28 @@ export const organizations = pgTable('organizations', {
 }).enableRLS();
 
 export const users = pgTable('users', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  organizationId: uuid('organization_id').references(() => organizations.id),
+  id: text('id').primaryKey(),
+  organizationId: text('organization_id').references(() => organizations.id),
   email: text('email').notNull().unique(),
   name: text('name').notNull(),
   passwordHash: text('password_hash'),
   role: text('role').default('user').notNull(),
+  emailVerified: boolean('email_verified').default(false).notNull(),
+  image: text('image'),
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
   deletedAt: timestamp('deleted_at'),
 }).enableRLS();
 
 export const admins = pgTable('admins', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  userId: uuid('user_id').references(() => users.id).notNull().unique(),
+  id: text('id').primaryKey(),
+  userId: text('user_id').references(() => users.id).notNull().unique(),
   superAdmin: boolean('super_admin').default(false).notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
 }).enableRLS();
 
 export const plans = pgTable('plans', {
-  id: uuid('id').primaryKey().defaultRandom(),
+  id: text('id').primaryKey(),
   name: text('name').notNull(),
   code: text('code').notNull().unique(),
   description: text('description'),
@@ -39,16 +41,16 @@ export const plans = pgTable('plans', {
 }).enableRLS();
 
 export const planFeatures = pgTable('plan_features', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  planId: uuid('plan_id').references(() => plans.id).notNull(),
+  id: text('id').primaryKey(),
+  planId: text('plan_id').references(() => plans.id).notNull(),
   featureKey: text('feature_key').notNull(),
   featureValue: jsonb('feature_value').notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
 }).enableRLS();
 
 export const customers = pgTable('customers', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  organizationId: uuid('organization_id').references(() => organizations.id).notNull(),
+  id: text('id').primaryKey(),
+  organizationId: text('organization_id').references(() => organizations.id).notNull(),
   stripeCustomerId: text('stripe_customer_id'),
   billingEmail: text('billing_email'),
   createdAt: timestamp('created_at').defaultNow().notNull(),
@@ -56,10 +58,10 @@ export const customers = pgTable('customers', {
 }).enableRLS();
 
 export const subscriptions = pgTable('subscriptions', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  organizationId: uuid('organization_id').references(() => organizations.id).notNull(),
-  customerId: uuid('customer_id').references(() => customers.id).notNull(),
-  planId: uuid('plan_id').references(() => plans.id).notNull(),
+  id: text('id').primaryKey(),
+  organizationId: text('organization_id').references(() => organizations.id).notNull(),
+  customerId: text('customer_id').references(() => customers.id).notNull(),
+  planId: text('plan_id').references(() => plans.id).notNull(),
   status: text('status').notNull(),
   currentPeriodStart: timestamp('current_period_start').notNull(),
   currentPeriodEnd: timestamp('current_period_end').notNull(),
@@ -69,10 +71,10 @@ export const subscriptions = pgTable('subscriptions', {
 }).enableRLS();
 
 export const licenses = pgTable('licenses', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  organizationId: uuid('organization_id').references(() => organizations.id).notNull(),
-  subscriptionId: uuid('subscription_id').references(() => subscriptions.id),
-  planId: uuid('plan_id').references(() => plans.id).notNull(),
+  id: text('id').primaryKey(),
+  organizationId: text('organization_id').references(() => organizations.id).notNull(),
+  subscriptionId: text('subscription_id').references(() => subscriptions.id),
+  planId: text('plan_id').references(() => plans.id).notNull(),
   keyHash: text('key_hash').notNull().unique(),
   status: text('status', { enum: ['active', 'revoked', 'expired', 'frozen'] }).notNull(),
   durationDays: integer('duration_days').notNull(),
@@ -85,17 +87,17 @@ export const licenses = pgTable('licenses', {
 }).enableRLS();
 
 export const licenseActivations = pgTable('license_activations', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  licenseId: uuid('license_id').references(() => licenses.id).notNull(),
-  userId: uuid('user_id').references(() => users.id).notNull(),
+  id: text('id').primaryKey(),
+  licenseId: text('license_id').references(() => licenses.id).notNull(),
+  userId: text('user_id').references(() => users.id).notNull(),
   status: text('status').notNull(),
   activatedAt: timestamp('activated_at').defaultNow().notNull(),
   expiresAt: timestamp('expires_at').notNull(),
 }).enableRLS();
 
 export const licenseDevices = pgTable('license_devices', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  activationId: uuid('activation_id').references(() => licenseActivations.id).notNull(),
+  id: text('id').primaryKey(),
+  activationId: text('activation_id').references(() => licenseActivations.id).notNull(),
   deviceId: text('device_id').notNull(),
   deviceName: text('device_name'),
   userAgent: text('user_agent'),
@@ -105,29 +107,32 @@ export const licenseDevices = pgTable('license_devices', {
 }).enableRLS();
 
 export const auditLogs = pgTable('audit_logs', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  organizationId: uuid('organization_id').references(() => organizations.id),
-  userId: uuid('user_id').references(() => users.id),
+  id: text('id').primaryKey(),
+  organizationId: text('organization_id').references(() => organizations.id),
+  userId: text('user_id').references(() => users.id),
   action: text('action').notNull(),
   entityType: text('entity_type').notNull(),
-  entityId: uuid('entity_id'),
+  entityId: text('entity_id'),
   metadata: jsonb('metadata'),
   ipAddress: text('ip_address'),
   createdAt: timestamp('created_at').defaultNow().notNull(),
 }).enableRLS();
 
 export const sessions = pgTable('sessions', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  organizationId: uuid('organization_id').references(() => organizations.id),
-  userId: uuid('user_id').references(() => users.id).notNull(),
+  id: text('id').primaryKey(),
+  organizationId: text('organization_id').references(() => organizations.id),
+  userId: text('user_id').references(() => users.id).notNull(),
   token: text('token').notNull().unique(),
   deviceId: text('device_id'),
   expiresAt: timestamp('expires_at').notNull(),
+  ipAddress: text('ip_address'),
+  userAgent: text('user_agent'),
   createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
 }).enableRLS();
 
 export const webhookEvents = pgTable('webhook_events', {
-  id: uuid('id').primaryKey().defaultRandom(),
+  id: text('id').primaryKey(),
   source: text('source').notNull(), // e.g., 'stripe'
   type: text('type').notNull(),
   payload: jsonb('payload').notNull(),
@@ -136,3 +141,41 @@ export const webhookEvents = pgTable('webhook_events', {
   createdAt: timestamp('created_at').defaultNow().notNull(),
   processedAt: timestamp('processed_at'),
 }).enableRLS();
+
+export const account = pgTable(
+  "account",
+  {
+    id: text("id").primaryKey(),
+    accountId: text("account_id").notNull(),
+    providerId: text("provider_id").notNull(),
+    userId: text("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    accessToken: text("access_token"),
+    refreshToken: text("refresh_token"),
+    idToken: text("id_token"),
+    accessTokenExpiresAt: timestamp("access_token_expires_at"),
+    refreshTokenExpiresAt: timestamp("refresh_token_expires_at"),
+    scope: text("scope"),
+    password: text("password"),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at")
+      .$onUpdate(() => /* @__PURE__ */ new Date())
+      .notNull(),
+  }
+).enableRLS();
+
+export const verification = pgTable(
+  "verification",
+  {
+    id: text("id").primaryKey(),
+    identifier: text("identifier").notNull(),
+    value: text("value").notNull(),
+    expiresAt: timestamp("expires_at").notNull(),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at")
+      .defaultNow()
+      .$onUpdate(() => /* @__PURE__ */ new Date())
+      .notNull(),
+  }
+).enableRLS();
