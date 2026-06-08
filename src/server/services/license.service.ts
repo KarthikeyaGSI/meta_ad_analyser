@@ -72,7 +72,11 @@ export class LicenseService {
         eq(licenseActivations.status, 'active')
       ));
 
-    if (existingActivations.length >= license.maxSeats) {
+    // If the user already has an active activation for this license, we can bypass the limit or return existing.
+    // For simplicity, if they already have an activation, we don't count them as a new seat.
+    const userHasActivation = existingActivations.some(a => a.userId === userId);
+
+    if (!userHasActivation && existingActivations.length >= license.maxSeats) {
       throw new Error('Seat limit exceeded');
     }
 
