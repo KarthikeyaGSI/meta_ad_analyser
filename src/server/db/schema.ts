@@ -1,7 +1,7 @@
 import { pgTable, uuid, text, timestamp, integer, boolean, jsonb } from 'drizzle-orm/pg-core';
 
 export const organizations = pgTable('organizations', {
-  id: text('id').primaryKey(),
+  id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
   name: text('name').notNull(),
   slug: text('slug').notNull().unique(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
@@ -10,7 +10,7 @@ export const organizations = pgTable('organizations', {
 }).enableRLS();
 
 export const users = pgTable('users', {
-  id: text('id').primaryKey(),
+  id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
   organizationId: text('organization_id').references(() => organizations.id),
   email: text('email').notNull().unique(),
   name: text('name').notNull(),
@@ -24,14 +24,14 @@ export const users = pgTable('users', {
 }).enableRLS();
 
 export const admins = pgTable('admins', {
-  id: text('id').primaryKey(),
+  id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
   userId: text('user_id').references(() => users.id).notNull().unique(),
   superAdmin: boolean('super_admin').default(false).notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
 }).enableRLS();
 
 export const plans = pgTable('plans', {
-  id: text('id').primaryKey(),
+  id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
   name: text('name').notNull(),
   code: text('code').notNull().unique(),
   description: text('description'),
@@ -41,7 +41,7 @@ export const plans = pgTable('plans', {
 }).enableRLS();
 
 export const planFeatures = pgTable('plan_features', {
-  id: text('id').primaryKey(),
+  id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
   planId: text('plan_id').references(() => plans.id).notNull(),
   featureKey: text('feature_key').notNull(),
   featureValue: jsonb('feature_value').notNull(),
@@ -49,7 +49,7 @@ export const planFeatures = pgTable('plan_features', {
 }).enableRLS();
 
 export const customers = pgTable('customers', {
-  id: text('id').primaryKey(),
+  id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
   organizationId: text('organization_id').references(() => organizations.id).notNull(),
   stripeCustomerId: text('stripe_customer_id'),
   billingEmail: text('billing_email'),
@@ -58,7 +58,7 @@ export const customers = pgTable('customers', {
 }).enableRLS();
 
 export const subscriptions = pgTable('subscriptions', {
-  id: text('id').primaryKey(),
+  id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
   organizationId: text('organization_id').references(() => organizations.id).notNull(),
   customerId: text('customer_id').references(() => customers.id).notNull(),
   planId: text('plan_id').references(() => plans.id).notNull(),
@@ -71,7 +71,7 @@ export const subscriptions = pgTable('subscriptions', {
 }).enableRLS();
 
 export const licenses = pgTable('licenses', {
-  id: text('id').primaryKey(),
+  id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
   organizationId: text('organization_id').references(() => organizations.id).notNull(),
   subscriptionId: text('subscription_id').references(() => subscriptions.id),
   planId: text('plan_id').references(() => plans.id).notNull(),
@@ -87,7 +87,7 @@ export const licenses = pgTable('licenses', {
 }).enableRLS();
 
 export const licenseActivations = pgTable('license_activations', {
-  id: text('id').primaryKey(),
+  id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
   licenseId: text('license_id').references(() => licenses.id).notNull(),
   userId: text('user_id').references(() => users.id).notNull(),
   status: text('status').notNull(),
@@ -96,7 +96,7 @@ export const licenseActivations = pgTable('license_activations', {
 }).enableRLS();
 
 export const licenseDevices = pgTable('license_devices', {
-  id: text('id').primaryKey(),
+  id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
   activationId: text('activation_id').references(() => licenseActivations.id).notNull(),
   deviceId: text('device_id').notNull(),
   deviceName: text('device_name'),
@@ -107,7 +107,7 @@ export const licenseDevices = pgTable('license_devices', {
 }).enableRLS();
 
 export const auditLogs = pgTable('audit_logs', {
-  id: text('id').primaryKey(),
+  id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
   organizationId: text('organization_id').references(() => organizations.id),
   userId: text('user_id').references(() => users.id),
   action: text('action').notNull(),
@@ -119,7 +119,7 @@ export const auditLogs = pgTable('audit_logs', {
 }).enableRLS();
 
 export const sessions = pgTable('sessions', {
-  id: text('id').primaryKey(),
+  id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
   organizationId: text('organization_id').references(() => organizations.id),
   userId: text('user_id').references(() => users.id).notNull(),
   token: text('token').notNull().unique(),
@@ -132,7 +132,7 @@ export const sessions = pgTable('sessions', {
 }).enableRLS();
 
 export const webhookEvents = pgTable('webhook_events', {
-  id: text('id').primaryKey(),
+  id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
   source: text('source').notNull(), // e.g., 'stripe'
   type: text('type').notNull(),
   payload: jsonb('payload').notNull(),
@@ -145,7 +145,7 @@ export const webhookEvents = pgTable('webhook_events', {
 export const account = pgTable(
   "account",
   {
-    id: text("id").primaryKey(),
+    id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
     accountId: text("account_id").notNull(),
     providerId: text("provider_id").notNull(),
     userId: text("user_id")
@@ -168,7 +168,7 @@ export const account = pgTable(
 export const verification = pgTable(
   "verification",
   {
-    id: text("id").primaryKey(),
+    id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
     identifier: text("identifier").notNull(),
     value: text("value").notNull(),
     expiresAt: timestamp("expires_at").notNull(),

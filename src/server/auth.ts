@@ -7,7 +7,6 @@ import { v4 as uuidv4 } from "uuid";
 export const auth = betterAuth({
   database: drizzleAdapter(db, {
     provider: "pg",
-    generateId: false,
     schema: {
       user: schema.users,
       session: schema.sessions,
