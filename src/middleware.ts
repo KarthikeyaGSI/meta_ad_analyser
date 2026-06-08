@@ -28,7 +28,7 @@ export async function middleware(request: NextRequest) {
 
   if (isApiActivation && request.method === 'POST') {
     // Rate Limit: 5 requests per 10 minutes per IP
-    const ip = request.ip || request.headers.get('x-forwarded-for') || '127.0.0.1';
+    const ip = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || '127.0.0.1';
     const { success } = await ratelimit.limit(`ratelimit_${ip}`);
     
     if (!success) {
