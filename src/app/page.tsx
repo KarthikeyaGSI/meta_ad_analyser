@@ -170,6 +170,7 @@ export default function HomePage() {
       </header>
 
       {/* ── Hero ────────────────────────────────────────────────────────────── */}
+      <main>
       <section className="pt-40 pb-28 px-6 max-w-6xl mx-auto text-center">
         <motion.div variants={FADE_UP} initial="hidden" animate="visible" custom={0}>
           <span className="inline-flex items-center gap-2 text-xs font-medium text-[#8b92a0]
@@ -439,6 +440,7 @@ export default function HomePage() {
           </p>
         </div>
       </section>
+      </main>
 
       {/* ── Footer ───────────────────────────────────────────────────────────── */}
       <footer className="border-t border-white/[0.06] py-10 px-6">

@@ -33,7 +33,7 @@ export default function LoginPage() {
 
       setStatus('success');
       setTimeout(() => {
-        router.push('/dashboard');
+        window.location.href = '/dashboard';
       }, 500);
       
     } catch (err: any) {

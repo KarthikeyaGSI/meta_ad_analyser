@@ -35,7 +35,7 @@ export default function SignupPage() {
 
       setStatus('success');
       setTimeout(() => {
-        router.push('/activation');
+        window.location.href = '/activation';
       }, 1000);
       
     } catch (err: any) {

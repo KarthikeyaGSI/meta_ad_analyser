@@ -35,18 +35,21 @@ export default function RootLayout({
 }) {
   const jsonLd = {
     '@context': 'https://schema.org',
-    '@type': 'WebSite',
-    name: 'Vero',
-    url: 'https://vero.yourdomain.com',
-    potentialAction: {
-      '@type': 'SearchAction',
-      target: 'https://vero.yourdomain.com/search?q={search_term_string}',
-      'query-input': 'required name=search_term_string'
+    '@type': 'SoftwareApplication',
+    name: 'Vero - AI Ad Analyser',
+    url: 'https://vero.ai',
+    applicationCategory: 'BusinessApplication',
+    operatingSystem: 'Any',
+    description: 'Automatically detect wasted Meta ad spend, audience fatigue, rising costs, and missed scaling opportunities before they impact profitability.',
+    offers: {
+      '@type': 'Offer',
+      price: '0',
+      priceCurrency: 'USD'
     },
     publisher: {
       '@type': 'Organization',
       name: 'Vero',
-      logo: 'https://vero.yourdomain.com/logo.png'
+      url: 'https://vero.ai'
     }
   };
 
