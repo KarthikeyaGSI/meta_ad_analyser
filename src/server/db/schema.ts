@@ -7,7 +7,7 @@ export const organizations = pgTable('organizations', {
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
   deletedAt: timestamp('deleted_at'),
-});
+}).enableRLS();
 
 export const users = pgTable('users', {
   id: uuid('id').primaryKey().defaultRandom(),
@@ -19,14 +19,14 @@ export const users = pgTable('users', {
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
   deletedAt: timestamp('deleted_at'),
-});
+}).enableRLS();
 
 export const admins = pgTable('admins', {
   id: uuid('id').primaryKey().defaultRandom(),
   userId: uuid('user_id').references(() => users.id).notNull().unique(),
   superAdmin: boolean('super_admin').default(false).notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
-});
+}).enableRLS();
 
 export const plans = pgTable('plans', {
   id: uuid('id').primaryKey().defaultRandom(),
@@ -36,7 +36,7 @@ export const plans = pgTable('plans', {
   price: integer('price').notNull(),
   billingPeriod: text('billing_period').notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
-});
+}).enableRLS();
 
 export const planFeatures = pgTable('plan_features', {
   id: uuid('id').primaryKey().defaultRandom(),
@@ -44,7 +44,7 @@ export const planFeatures = pgTable('plan_features', {
   featureKey: text('feature_key').notNull(),
   featureValue: jsonb('feature_value').notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
-});
+}).enableRLS();
 
 export const customers = pgTable('customers', {
   id: uuid('id').primaryKey().defaultRandom(),
@@ -53,7 +53,7 @@ export const customers = pgTable('customers', {
   billingEmail: text('billing_email'),
   createdAt: timestamp('created_at').defaultNow().notNull(),
   deletedAt: timestamp('deleted_at'),
-});
+}).enableRLS();
 
 export const subscriptions = pgTable('subscriptions', {
   id: uuid('id').primaryKey().defaultRandom(),
@@ -66,7 +66,7 @@ export const subscriptions = pgTable('subscriptions', {
   cancelAtPeriodEnd: boolean('cancel_at_period_end').default(false).notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
   deletedAt: timestamp('deleted_at'),
-});
+}).enableRLS();
 
 export const licenses = pgTable('licenses', {
   id: uuid('id').primaryKey().defaultRandom(),
@@ -82,7 +82,7 @@ export const licenses = pgTable('licenses', {
   internalNotes: text('internal_notes'),
   createdAt: timestamp('created_at').defaultNow().notNull(),
   deletedAt: timestamp('deleted_at'),
-});
+}).enableRLS();
 
 export const licenseActivations = pgTable('license_activations', {
   id: uuid('id').primaryKey().defaultRandom(),
@@ -91,7 +91,7 @@ export const licenseActivations = pgTable('license_activations', {
   status: text('status').notNull(),
   activatedAt: timestamp('activated_at').defaultNow().notNull(),
   expiresAt: timestamp('expires_at').notNull(),
-});
+}).enableRLS();
 
 export const licenseDevices = pgTable('license_devices', {
   id: uuid('id').primaryKey().defaultRandom(),
@@ -102,7 +102,7 @@ export const licenseDevices = pgTable('license_devices', {
   ipAddress: text('ip_address'),
   lastSeenAt: timestamp('last_seen_at').defaultNow().notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
-});
+}).enableRLS();
 
 export const auditLogs = pgTable('audit_logs', {
   id: uuid('id').primaryKey().defaultRandom(),
@@ -114,7 +114,7 @@ export const auditLogs = pgTable('audit_logs', {
   metadata: jsonb('metadata'),
   ipAddress: text('ip_address'),
   createdAt: timestamp('created_at').defaultNow().notNull(),
-});
+}).enableRLS();
 
 export const sessions = pgTable('sessions', {
   id: uuid('id').primaryKey().defaultRandom(),
@@ -124,7 +124,7 @@ export const sessions = pgTable('sessions', {
   deviceId: text('device_id'),
   expiresAt: timestamp('expires_at').notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
-});
+}).enableRLS();
 
 export const webhookEvents = pgTable('webhook_events', {
   id: uuid('id').primaryKey().defaultRandom(),
@@ -135,4 +135,4 @@ export const webhookEvents = pgTable('webhook_events', {
   retries: integer('retries').default(0).notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
   processedAt: timestamp('processed_at'),
-});
+}).enableRLS();
