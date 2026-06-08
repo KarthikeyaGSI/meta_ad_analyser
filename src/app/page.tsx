@@ -146,7 +146,7 @@ export default function HomePage() {
           </div>
 
           <nav className="hidden md:flex items-center gap-6">
-            {['Product', 'Pricing', 'Security', 'Docs'].map((item) => (
+            {['Product', 'Features', 'Security'].map((item) => (
               <a key={item} href={`#${item.toLowerCase()}`}
                 className="text-sm text-[#8b92a0] hover:text-white transition-colors">
                 {item}
@@ -183,7 +183,7 @@ export default function HomePage() {
           variants={FADE_UP} initial="hidden" animate="visible" custom={1}
           className="text-5xl md:text-[64px] font-bold tracking-tight leading-[1.08] mb-6"
         >
-          Stop Wasting<br />
+          Stop Wasting <br />
           <span className="text-[#8b92a0]">Meta Ad Spend.</span>
         </motion.h1>
 
@@ -342,7 +342,7 @@ export default function HomePage() {
       </section>
 
       {/* ── Example Findings ─────────────────────────────────────────────────── */}
-      <section id="pricing" className="py-20 px-6 border-t border-white/[0.06]">
+      <section id="features" className="py-20 px-6 border-t border-white/[0.06]">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-semibold mb-3">What a typical audit finds</h2>

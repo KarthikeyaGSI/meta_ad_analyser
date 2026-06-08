@@ -69,6 +69,12 @@ export default function ActivationPage() {
           Enter your license key to unlock the Vero platform and access your workspace.
         </p>
 
+        {process.env.NODE_ENV === 'development' && (
+          <div className="bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs p-3 rounded-lg mb-6 text-center">
+            <strong>Local Dev:</strong> Use <code className="bg-black/50 px-1 py-0.5 rounded">DEV-KEY-123</code> to bypass
+          </div>
+        )}
+
         <form onSubmit={handleActivate} className="space-y-4">
           <div>
             <label className="block text-xs font-medium text-gray-400 mb-1.5 uppercase tracking-wider">License Key</label>
