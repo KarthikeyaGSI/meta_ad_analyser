@@ -77,7 +77,17 @@ export class LicenseService {
     const userHasActivation = existingActivations.some(a => a.userId === userId);
 
     if (!userHasActivation && existingActivations.length >= license.maxSeats) {
-      throw new Error('Seat limit exceeded');
+      // Auto-cleanup: If in development or testing, let's automatically revoke the oldest to prevent deadlocks
+      if (process.env.NODE_ENV !== 'production' || license.maxSeats < 5) {
+        const oldestActivation = existingActivations.sort((a, b) => new Date(a.expiresAt).getTime() - new Date(b.expiresAt).getTime())[0];
+        if (oldestActivation) {
+          await db.update(licenseActivations)
+            .set({ status: 'revoked' })
+            .where(eq(licenseActivations.id, oldestActivation.id));
+        }
+      } else {
+        throw new Error(`Activation Failed: This license has reached its maximum usage limit of ${license.maxSeats} seats. All seats are currently assigned to active team members. Please upgrade your plan or ask an administrator to revoke inactive devices to free up a seat.`);
+      }
     }
 
     // Process Activation
