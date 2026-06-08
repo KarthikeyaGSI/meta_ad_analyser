@@ -1,6 +1,19 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { jwtVerify } from 'jose';
+import { Ratelimit } from '@upstash/ratelimit';
+import { Redis } from '@upstash/redis';
+
+const redis = new Redis({
+  url: process.env.UPSTASH_REDIS_REST_URL || 'https://mock-redis-url.upstash.io',
+  token: process.env.UPSTASH_REDIS_REST_TOKEN || 'mock-token',
+});
+
+const ratelimit = new Ratelimit({
+  redis: redis,
+  limiter: Ratelimit.slidingWindow(5, '10 m'),
+  analytics: true,
+});
 
 const JWT_SECRET = new TextEncoder().encode(process.env.JWT_SECRET || 'fallback_secret_for_development_only');
 
@@ -11,6 +24,20 @@ export async function middleware(request: NextRequest) {
   const path = request.nextUrl.pathname;
   const isProtected = path.startsWith('/dashboard') || path.startsWith('/api') && !path.startsWith('/api/auth') && !path.startsWith('/api/license');
   const isActivationRoute = path === '/activation';
+  const isApiActivation = path === '/api/license/activate';
+
+  if (isApiActivation && request.method === 'POST') {
+    // Rate Limit: 5 requests per 10 minutes per IP
+    const ip = request.ip || request.headers.get('x-forwarded-for') || '127.0.0.1';
+    const { success } = await ratelimit.limit(`ratelimit_${ip}`);
+    
+    if (!success) {
+      return NextResponse.json(
+        { success: false, error: 'Too many activation attempts. Please try again later.' },
+        { status: 429 }
+      );
+    }
+  }
 
   if (isProtected) {
     if (!sessionToken) {

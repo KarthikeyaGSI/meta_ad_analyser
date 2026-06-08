@@ -47,109 +47,73 @@ export default function ActivationPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0A0A0A] text-white flex items-center justify-center p-4 relative overflow-hidden">
-      {/* Background gradients typical of Linear/Vercel */}
-      <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] bg-purple-500/20 blur-[120px] rounded-full pointer-events-none" />
-      <div className="absolute bottom-[-20%] right-[-10%] w-[50%] h-[50%] bg-blue-500/20 blur-[120px] rounded-full pointer-events-none" />
-
-      <motion.div 
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, ease: 'easeOut' }}
-        className="w-full max-w-md bg-[#111111] border border-white/10 rounded-2xl p-8 shadow-2xl relative z-10"
-      >
-        <div className="flex items-center justify-center w-12 h-12 bg-white/5 border border-white/10 rounded-xl mb-6 mx-auto">
-          <Key className="w-6 h-6 text-gray-300" />
+    <div className="min-h-screen bg-black text-white flex items-center justify-center p-4">
+      <div className="w-full max-w-[400px]">
+        <div className="mb-8 text-center">
+          <div className="w-10 h-10 bg-white rounded-lg mx-auto mb-6 flex items-center justify-center">
+            <Key className="w-5 h-5 text-black" />
+          </div>
+          <h1 className="text-2xl font-semibold tracking-tight text-gray-100">Activate License</h1>
+          <p className="text-gray-500 text-sm mt-2">
+            Enter your license key to unlock your workspace
+          </p>
         </div>
 
-        <h1 className="text-2xl font-semibold text-center mb-2 tracking-tight">Activate Your License</h1>
-        <p className="text-gray-400 text-center text-sm mb-8">
-          Enter your license key to unlock the Vero platform and access your workspace.
-        </p>
-
         {process.env.NODE_ENV === 'development' && (
-          <div className="bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs p-3 rounded-lg mb-6 text-center">
-            <strong>Local Dev:</strong> Use <code className="bg-black/50 px-1 py-0.5 rounded">DEV-KEY-123</code> to bypass
+          <div className="bg-[#111] border border-white/10 text-gray-400 text-xs p-3 rounded-lg mb-6 text-center">
+            <strong>Local Dev:</strong> Use <code className="bg-black border border-white/10 px-1 py-0.5 rounded">DEV-KEY-123</code> to bypass
           </div>
         )}
 
-        <form onSubmit={handleActivate} className="space-y-4">
-          <div>
-            <label className="block text-xs font-medium text-gray-400 mb-1.5 uppercase tracking-wider">License Key</label>
-            <input 
-              type="text"
-              value={licenseKey}
-              onChange={(e) => setLicenseKey(e.target.value)}
-              placeholder="VERO-XXXX-XXXX-XXXX-XXXX"
-              className="w-full bg-black/50 border border-white/10 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-white/20 focus:border-transparent transition-all placeholder:text-gray-600 uppercase"
-              disabled={status === 'validating' || status === 'success'}
-            />
-          </div>
+        <div className="bg-[#0A0A0A] border border-white/10 rounded-xl p-6 shadow-2xl">
+          <form onSubmit={handleActivate} className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-2">License Key</label>
+              <input 
+                type="text"
+                value={licenseKey}
+                onChange={(e) => setLicenseKey(e.target.value)}
+                placeholder="VERO-XXXX-XXXX-XXXX-XXXX"
+                className="w-full bg-black border border-white/10 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-white/30 focus:border-white/30 transition-all placeholder:text-gray-600 uppercase"
+                disabled={status === 'validating' || status === 'success'}
+              />
+            </div>
 
-          <AnimatePresence mode="wait">
             {status === 'error' && (
-              <motion.div 
-                key="error-message"
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: 'auto' }}
-                exit={{ opacity: 0, height: 0 }}
-                className="flex items-center space-x-2 text-red-400 text-sm bg-red-400/10 p-3 rounded-lg border border-red-400/20"
-              >
+              <div className="flex items-center space-x-2 text-red-400 text-sm bg-red-950/30 p-3 rounded-lg border border-red-900/50">
                 <AlertCircle className="w-4 h-4 flex-shrink-0" />
                 <span>{errorMessage}</span>
-              </motion.div>
+              </div>
             )}
-          </AnimatePresence>
 
-          <button 
-            type="submit"
-            disabled={status === 'validating' || status === 'success' || !licenseKey.trim()}
-            className="w-full bg-white text-black font-medium rounded-lg px-4 py-3 text-sm flex items-center justify-center transition-all hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed group relative overflow-hidden"
-          >
-            <AnimatePresence mode="wait">
+            <button 
+              type="submit"
+              disabled={status === 'validating' || status === 'success' || !licenseKey.trim()}
+              className="w-full bg-white text-black font-medium rounded-lg px-4 py-2.5 text-sm flex items-center justify-center transition-all hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed mt-2"
+            >
               {status === 'idle' || status === 'error' ? (
-                <motion.span 
-                  key="idle"
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
-                  className="flex items-center space-x-2"
-                >
-                  <span>Activate License</span>
-                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                </motion.span>
+                'Activate License'
               ) : status === 'validating' ? (
-                <motion.span 
-                  key="validating"
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
-                  className="flex items-center space-x-2 text-gray-600"
-                >
+                <div className="flex items-center space-x-2">
                   <Loader2 className="w-4 h-4 animate-spin" />
                   <span>Validating...</span>
-                </motion.span>
+                </div>
               ) : (
-                <motion.span 
-                  key="success"
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  className="flex items-center space-x-2 text-green-600"
-                >
+                <div className="flex items-center space-x-2 text-green-700">
                   <ShieldCheck className="w-4 h-4" />
                   <span>Activated Successfully</span>
-                </motion.span>
+                </div>
               )}
-            </AnimatePresence>
-          </button>
-        </form>
+            </button>
+          </form>
+        </div>
 
-        <div className="mt-8 pt-6 border-t border-white/10 text-center">
-          <p className="text-xs text-gray-500">
-            Need a license? <a href="#" className="text-white hover:underline transition-all">Purchase a plan</a> or <a href="#" className="text-white hover:underline transition-all">contact sales</a>.
+        <div className="mt-6 text-center">
+          <p className="text-sm text-gray-500">
+            Need a license? <a href="#" className="text-gray-300 hover:text-white transition-colors">Purchase a plan</a> or <a href="#" className="text-gray-300 hover:text-white transition-colors">contact sales</a>.
           </p>
         </div>
-      </motion.div>
+      </div>
     </div>
   );
 }

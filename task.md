@@ -1,12 +1,20 @@
-- [ ] Phase 1: Re‑architect project layout (/server, /client, /shared) and migrate to Next.js App Router only.
-- [ ] Phase 2: Implement Vercel‑native rate limiting with @upstash/ratelimit.
-- [ ] Phase 3: Add Sentry, structured logger, request‑ID middleware, and audit log helper.
-- [ ] Phase 4: Harden OAuth – encrypted HttpOnly cookies, token refresh endpoint, retry queue.
-- [ ] Phase 5: Build background sync system (cron, Upstash queue, webhook route). Ensure missing Appwrite env vars are handled null‑safely and return null rather than throwing.
-- [ ] Phase 6: Normalize all data DTOs, add sandbox fallback with demoData.
-- [ ] Phase 7: Add status badge component and premium footer with updated Linktree https://linktr.ee/karthikeyathallapally.
-- [ ] Phase 8: SEO / sitemap / robots / meta tags for landing and docs pages.
-- [ ] Phase 9: Security hardening – CSP, origin validation, input sanitisation, request size limits.
-- [ ] Phase 10: Performance improvements – virtualization, chart memoization, server components, suspense.
-- [ ] Phase 11: Full build & Vercel preview verification after each major commit.
-- [ ] Phase 12: Final production deployment and documentation.
+# SaaS Infrastructure Upgrades
+
+- `[x]` **Premium UX Polish (CRO)**
+  - `[x]` Refactor `src/app/login/page.tsx` to monochrome enterprise design
+  - `[x]` Refactor `src/app/signup/page.tsx` to monochrome enterprise design
+  - `[x]` Refactor `src/app/activation/page.tsx` to monochrome enterprise design
+  
+- `[x]` **Upstash Rate Limiting**
+  - `[x]` Install `@upstash/ratelimit`
+  - `[x]` Integrate rate limiting into `src/middleware.ts` for `/api/license/activate`
+
+- `[x]` **Seat Management Dashboard**
+  - `[x]` Update `src/server/services/license.service.ts` to identify the license owner and list seats
+  - `[x]` Create `/api/admin/seats/route.ts` API endpoint
+  - `[x]` Create `src/app/dashboard/settings/team/page.tsx` UI
+
+- `[x]` **Meta Ads Graph API Integration**
+  - `[x]` Create `/api/auth/meta/route.ts` for OAuth redirect
+  - `[x]` Create `/api/auth/meta/callback/route.ts` for OAuth callback
+  - `[x]` Create `src/app/dashboard/connect/page.tsx` for users to trigger the flow

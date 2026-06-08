@@ -157,4 +157,27 @@ export class LicenseService {
     const jwtToken = await this.generateLicenseJWT(activation, license, plan.code);
     return { activation, jwtToken };
   }
+
+  static async getTeamActivations(organizationId: string) {
+    const orgLicenses = await db.select({ id: licenses.id }).from(licenses).where(eq(licenses.organizationId, organizationId));
+    if (orgLicenses.length === 0) return [];
+    const licenseIds = orgLicenses.map(l => l.id);
+
+    // Using a manual approach since Drizzle 'inArray' needs explicit import, or just fetching all and filtering
+    const allActivations = await db.select().from(licenseActivations);
+    return allActivations.filter(a => licenseIds.includes(a.licenseId));
+  }
+
+  static async revokeActivation(activationId: string, organizationId: string) {
+    // Validate organization owns this activation
+    const activation = await db.select().from(licenseActivations).where(eq(licenseActivations.id, activationId)).limit(1);
+    if (!activation.length) throw new Error("Activation not found");
+
+    const license = await db.select().from(licenses).where(eq(licenses.id, activation[0].licenseId)).limit(1);
+    if (!license.length || license[0].organizationId !== organizationId) throw new Error("Unauthorized");
+
+    await db.update(licenseActivations).set({ status: 'revoked' }).where(eq(licenseActivations.id, activationId));
+    await redis.del(`active_license:${activationId}`);
+    return true;
+  }
 }
