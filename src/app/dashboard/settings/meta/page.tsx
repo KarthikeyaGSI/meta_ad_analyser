@@ -32,7 +32,7 @@ export default function MetaSettings() {
         setStatus('success');
         setMessage('Meta credentials saved successfully.');
         // Optionally refresh UI or invalidate cache
-        analyticsApi.getAccounts().catch(() => {});
+        await analyticsApi.getAccounts().catch(() => {});
       } else {
         throw new Error(data.error || 'Failed to save');
       }
