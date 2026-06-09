@@ -19,7 +19,21 @@ const ratelimit = new Ratelimit({
 
 export async function ratelimitMiddleware(request: Request) {
   const ip = request.headers.get("x-forwarded-for") || "anonymous";
-  const { success, limit, reset, remaining } = await ratelimit.limit(ip);
+  let success = true;
+  let limit = 0;
+  let reset = 0;
+  let remaining = 0;
+
+  try {
+    const result = await ratelimit.limit(ip);
+    success = result.success;
+    limit = result.limit;
+    reset = result.reset;
+    remaining = result.remaining;
+  } catch (err) {
+    console.warn("Ratelimit fetch failed, bypassing", err);
+  }
+
   if (!success) {
     const response = new NextResponse(JSON.stringify({ error: "Too Many Requests" }), {
       status: 429,
