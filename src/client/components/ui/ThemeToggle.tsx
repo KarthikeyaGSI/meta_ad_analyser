@@ -1,6 +1,6 @@
 // src/client/components/ui/ThemeToggle.tsx
 import { useTheme } from '@/hooks/useTheme';
-import { Button } from '@/components/ui/Button';
+import { Button } from '@/client/components/ui/button';
 import { useEffect } from 'react';
 import { motion } from 'framer-motion'; // ensure framer-motion is installed
 
