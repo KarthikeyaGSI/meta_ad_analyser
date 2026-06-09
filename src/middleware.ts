@@ -28,14 +28,19 @@ export async function middleware(request: NextRequest) {
 
   if (isApiActivation && request.method === 'POST') {
     // Rate Limit: 5 requests per 10 minutes per IP
-    const ip = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || '127.0.0.1';
-    const { success } = await ratelimit.limit(`ratelimit_${ip}`);
-    
-    if (!success) {
-      return NextResponse.json(
-        { success: false, error: 'Too many activation attempts. Please try again later.' },
-        { status: 429 }
-      );
+    try {
+      const ip = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || '127.0.0.1';
+      const { success } = await ratelimit.limit(`ratelimit_${ip}`);
+      
+      if (!success) {
+        return NextResponse.json(
+          { success: false, error: 'Too many activation attempts. Please try again later.' },
+          { status: 429 }
+        );
+      }
+    } catch (error) {
+      // If Upstash fails (e.g. missing env vars), bypass rate limiting instead of crashing the whole app
+      console.warn('Rate limiting failed or is not configured:', error);
     }
   }
 

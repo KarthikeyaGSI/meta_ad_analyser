@@ -25,13 +25,26 @@ export default function TeamSettingsPage() {
   const fetchActivations = async () => {
     try {
       const res = await fetch('/api/admin/seats');
+      
+      if (!res.ok) {
+        const text = await res.text();
+        let errorMsg = 'Failed to load team seats';
+        try {
+          const data = JSON.parse(text);
+          if (data.error) errorMsg = data.error;
+        } catch (e) {
+          errorMsg = `Server error: ${res.status}`;
+        }
+        throw new Error(errorMsg);
+      }
+      
       const data = await res.json();
       if (data.success) {
         setActivations(data.activations);
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
-      toast.error('Failed to load team seats');
+      toast.error(error.message || 'Failed to load team seats');
     } finally {
       setLoading(false);
     }
