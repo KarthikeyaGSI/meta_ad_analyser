@@ -7,6 +7,7 @@ import {
   ArrowRight, ShieldCheck, AlertTriangle, TrendingUp, BarChart3,
   CheckCircle2, Clock, Search, ChevronDown
 } from 'lucide-react';
+import { NetworkAnimation } from '@/components/ui/NetworkAnimation';
 
 const FADE_UP = {
   hidden: { opacity: 0, y: 16 },
@@ -171,26 +172,35 @@ export default function HomePage() {
 
       {/* ── Hero ────────────────────────────────────────────────────────────── */}
       <main>
-      <section className="pt-40 pb-28 px-6 max-w-6xl mx-auto text-center">
+      <section className="relative pt-48 pb-32 px-6 overflow-hidden flex flex-col items-center justify-center min-h-[90vh]">
+        {/* Network Animation Background */}
+        <div className="absolute inset-0 z-0 opacity-80 pointer-events-auto">
+          <NetworkAnimation color="#4f6ef7" particleCount={80} connectionDistance={180} />
+        </div>
+        
+        {/* Radial gradient overlay to blend animation with background */}
+        <div className="absolute inset-0 z-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,#0a0b0d_80%)] pointer-events-none" />
+
+        <div className="relative z-10 max-w-6xl mx-auto text-center w-full">
         <motion.div variants={FADE_UP} initial="hidden" animate="visible" custom={0}>
-          <span className="inline-flex items-center gap-2 text-xs font-medium text-[#8b92a0]
-                           border border-white/[0.08] bg-white/[0.03] rounded-full px-3.5 py-1.5 mb-8">
-            <span className="status-dot status-dot-live" />
+          <span className="inline-flex items-center gap-2 text-xs font-medium text-[#4f6ef7]
+                           border border-[#4f6ef7]/30 bg-[#4f6ef7]/10 rounded-full px-4 py-2 mb-8 shadow-[0_0_15px_rgba(79,110,247,0.3)]">
+            <span className="w-2 h-2 rounded-full bg-[#4f6ef7] animate-pulse" />
             Automated Meta Ads Audits & Monitoring
           </span>
         </motion.div>
 
         <motion.h1
           variants={FADE_UP} initial="hidden" animate="visible" custom={1}
-          className="text-5xl md:text-[64px] font-bold tracking-tight leading-[1.08] mb-6"
+          className="text-6xl md:text-[80px] font-bold tracking-tight leading-[1.1] mb-8 drop-shadow-2xl"
         >
           Stop Wasting <br />
-          <span className="text-[#8b92a0]">Meta Ad Spend.</span>
+          <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#4f6ef7] to-[#809cf9]">Meta Ad Spend.</span>
         </motion.h1>
 
         <motion.p
           variants={FADE_UP} initial="hidden" animate="visible" custom={2}
-          className="text-lg text-[#8b92a0] max-w-2xl mx-auto leading-relaxed mb-10"
+          className="text-xl text-[#a1a8b6] max-w-2xl mx-auto leading-relaxed mb-12"
         >
           Automatically detect performance issues, audience fatigue, rising costs, and missed
           scaling opportunities before they impact profitability.
@@ -198,28 +208,31 @@ export default function HomePage() {
 
         <motion.div
           variants={FADE_UP} initial="hidden" animate="visible" custom={3}
-          className="flex flex-col sm:flex-row items-center justify-center gap-3"
+          className="flex flex-col sm:flex-row items-center justify-center gap-4"
         >
           <Link href="/dashboard/onboarding"
-            className="h-11 px-6 bg-[#4f6ef7] hover:bg-[#3d5de0] text-white font-medium text-sm
-                       rounded-xl flex items-center gap-2 transition-colors w-full sm:w-auto justify-center">
+            className="h-14 px-8 bg-[#4f6ef7] hover:bg-[#3d5de0] text-white font-semibold text-base
+                       rounded-xl flex items-center gap-2 transition-all w-full sm:w-auto justify-center
+                       shadow-[0_0_30px_rgba(79,110,247,0.4)] hover:shadow-[0_0_40px_rgba(79,110,247,0.6)] hover:-translate-y-0.5">
             Connect Meta Account
-            <ArrowRight className="w-4 h-4" />
+            <ArrowRight className="w-5 h-5" />
           </Link>
           <Link href="/dashboard"
-            className="h-11 px-6 bg-white/[0.05] hover:bg-white/[0.08] text-[#f1f3f5]
-                       border border-white/[0.08] hover:border-white/[0.14] font-medium text-sm
-                       rounded-xl flex items-center gap-2 transition-all w-full sm:w-auto justify-center">
+            className="h-14 px-8 bg-white/[0.05] hover:bg-white/[0.08] text-[#f1f3f5]
+                       border border-white/[0.12] hover:border-white/[0.2] font-semibold text-base
+                       rounded-xl flex items-center gap-2 transition-all w-full sm:w-auto justify-center hover:-translate-y-0.5">
             View Demo Audit
           </Link>
         </motion.div>
 
         <motion.p
           variants={FADE_UP} initial="hidden" animate="visible" custom={4}
-          className="mt-5 text-xs text-[#535a65]"
+          className="mt-6 text-sm text-[#535a65] font-medium"
         >
+          <ShieldCheck className="w-4 h-4 inline-block mr-1 text-emerald-500/80 mb-0.5" />
           Read-only access. No campaign modifications. Cancel anytime.
         </motion.p>
+        </div>
       </section>
 
       {/* ── Social proof ─────────────────────────────────────────────────────── */}

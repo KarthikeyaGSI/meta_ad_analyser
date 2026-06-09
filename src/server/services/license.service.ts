@@ -125,12 +125,16 @@ export class LicenseService {
     // Generate JWT
     const jwtToken = await this.generateLicenseJWT(activation, license, plan.code);
 
-    // Cache active license metadata in Redis for Edge lookups
-    await redis.set(`active_license:${activation.id}`, JSON.stringify({
-      status: 'active',
-      plan: plan.code,
-      organizationId: license.organizationId,
-    }), { ex: 86400 }); // 24h cache, DB becomes fallback
+    try {
+      // Cache active license metadata in Redis for Edge lookups
+      await redis.set(`active_license:${activation.id}`, JSON.stringify({
+        status: 'active',
+        plan: plan.code,
+        organizationId: license.organizationId,
+      }), { ex: 86400 }); // 24h cache, DB becomes fallback
+    } catch (error) {
+      console.warn('Failed to cache license in Redis:', error);
+    }
 
     return { activation, jwtToken };
   }
@@ -177,7 +181,11 @@ export class LicenseService {
     if (!license.length || license[0].organizationId !== organizationId) throw new Error("Unauthorized");
 
     await db.update(licenseActivations).set({ status: 'revoked' }).where(eq(licenseActivations.id, activationId));
-    await redis.del(`active_license:${activationId}`);
+    try {
+      await redis.del(`active_license:${activationId}`);
+    } catch (error) {
+      console.warn('Failed to delete cache in Redis:', error);
+    }
     return true;
   }
 }
