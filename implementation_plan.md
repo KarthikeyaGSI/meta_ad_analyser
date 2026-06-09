@@ -1,73 +1,71 @@
-# Implement Next-Level SaaS Infrastructure
+# Secure Meta Graph API Architecture
 
-This plan outlines the architecture and execution steps to implement all four major initiatives requested to elevate Vero into a premium, secure SaaS platform.
+Migrate the Meta Ads Graph API integration from a completely client-side implementation (which exposes access tokens to the browser via `localStorage`) to a secure, server-side implementation utilizing Next.js Server API Routes and the Neon Database.
 
 ## User Review Required
 
 > [!IMPORTANT]
-> **Meta API Integration**: To implement the Facebook Graph API OAuth flow, you will need to create a Facebook Developer App and provide the `FACEBOOK_CLIENT_ID` and `FACEBOOK_CLIENT_SECRET`. I will set up the code so that it works seamlessly once you plug those into your `.env`.
-
-> [!WARNING]
-> **Design Overhaul**: The UI changes will completely strip away the glowing gradients and purple/blue orbs on the auth pages in favor of a stark, monochrome, enterprise-grade aesthetic (black, white, grays, and crisp typography). Please confirm you are okay with abandoning the previous gradient aesthetic.
-
-## Open Questions
-
-1. **Meta App Setup**: Do you already have a Facebook Developer app created for this project, or will you need instructions on how to set one up?
-2. **Admin Dashboard Permissions**: Currently, anyone with a valid license accesses `/dashboard`. Should the "Seat Management" page be restricted to a specific "admin" role, or is the user who originally activated the license considered the "Owner" of that team?
+> **Database Schema Changes**: This plan requires modifying the `organizations` table in your Postgres database to store the `metaAccessToken` securely. We will need to run a database migration after these code changes.
 
 ## Proposed Changes
 
 ---
 
-### 1. Premium UX Polish (CRO)
-Complete redesign of the authentication and activation flows to match top-tier enterprise SaaS aesthetics.
+### Database Schema Updates
+We need to add columns to the `organizations` table to store the Meta credentials.
 
-#### [MODIFY] [src/app/login/page.tsx](file:///c:/Users/Student/Desktop/ad%20analyser/src/app/login/page.tsx)
-Remove `framer-motion` heavy animations, delete the glowing blur circles, and implement a stark monochrome card with high-contrast text and crisp borders.
-#### [MODIFY] [src/app/signup/page.tsx](file:///c:/Users/Student/Desktop/ad%20analyser/src/app/signup/page.tsx)
-Match the new design language of the login page.
-#### [MODIFY] [src/app/activation/page.tsx](file:///c:/Users/Student/Desktop/ad%20analyser/src/app/activation/page.tsx)
-Apply the clean enterprise styling and improve the layout of the key entry form.
+#### [MODIFY] [schema.ts](file:///c:/Users/Student/Desktop/ad%20analyser/src/server/db/schema.ts)
+Add the following fields to `organizations`:
+- `metaAccessToken`: `text('meta_access_token')`
+- `metaAccountId`: `text('meta_account_id')`
 
 ---
 
-### 2. Seat Management Dashboard
-Create a comprehensive admin portal to manage active team devices.
+### Authentication Flow Fixes
+The OAuth callback needs to save the generated Long-Lived Token into the database.
 
-#### [NEW] [src/app/dashboard/settings/team/page.tsx](file:///c:/Users/Student/Desktop/ad%20analyser/src/app/dashboard/settings/team/page.tsx)
-A data table UI showing active seats, user emails, device fingerprints, and an action column to "Revoke Access".
-#### [NEW] [src/app/api/admin/seats/route.ts](file:///c:/Users/Student/Desktop/ad%20analyser/src/app/api/admin/seats/route.ts)
-A protected REST API endpoint to fetch all active devices for the current organization and manually revoke specific sessions via DELETE request.
-#### [MODIFY] [src/server/services/license.service.ts](file:///c:/Users/Student/Desktop/ad%20analyser/src/server/services/license.service.ts)
-Add `getTeamActivations(organizationId)` and `revokeActivation(activationId)` helper functions.
+#### [MODIFY] [route.ts (Callback)](file:///c:/Users/Student/Desktop/ad%20analyser/src/app/api/auth/meta/callback/route.ts)
+- Extract the user's session cookie (`better-auth.session_token`).
+- Look up the user's `organizationId` from the DB.
+- `await db.update(organizations).set({ metaAccessToken: longLivedToken }).where(...)`
 
 ---
 
-### 3. Upstash Rate Limiting
-Prevent brute-force attacks against the activation system.
+### Backend Service Creation
+We will migrate `metaDirect.ts` from a browser utility to a backend secure service.
 
-#### [MODIFY] [src/middleware.ts](file:///c:/Users/Student/Desktop/ad%20analyser/src/middleware.ts)
-Import `@upstash/ratelimit` and initialize an edge-compatible rate limiter. 
-Intercept POST requests to `/api/license/activate`. Allow a maximum of 5 requests per 10 minutes per IP address. If exceeded, return HTTP 429 Too Many Requests.
+#### [NEW] [meta.service.ts](file:///c:/Users/Student/Desktop/ad%20analyser/src/server/services/meta.service.ts)
+- Port over all logic from `metaDirect.ts` (Overview, Campaigns, Adsets, Charts, Creatives).
+- Modify the `fetchGraph` method to fetch the token directly from the database using `organizationId` instead of reading from `localStorage`.
+
+#### [DELETE] [metaDirect.ts](file:///c:/Users/Student/Desktop/ad%20analyser/src/services/metaDirect.ts)
+- Remove the insecure client-side library completely.
 
 ---
 
-### 4. Meta Ads Graph API Integration
-Build the OAuth flow to securely capture the Facebook user token for ad analysis.
+### Internal API Routes
+We will build secure Next.js API routes that the dashboard will hit. These routes will be protected by our existing Edge JWT middleware.
 
-#### [NEW] [src/app/dashboard/connect/page.tsx](file:///c:/Users/Student/Desktop/ad%20analyser/src/app/dashboard/connect/page.tsx)
-A dedicated page prompting the user to "Connect Meta Ads Account" with a button that triggers the OAuth flow.
-#### [NEW] [src/app/api/auth/meta/route.ts](file:///c:/Users/Student/Desktop/ad%20analyser/src/app/api/auth/meta/route.ts)
-Endpoint that constructs the `https://www.facebook.com/v19.0/dialog/oauth` URL and redirects the user to Facebook.
-#### [NEW] [src/app/api/auth/meta/callback/route.ts](file:///c:/Users/Student/Desktop/ad%20analyser/src/app/api/auth/meta/callback/route.ts)
-Handles the OAuth redirect from Facebook, exchanges the `code` for a long-lived access token, and securely stores it against the user's organization in the database.
+#### [NEW] [route.ts (Meta API)](file:///c:/Users/Student/Desktop/ad%20analyser/src/app/api/meta/route.ts)
+- Create a unified `GET` endpoint that accepts an `action` query parameter (e.g., `?action=overview` or `?action=campaigns`).
+- Automatically extracts `x-organization-id` from the secure request headers.
+- Proxies the request to `meta.service.ts`.
+
+---
+
+### Frontend Dashboard Updates
+The UI needs to point to our new secure internal API instead of making direct external Facebook API requests.
+
+#### [MODIFY] [page.tsx (Analytics Dashboard)](file:///c:/Users/Student/Desktop/ad%20analyser/src/app/dashboard/analytics/page.tsx)
+- Replace all `MetaDirectApi.getXXX(...)` calls with `fetch('/api/meta?action=XXX')`.
+- Remove references to `localStorage` checking.
 
 ## Verification Plan
 
 ### Automated Tests
-- Run `npm run build` and `npx tsc --noEmit` to ensure type safety across the new API routes and `@upstash/ratelimit` integration.
+- Run `npm run build` and `tsc --noEmit` to ensure no Type errors.
 
 ### Manual Verification
-- Attempt to spam the `/activation` endpoint to verify the Edge rate limiter blocks the 6th request.
-- Manually trigger a "Revoke Access" call from the new Team Dashboard and verify the database status changes to `revoked`.
-- Review the new UI in the browser to guarantee all gradients and "AI vibes" are gone.
+- Re-run the Meta OAuth Flow from `/dashboard/connect`.
+- Verify the token is securely stored in Neon.
+- Load the `/dashboard/analytics` page and verify it fetches data via `/api/meta` rather than direct `graph.facebook.com` requests.

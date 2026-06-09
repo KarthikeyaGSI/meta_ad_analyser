@@ -10,8 +10,14 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Missing accountId' }, { status: 400 });
     }
 
+    const organizationId = req.headers.get('x-organization-id');
+
+    if (!organizationId) {
+      return NextResponse.json({ error: 'Unauthorized: No organization context' }, { status: 401 });
+    }
+
     // Trigger the automation worker
-    const result = await runWorkflowWorker(accountId);
+    const result = await runWorkflowWorker(accountId, organizationId);
     
     if (!result.success) {
       return NextResponse.json({ error: result.error }, { status: 500 });

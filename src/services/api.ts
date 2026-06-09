@@ -87,7 +87,6 @@ export const authApi = {
   }),
 };
 
-import { MetaDirectApi } from './metaDirect';
 
 export const analyticsApi = {
   getAccounts: async () => {
@@ -115,14 +114,11 @@ export const analyticsApi = {
   },
   getOverview: async (accountId: string, startDate: string, endDate: string) => {
     let rawOverview;
-    if (MetaDirectApi.getToken(accountId)) {
-      try {
-        rawOverview = await MetaDirectApi.getOverview(accountId, startDate, endDate);
-      } catch (error) {
-        console.warn('Live token failed, falling back to demo data', error);
-      }
-    }
-    if (!rawOverview) {
+    try {
+      const res = await apiClient.get('/meta', { params: { action: 'overview', accountId, startDate, endDate } });
+      rawOverview = res.data.data;
+    } catch (error) {
+      console.warn('Live meta fetch failed, falling back to demo data', error);
       const res = await safeFetch(() => apiClient.get(`/accounts/${accountId}/overview`, { params: { startDate, endDate } }), demoOverview);
       rawOverview = res.data;
     }
@@ -130,14 +126,11 @@ export const analyticsApi = {
   },
   getCharts: async (accountId: string, startDate: string, endDate: string) => {
     let rawCharts;
-    if (MetaDirectApi.getToken(accountId)) {
-      try {
-        rawCharts = await MetaDirectApi.getCharts(accountId, startDate, endDate);
-      } catch (error) {
-        console.warn('Live token failed, falling back to demo data', error);
-      }
-    }
-    if (!rawCharts) {
+    try {
+      const res = await apiClient.get('/meta', { params: { action: 'charts', accountId, startDate, endDate } });
+      rawCharts = res.data.data;
+    } catch (error) {
+      console.warn('Live meta fetch failed, falling back to demo data', error);
       const res = await safeFetch(() => apiClient.get(`/accounts/${accountId}/charts`, { params: { startDate, endDate } }), demoCharts);
       rawCharts = res.data;
     }
@@ -145,14 +138,11 @@ export const analyticsApi = {
   },
   getCampaigns: async (accountId: string, startDate: string, endDate: string, filters: Record<string, unknown> = {}) => {
     let rawCampaigns;
-    if (MetaDirectApi.getToken(accountId)) {
-      try {
-        rawCampaigns = await MetaDirectApi.getCampaigns(accountId, startDate, endDate);
-      } catch (error) {
-        console.warn('Live token failed, falling back to demo data', error);
-      }
-    }
-    if (!rawCampaigns) {
+    try {
+      const res = await apiClient.get('/meta', { params: { action: 'campaigns', accountId, startDate, endDate } });
+      rawCampaigns = res.data.data;
+    } catch (error) {
+      console.warn('Live meta fetch failed, falling back to demo data', error);
       const res = await safeFetch(() => apiClient.get(`/accounts/${accountId}/campaigns`, { params: { startDate, endDate, ...filters } }), demoCampaigns);
       rawCampaigns = res.data;
     }
@@ -161,14 +151,11 @@ export const analyticsApi = {
   },
   getAdsets: async (accountId: string, startDate: string, endDate: string) => {
     let rawAdsets;
-    if (MetaDirectApi.getToken(accountId)) {
-      try {
-        rawAdsets = await MetaDirectApi.getAdsets(accountId, startDate, endDate);
-      } catch (error) {
-        console.warn('Live token failed, falling back to demo data', error);
-      }
-    }
-    if (!rawAdsets) {
+    try {
+      const res = await apiClient.get('/meta', { params: { action: 'adsets', accountId, startDate, endDate } });
+      rawAdsets = res.data.data;
+    } catch (error) {
+      console.warn('Live meta fetch failed, falling back to demo data', error);
       const res = await safeFetch(() => apiClient.get(`/accounts/${accountId}/adsets`, { params: { startDate, endDate } }), demoAdsets);
       rawAdsets = res.data;
     }
@@ -227,14 +214,11 @@ export const analyticsApi = {
     }
 
     let rawCreatives;
-    if (MetaDirectApi.getToken(accountId)) {
-      try {
-        rawCreatives = await MetaDirectApi.getCreatives(accountId, startDate, endDate);
-      } catch (error) {
-        console.warn('Live token failed, falling back to demo data', error);
-      }
-    }
-    if (!rawCreatives) {
+    try {
+      const res = await apiClient.get('/meta', { params: { action: 'creatives', accountId, startDate, endDate } });
+      rawCreatives = res.data.data;
+    } catch (error) {
+      console.warn('Live meta fetch failed, falling back to demo data', error);
       const res = await safeFetch(() => apiClient.get(`/accounts/${accountId}/creatives`, { params: { startDate, endDate } }), demoCreatives);
       rawCreatives = res.data;
     }
@@ -245,14 +229,11 @@ export const analyticsApi = {
   },
   getBreakdowns: async (accountId: string, startDate: string, endDate: string) => {
     let rawBreakdowns;
-    if (MetaDirectApi.getToken(accountId)) {
-      try {
-        rawBreakdowns = await MetaDirectApi.getBreakdowns(accountId, startDate, endDate);
-      } catch (error) {
-        console.warn('Live token failed, falling back to demo data', error);
-      }
-    }
-    if (!rawBreakdowns) {
+    try {
+      const res = await apiClient.get('/meta', { params: { action: 'breakdowns', accountId, startDate, endDate } });
+      rawBreakdowns = res.data.data;
+    } catch (error) {
+      console.warn('Live meta fetch failed, falling back to demo data', error);
       const res = await safeFetch(() => apiClient.get(`/accounts/${accountId}/breakdowns`, { params: { startDate, endDate } }), demoBreakdowns);
       rawBreakdowns = res.data;
     }
@@ -260,14 +241,11 @@ export const analyticsApi = {
   },
   getRecommendations: async (accountId: string) => {
     let rawRecs;
-    if (MetaDirectApi.getToken(accountId)) {
-      try {
-        rawRecs = await MetaDirectApi.getRecommendations(accountId);
-      } catch (error) {
-        console.warn('Live token failed, falling back to demo data', error);
-      }
-    }
-    if (!rawRecs) {
+    try {
+      const res = await apiClient.get('/meta', { params: { action: 'recommendations', accountId } });
+      rawRecs = res.data.data;
+    } catch (error) {
+      console.warn('Live meta fetch failed, falling back to demo data', error);
       const res = await safeFetch(() => apiClient.get(`/accounts/${accountId}/recommendations`), demoAiRecommendations);
       rawRecs = res.data;
     }

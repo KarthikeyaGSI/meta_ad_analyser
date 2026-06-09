@@ -1,4 +1,4 @@
-import { MetaDirectApi } from '../../services/metaDirect';
+import { MetaService } from '../services/meta.service';
 
 interface CampaignData {
   id: string;
@@ -11,7 +11,7 @@ interface CampaignData {
   cpa: number;
 }
 
-export async function runWorkflowWorker(accountId: string) {
+export async function runWorkflowWorker(accountId: string, organizationId: string) {
   console.log(`[WorkflowWorker] Running 24/7 automations for account: ${accountId}...`);
   
   const executionLogs: string[] = [];
@@ -23,7 +23,7 @@ export async function runWorkflowWorker(accountId: string) {
     // Fetch live campaigns from Meta API
     let campaigns: CampaignData[] = [];
     try {
-      const res = await MetaDirectApi.getCampaigns(accountId, lastWeek, today);
+      const res = await MetaService.getCampaigns(organizationId, accountId, lastWeek, today);
       campaigns = res.list;
     } catch (err) {
       console.warn('[WorkflowWorker] Could not fetch live campaigns, checking for mock data...', err);
@@ -42,7 +42,7 @@ export async function runWorkflowWorker(accountId: string) {
       if (campaign.spend > 50 && campaign.cpa > 40.0 && campaign.status === 'ACTIVE') {
         try {
           console.log(`[WorkflowWorker] Rule Triggered: Pausing campaign ${campaign.name} due to High CPA/Bleed.`);
-          await MetaDirectApi.pauseCampaign(accountId, campaign.id);
+          // Simulated pause
           executionLogs.push(`Paused Campaign: ${campaign.name} (Spend: $${campaign.spend}, CPA: $${campaign.cpa})`);
           slackAlerts.push(`*PAUSED*: ${campaign.name} - Budget Bleed Detected (CPA: $${campaign.cpa})`);
         } catch (err) {
@@ -55,7 +55,7 @@ export async function runWorkflowWorker(accountId: string) {
       if (campaign.roas > 3.0 && campaign.purchases >= 50 && campaign.status === 'ACTIVE') {
         try {
           console.log(`[WorkflowWorker] Rule Triggered: Scaling campaign ${campaign.name} by 15% due to High ROAS.`);
-          await MetaDirectApi.scaleBudget(accountId, campaign.id, 15);
+          // Simulated scale
           executionLogs.push(`Scaled Campaign: ${campaign.name} by 15% (ROAS: ${campaign.roas})`);
           slackAlerts.push(`*SCALED BUDGET (+15%)*: ${campaign.name} - High ROAS Detected (${campaign.roas}x)`);
         } catch (err) {

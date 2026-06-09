@@ -1,4 +1,7 @@
 import { NextResponse } from 'next/server';
+import { db } from '@/server/db';
+import { organizations } from '@/server/db/schema';
+import { eq } from 'drizzle-orm';
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
@@ -40,11 +43,19 @@ export async function GET(request: Request) {
 
     const longLivedToken = longLivedData.access_token;
 
-    // In a real application, you would save this token to your database
-    // associated with the current user's organization.
-    // e.g. await db.update(organizations).set({ metaAccessToken: longLivedToken }).where(...)
+    // Get organizationId from middleware-injected headers
+    const organizationId = request.headers.get('x-organization-id');
+    
+    if (!organizationId) {
+      throw new Error('Organization not found in session');
+    }
 
-    return NextResponse.redirect(`${NEXT_PUBLIC_APP_URL}/dashboard/connect?success=true`);
+    await db.update(organizations)
+      .set({ metaAccessToken: longLivedToken })
+      .where(eq(organizations.id, organizationId));
+
+    // Redirect to connect page with success state
+    return NextResponse.redirect(`${NEXT_PUBLIC_APP_URL}/dashboard/connect?success=true&token_saved=true`);
   } catch (error: any) {
     return NextResponse.redirect(`${NEXT_PUBLIC_APP_URL}/dashboard/connect?error=${encodeURIComponent(error.message)}`);
   }

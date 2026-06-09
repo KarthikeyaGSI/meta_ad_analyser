@@ -4,6 +4,8 @@ export const organizations = pgTable('organizations', {
   id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
   name: text('name').notNull(),
   slug: text('slug').notNull().unique(),
+  metaAccessToken: text('meta_access_token'),
+  metaAccountId: text('meta_account_id'),
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
   deletedAt: timestamp('deleted_at'),
