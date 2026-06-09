@@ -7,6 +7,7 @@ import React, { useEffect, useState } from 'react';
 import { enableSandbox } from '@/shared/lib/runtime';
 import { analyticsApi } from '@/services/api';
 import { useStore } from '@/client/store/useStore';
+import ThemeToggle from '@/components/ui/ThemeToggle';
 
 export default function Navbar() {
   const router = useRouter();
@@ -185,7 +186,7 @@ export default function Navbar() {
           {enableSandbox ? 'Sandbox' : 'Live'}
         </div>
 
-        {/* PDF Export Button */}
+        <ThemeToggle />
         <button
           onClick={handleExportPDF}
           disabled={!activeAccount}

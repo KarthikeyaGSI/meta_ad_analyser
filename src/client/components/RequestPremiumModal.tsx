@@ -39,6 +39,8 @@ export function RequestPremiumModal({ isOpen, onClose, organizationId }: Request
         ...formData
       });
       setSuccess(true);
+      // Redirect to email after success
+      window.location.href = `mailto:business.marketingko@gmail.com?subject=Premium%20Access%20Request&body=Name:${formData.name}%0ACompany:${formData.company}%0AWebsite:${formData.website}%0AEmail:${formData.email}%0ATeam%20Size:${formData.teamSize}%0ARequirements:${formData.requirements}`;
       // Wait a moment then close
       setTimeout(() => {
         onClose();

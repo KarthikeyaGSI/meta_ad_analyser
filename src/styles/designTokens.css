@@ -1,0 +1,45 @@
+/* src/styles/designTokens.css */
+:root {
+  /* Primary palette */
+  --color-primary-50: hsl(260, 80%, 95%);
+  --color-primary-100: hsl(260, 80%, 90%);
+  --color-primary-200: hsl(260, 80%, 80%);
+  --color-primary-300: hsl(260, 80%, 70%);
+  --color-primary-400: hsl(260, 80%, 60%);
+  --color-primary-500: hsl(260, 80%, 50%);
+  --color-primary-600: hsl(260, 80%, 40%);
+  --color-primary-700: hsl(260, 80%, 30%);
+  --color-primary-800: hsl(260, 80%, 20%);
+  --color-primary-900: hsl(260, 80%, 10%);
+
+  /* Accent palette */
+  --color-accent-50: hsl(190, 70%, 95%);
+  --color-accent-100: hsl(190, 70%, 90%);
+  --color-accent-200: hsl(190, 70%, 80%);
+  --color-accent-300: hsl(190, 70%, 70%);
+  --color-accent-400: hsl(190, 70%, 60%);
+  --color-accent-500: hsl(190, 70%, 50%);
+  --color-accent-600: hsl(190, 70%, 40%);
+  --color-accent-700: hsl(190, 70%, 30%);
+  --color-accent-800: hsl(190, 70%, 20%);
+  --color-accent-900: hsl(190, 70%, 10%);
+
+  /* Glassmorphism backdrop */
+  --glass-bg: rgba(255, 255, 255, 0.12);
+  --glass-border: rgba(255, 255, 255, 0.18);
+  --glass-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+
+  /* Transition defaults */
+  --transition-short: 200ms ease;
+  --transition-medium: 350ms ease;
+
+  /* Font families */
+  --font-sans: 'Inter', system-ui, sans-serif;
+}
+
+/* Dark mode overrides */
+[data-theme='dark'] {
+  --glass-bg: rgba(0, 0, 0, 0.32);
+  --glass-border: rgba(255, 255, 255, 0.12);
+  --glass-shadow: 0 4px 30px rgba(0, 0, 0, 0.6);
+}

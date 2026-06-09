@@ -2,6 +2,16 @@ import { db } from '../db';
 import { organizations } from '../db/schema';
 import { eq } from 'drizzle-orm';
 
+/**
+ * Custom error for Meta permission issues.
+ */
+export class MetaPermissionError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = 'MetaPermissionError';
+  }
+}
+
 interface MetaGraphAction {
   action_type: string;
   value: string;
@@ -49,7 +59,13 @@ export class MetaService {
 
     const res = await fetch(url.toString());
     const json = await res.json();
-    if (json.error) throw new Error(json.error.message);
+    if (json.error) {
+      // Detect permission error (code 200) and provide a clearer message
+      if (json.error.code === 200) {
+        throw new MetaPermissionError('Missing ads_management or ads_read permission.');
+      }
+      throw new Error(json.error.message);
+    }
     return json;
   }
 

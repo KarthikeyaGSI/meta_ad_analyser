@@ -16,8 +16,7 @@ export const hasMeta = Boolean(
 export const enableSandbox = (() => {
   return (
     process.env.NEXT_PUBLIC_ENABLE_SANDBOX === 'true' ||
-    process.env.ENABLE_SANDBOX === 'true' ||
-    !hasAppwrite
+    process.env.ENABLE_SANDBOX === 'true'
   );
 })();
 
