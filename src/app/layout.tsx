@@ -2,6 +2,7 @@ import React from 'react';
 import './globals.css';
 import { ErrorBoundary } from '../client/components/ErrorBoundary';
 import Providers from './providers';
+import ThemeProvider from '@/components/ThemeProvider';
 import { Inter } from 'next/font/google';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
@@ -60,11 +61,13 @@ export default function RootLayout({
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
-        <Providers>
-          <ErrorBoundary>
-            {children}
-          </ErrorBoundary>
-        </Providers>
+        <ThemeProvider>
+          <Providers>
+            <ErrorBoundary>
+              {children}
+            </ErrorBoundary>
+          </Providers>
+        </ThemeProvider>
       </body>
     </html>
   );

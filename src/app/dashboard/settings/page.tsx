@@ -19,7 +19,7 @@ import {
 import React, { useState, useEffect } from 'react';
 import { analyticsApi, authApi } from '../../../services/api';
 import { useStore } from '../../../client/store/useStore';
-import PremiumCTA from '@/client/components/ui/PremiumCTA';
+import PremiumCTA from "@/components/ui/PremiumCTA";
 
 export default function SettingsPage() {
   const { setActiveAccount, triggerRefresh, activeAccount, brandColor, setBrandColor, agencyName, setAgencyName, isPremium } = useStore();

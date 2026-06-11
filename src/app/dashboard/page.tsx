@@ -12,6 +12,7 @@ import { useStore } from '../../client/store/useStore';
 import { analyticsApi } from '../../services/api';
 import { formatCurrency, formatRoas } from '../../shared/utils/formatters';
 import { Button } from '../../client/components/ui/button';
+import PerformanceChart from '@/components/charts/PerformanceChart';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 type Severity = 'critical' | 'warning' | 'opportunity';
@@ -266,6 +267,9 @@ export default function DashboardOverview() {
           )}
         </div>
       </div>
+
+      {/* ── Performance Chart ─────────────────────────────────────────────── */}
+      <PerformanceChart />
 
       {/* ── Health + KPI row ──────────────────────────────────────────────────── */}
       <div className="grid grid-cols-2 lg:grid-cols-6 gap-3">
