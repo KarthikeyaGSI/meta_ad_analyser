@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import { ArrowRight, Loader2, AlertCircle } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { authClient } from '@/client/lib/auth-client';
+import { useStore } from '@/client/store/useStore';
 import Link from 'next/link';
 
 export default function SignupPage() {
@@ -71,6 +72,11 @@ export default function SignupPage() {
       await authClient.updateUser({
         name
       });
+
+      const sessionData = await authClient.getSession();
+      if (sessionData?.data?.user) {
+        useStore.getState().setUser(sessionData.data.user as any);
+      }
 
       setStatus('success');
       setTimeout(() => {

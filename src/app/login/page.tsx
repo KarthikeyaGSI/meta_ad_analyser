@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import { ArrowRight, Loader2, AlertCircle } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { authClient } from '@/client/lib/auth-client';
+import { useStore } from '@/client/store/useStore';
 import Link from 'next/link';
 
 export default function LoginPage() {
@@ -66,6 +67,11 @@ export default function LoginPage() {
         await fetch('/api/license/sync', { method: 'POST' });
       } catch (e) {
         // Silently fail, middleware will catch them
+      }
+
+      const sessionData = await authClient.getSession();
+      if (sessionData?.data?.user) {
+        useStore.getState().setUser(sessionData.data.user);
       }
 
       setStatus('success');
