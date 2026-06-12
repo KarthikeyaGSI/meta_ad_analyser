@@ -5,9 +5,15 @@ import { db } from "./db";
 import * as schema from "./db/schema";
 import { eq } from "drizzle-orm";
 import { v4 as uuidv4 } from "uuid";
-import { Resend } from "resend";
+import nodemailer from "nodemailer";
 
-const resend = new Resend(process.env.RESEND_API_KEY || "missing");
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_APP_PASSWORD,
+  },
+});
 
 export const auth = betterAuth({
   database: drizzleAdapter(db, {
@@ -22,21 +28,17 @@ export const auth = betterAuth({
   plugins: [
     emailOTP({
       async sendVerificationOTP({ email, otp, type }) {
-        if (process.env.NODE_ENV !== "development" || process.env.RESEND_API_KEY) {
+        if (process.env.NODE_ENV !== "development" || process.env.EMAIL_USER) {
           try {
-            const result = await resend.emails.send({
-              from: "Vero <onboarding@resend.dev>", // default test domain
+            await transporter.sendMail({
+              from: `"Vero" <${process.env.EMAIL_USER}>`,
               to: email,
               subject: "Your Vero Login Code",
               html: `<h1>${otp}</h1><p>Enter this 6-digit code to log in. It expires in 10 minutes.</p>`,
             });
-            if (result.error) {
-               console.error("Resend API Error:", result.error);
-               throw new Error(result.error.message);
-            }
-            console.log(`[OTP SENT]: ${otp} for ${email}`);
+            console.log(`[OTP SENT]: ${otp} for ${email} via Nodemailer`);
           } catch (e: any) {
-            console.error("Failed to send OTP:", e.message);
+            console.error("Failed to send OTP via Nodemailer:", e.message);
             throw e;
           }
         } else {
