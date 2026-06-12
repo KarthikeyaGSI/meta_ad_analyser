@@ -19,6 +19,7 @@ export const users = pgTable('users', {
   passwordHash: text('password_hash'),
   role: text('role').default('user').notNull(),
   emailVerified: boolean('email_verified').default(false).notNull(),
+  onboardingCompleted: boolean('onboarding_completed').default(false).notNull(),
   image: text('image'),
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
@@ -181,3 +182,24 @@ export const verification = pgTable(
       .notNull(),
   }
 ).enableRLS();
+
+export const competitors = pgTable('competitors', {
+  id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
+  organizationId: text('organization_id').references(() => organizations.id).notNull(),
+  domain: text('domain').notNull(),
+  name: text('name').notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+}).enableRLS();
+
+export const workflows = pgTable('workflows', {
+  id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
+  organizationId: text('organization_id').references(() => organizations.id).notNull(),
+  name: text('name').notNull(),
+  status: text('status').notNull(),
+  nodes: jsonb('nodes').notNull(),
+  edges: jsonb('edges').notNull(),
+  version: integer('version').default(1).notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+}).enableRLS();

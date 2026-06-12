@@ -1,34 +1,64 @@
 'use client';
 
 import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { ArrowRight, Loader2, AlertCircle } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { authClient } from '@/client/lib/auth-client';
 import Link from 'next/link';
 
 export default function LoginPage() {
+  const [step, setStep] = useState<'email' | 'otp'>('email');
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [otp, setOtp] = useState('');
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   const [errorMessage, setErrorMessage] = useState('');
   const router = useRouter();
 
-  const handleLogin = async (e: React.FormEvent) => {
+  const handleSendOtp = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email || !password) return;
+    if (!email) return;
 
     setStatus('loading');
     setErrorMessage('');
 
     try {
-      const { data, error } = await authClient.signIn.email({
+      const { error } = await authClient.emailOtp.sendVerificationOtp({
         email,
-        password
+        type: "sign-in" // better-auth defaults to 'sign-in'
       });
 
       if (error) {
-        throw new Error(error.message || 'Invalid credentials');
+        throw new Error(error.message || 'Failed to send OTP');
+      }
+
+      setStatus('idle');
+      setStep('otp');
+    } catch (err: any) {
+      setStatus('error');
+      setErrorMessage(err.message || 'Network error: The authentication service is unavailable.');
+    }
+  };
+
+  const handleVerifyOtp = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!otp || otp.length !== 6) {
+      setErrorMessage('Please enter a valid 6-digit code');
+      setStatus('error');
+      return;
+    }
+
+    setStatus('loading');
+    setErrorMessage('');
+
+    try {
+      const { data, error } = await authClient.signIn.emailOtp({
+        email,
+        otp
+      });
+
+      if (error) {
+        throw new Error(error.message || 'Invalid OTP code');
       }
 
       // Attempt to sync their existing license into a cookie
@@ -45,16 +75,7 @@ export default function LoginPage() {
       
     } catch (err: any) {
       setStatus('error');
-      
-      let msg = err.message || 'An unknown error occurred';
-      
-      if (msg.toLowerCase().includes('failed to fetch') || msg.toLowerCase().includes('network error')) {
-        msg = 'Network error: The authentication service is unavailable or unreachable.';
-      } else if (msg.toLowerCase().includes('invalid')) {
-        msg = 'Invalid email or password.';
-      }
-      
-      setErrorMessage(msg);
+      setErrorMessage(err.message || 'Invalid or expired OTP code.');
     }
   };
 
@@ -67,60 +88,96 @@ export default function LoginPage() {
           </div>
           <h1 className="text-2xl font-semibold tracking-tight text-gray-100">Welcome back</h1>
           <p className="text-gray-500 text-sm mt-2">
-            Enter your credentials to access your workspace
+            {step === 'email' ? 'Enter your email to receive a login code' : 'Enter the 6-digit code sent to your email'}
           </p>
         </div>
 
         <div className="bg-[#0A0A0A] border border-white/10 rounded-xl p-6 shadow-2xl">
-          <form onSubmit={handleLogin} className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">Email</label>
-              <input 
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="name@company.com"
-                className="w-full bg-black border border-white/10 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-white/30 focus:border-white/30 transition-all placeholder:text-gray-600"
-                disabled={status === 'loading' || status === 'success'}
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">Password</label>
-              <input 
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="••••••••"
-                className="w-full bg-black border border-white/10 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-white/30 focus:border-white/30 transition-all placeholder:text-gray-600"
-                disabled={status === 'loading' || status === 'success'}
-              />
-            </div>
-
-            {status === 'error' && (
-              <div className="flex items-center space-x-2 text-red-400 text-sm bg-red-950/30 p-3 rounded-lg border border-red-900/50">
-                <AlertCircle className="w-4 h-4 flex-shrink-0" />
-                <span>{errorMessage}</span>
+          {step === 'email' ? (
+            <form onSubmit={handleSendOtp} className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-2">Email</label>
+                <input 
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="name@company.com"
+                  className="w-full bg-black border border-white/10 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-white/30 focus:border-white/30 transition-all placeholder:text-gray-600"
+                  disabled={status === 'loading'}
+                />
               </div>
-            )}
 
-            <button 
-              type="submit"
-              disabled={status === 'loading' || status === 'success' || !email || !password}
-              className="w-full bg-white text-black font-medium rounded-lg px-4 py-2.5 text-sm flex items-center justify-center transition-all hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed mt-2"
-            >
-              {status === 'idle' || status === 'error' ? (
-                'Sign In'
-              ) : status === 'loading' ? (
-                <div className="flex items-center space-x-2">
-                  <Loader2 className="w-4 h-4 animate-spin" />
-                  <span>Signing In...</span>
+              {status === 'error' && (
+                <div className="flex items-center space-x-2 text-red-400 text-sm bg-red-950/30 p-3 rounded-lg border border-red-900/50">
+                  <AlertCircle className="w-4 h-4 flex-shrink-0" />
+                  <span>{errorMessage}</span>
                 </div>
-              ) : (
-                'Success'
               )}
-            </button>
-          </form>
+
+              <button 
+                type="submit"
+                disabled={status === 'loading' || !email}
+                className="w-full bg-white text-black font-medium rounded-lg px-4 py-2.5 text-sm flex items-center justify-center transition-all hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed mt-2"
+              >
+                {status === 'loading' ? (
+                  <div className="flex items-center space-x-2">
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    <span>Sending Code...</span>
+                  </div>
+                ) : (
+                  'Send Login Code'
+                )}
+              </button>
+            </form>
+          ) : (
+            <form onSubmit={handleVerifyOtp} className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-2">Verification Code</label>
+                <input 
+                  type="text"
+                  value={otp}
+                  onChange={(e) => setOtp(e.target.value)}
+                  placeholder="123456"
+                  maxLength={6}
+                  className="w-full bg-black border border-white/10 rounded-lg px-3 py-2 text-sm text-white text-center tracking-widest focus:outline-none focus:ring-1 focus:ring-white/30 focus:border-white/30 transition-all placeholder:text-gray-600"
+                  disabled={status === 'loading' || status === 'success'}
+                />
+              </div>
+
+              {status === 'error' && (
+                <div className="flex items-center space-x-2 text-red-400 text-sm bg-red-950/30 p-3 rounded-lg border border-red-900/50">
+                  <AlertCircle className="w-4 h-4 flex-shrink-0" />
+                  <span>{errorMessage}</span>
+                </div>
+              )}
+
+              <button 
+                type="submit"
+                disabled={status === 'loading' || status === 'success' || !otp}
+                className="w-full bg-white text-black font-medium rounded-lg px-4 py-2.5 text-sm flex items-center justify-center transition-all hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed mt-2"
+              >
+                {status === 'idle' || status === 'error' ? (
+                  'Verify & Log In'
+                ) : status === 'loading' ? (
+                  <div className="flex items-center space-x-2">
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    <span>Verifying...</span>
+                  </div>
+                ) : (
+                  'Success'
+                )}
+              </button>
+              
+              <button
+                type="button"
+                onClick={() => { setStep('email'); setStatus('idle'); setOtp(''); setErrorMessage(''); }}
+                className="w-full mt-4 text-xs text-gray-500 hover:text-white transition-colors"
+                disabled={status === 'loading' || status === 'success'}
+              >
+                ← Back to email
+              </button>
+            </form>
+          )}
         </div>
 
         <div className="mt-6 text-center">

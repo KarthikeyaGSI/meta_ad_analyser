@@ -113,178 +113,45 @@ export const analyticsApi = {
     return res;
   },
   getOverview: async (accountId: string, startDate: string, endDate: string) => {
-    let rawOverview;
-    try {
-      const res = await apiClient.get('/meta', { params: { action: 'overview', accountId, startDate, endDate } });
-      rawOverview = res.data.data;
-    } catch (error) {
-      console.warn('Live meta fetch failed, falling back to demo data', error);
-      const res = await safeFetch(() => apiClient.get(`/accounts/${accountId}/overview`, { params: { startDate, endDate } }), demoOverview);
-      rawOverview = res.data;
-    }
-    return { data: mapAnalyticsOverview(rawOverview) };
+    const res = await apiClient.get('/meta', { params: { action: 'overview', accountId, startDate, endDate } });
+    return { data: mapAnalyticsOverview(res.data.data) };
   },
   getCharts: async (accountId: string, startDate: string, endDate: string) => {
-    let rawCharts;
-    try {
-      const res = await apiClient.get('/meta', { params: { action: 'charts', accountId, startDate, endDate } });
-      rawCharts = res.data.data;
-    } catch (error) {
-      console.warn('Live meta fetch failed, falling back to demo data', error);
-      const res = await safeFetch(() => apiClient.get(`/accounts/${accountId}/charts`, { params: { startDate, endDate } }), demoCharts);
-      rawCharts = res.data;
-    }
-    return { data: (rawCharts ?? []).map(mapInsightDocument) };
+    const res = await apiClient.get('/meta', { params: { action: 'charts', accountId, startDate, endDate } });
+    return { data: (res.data.data ?? []).map(mapInsightDocument) };
   },
   getCampaigns: async (accountId: string, startDate: string, endDate: string, filters: Record<string, unknown> = {}) => {
-    let rawCampaigns;
-    try {
-      const res = await apiClient.get('/meta', { params: { action: 'campaigns', accountId, startDate, endDate } });
-      rawCampaigns = res.data.data;
-    } catch (error) {
-      console.warn('Live meta fetch failed, falling back to demo data', error);
-      const res = await safeFetch(() => apiClient.get(`/accounts/${accountId}/campaigns`, { params: { startDate, endDate, ...filters } }), demoCampaigns);
-      rawCampaigns = res.data;
-    }
-    const list = (rawCampaigns?.list ?? rawCampaigns ?? []).map(mapCampaignDocument);
+    const res = await apiClient.get('/meta', { params: { action: 'campaigns', accountId, startDate, endDate, ...filters } });
+    const list = (res.data.data?.list ?? res.data.data ?? []).map(mapCampaignDocument);
     return { data: { list, total: list.length } };
   },
   getAdsets: async (accountId: string, startDate: string, endDate: string) => {
-    let rawAdsets;
-    try {
-      const res = await apiClient.get('/meta', { params: { action: 'adsets', accountId, startDate, endDate } });
-      rawAdsets = res.data.data;
-    } catch (error) {
-      console.warn('Live meta fetch failed, falling back to demo data', error);
-      const res = await safeFetch(() => apiClient.get(`/accounts/${accountId}/adsets`, { params: { startDate, endDate } }), demoAdsets);
-      rawAdsets = res.data;
-    }
-    return { data: rawAdsets ?? [] };
+    const res = await apiClient.get('/meta', { params: { action: 'adsets', accountId, startDate, endDate } });
+    return { data: res.data.data ?? [] };
   },
   getCreatives: async (accountId: string, startDate: string, endDate: string) => {
-    // 🎢 "God Mode" Sandbox Injection
-    const isSandbox = accountId === 'demo-act-id' || accountId === 'demo-cosmetics-id';
-    if (isSandbox) {
-      return {
-        data: [
-          {
-            id: 'c1',
-            name: 'UGC Unboxing TikTok Style',
-            format: 'video',
-            spend: 4250,
-            ctr: 2.1,
-            roas: 3.4,
-            fatigueScore: 2.1,
-            frequency: 1.2,
-            imageUrl: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&q=80&w=400',
-            callToActionType: 'SHOP_NOW',
-            headline: 'The Ultimate Sneaker Drop',
-            body: 'Unboxing the craziest kicks of the year. Grab yours before they sell out.'
-          },
-          {
-            id: 'c2',
-            name: 'Carousel Product Highlight',
-            format: 'carousel',
-            spend: 1800,
-            ctr: 1.4,
-            roas: 1.8,
-            fatigueScore: 8.5,
-            frequency: 4.1,
-            imageUrl: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&q=80&w=400',
-            callToActionType: 'LEARN_MORE',
-            headline: 'Smart Watch Series 9',
-            body: 'Track your fitness, heart rate, and sleep automatically.'
-          },
-          {
-            id: 'c3',
-            name: 'Static Image Offer 20% OFF',
-            format: 'image',
-            spend: 850,
-            ctr: 0.8,
-            roas: 0.9,
-            fatigueScore: 9.2,
-            frequency: 5.8,
-            imageUrl: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&q=80&w=400',
-            callToActionType: 'SHOP_NOW',
-            headline: 'Limited Time 20% OFF!',
-            body: 'Get premium audio for a fraction of the cost. Sale ends tonight.'
-          }
-        ]
-      };
-    }
-
-    let rawCreatives;
-    try {
-      const res = await apiClient.get('/meta', { params: { action: 'creatives', accountId, startDate, endDate } });
-      rawCreatives = res.data.data;
-    } catch (error) {
-      console.warn('Live meta fetch failed, falling back to demo data', error);
-      const res = await safeFetch(() => apiClient.get(`/accounts/${accountId}/creatives`, { params: { startDate, endDate } }), demoCreatives);
-      rawCreatives = res.data;
-    }
-    
-    // Safety check to prevent .map crashes if API returns { list: [...] }
+    const res = await apiClient.get('/meta', { params: { action: 'creatives', accountId, startDate, endDate } });
+    const rawCreatives = res.data.data;
     const list = Array.isArray(rawCreatives) ? rawCreatives : (rawCreatives?.list || []);
     return { data: list.map(mapCreativeDocument) };
   },
   getBreakdowns: async (accountId: string, startDate: string, endDate: string) => {
-    let rawBreakdowns;
-    try {
-      const res = await apiClient.get('/meta', { params: { action: 'breakdowns', accountId, startDate, endDate } });
-      rawBreakdowns = res.data.data;
-    } catch (error) {
-      console.warn('Live meta fetch failed, falling back to demo data', error);
-      const res = await safeFetch(() => apiClient.get(`/accounts/${accountId}/breakdowns`, { params: { startDate, endDate } }), demoBreakdowns);
-      rawBreakdowns = res.data;
-    }
-    return { data: rawBreakdowns ?? { demographics: [], devices: [], placements: [] } };
+    const res = await apiClient.get('/meta', { params: { action: 'breakdowns', accountId, startDate, endDate } });
+    return { data: res.data.data ?? { demographics: [], devices: [], placements: [] } };
   },
   getRecommendations: async (accountId: string) => {
-    let rawRecs;
-    try {
-      const res = await apiClient.get('/meta', { params: { action: 'recommendations', accountId } });
-      rawRecs = res.data.data;
-    } catch (error) {
-      console.warn('Live meta fetch failed, falling back to demo data', error);
-      const res = await safeFetch(() => apiClient.get(`/accounts/${accountId}/recommendations`), demoAiRecommendations);
-      rawRecs = res.data;
-    }
-    return { data: (rawRecs ?? []).map(mapAIRecommendation) };
+    const res = await apiClient.get('/meta', { params: { action: 'recommendations', accountId } });
+    return { data: (res.data.data ?? []).map(mapAIRecommendation) };
   },
   triggerSync: (accountId: string) => 
     safeFetch(() => apiClient.post(`/accounts/${accountId}/sync`), { success: true }),
   triggerMockWebhook: (accountId: string) =>
     safeFetch(() => apiClient.post(`/webhooks/mock`, { accountId }), { success: true }),
-  connectDirectToken: (data: { adAccountId: string; accessToken: string; customAccountName?: string }) => 
-    safeFetch(() => apiClient.post('/accounts/connect', data), { 
-      account: { id: data.adAccountId, name: data.customAccountName || 'Direct Meta Account', actId: data.adAccountId },
-      insightsWorking: true,
-      accountId: data.adAccountId
-    }),
+  connectDirectToken: async (data: { adAccountId: string; metaKey: string; customAccountName?: string }) => {
+    const res = await apiClient.post('/meta/connect', data);
+    return res;
+  },
   getMetrics: async (accountId: string, startDate: string, endDate: string) => {
-    // 🎢 "God Mode" Sandbox Injection
-    const isSandbox = accountId === 'demo-act-id' || accountId === 'demo-cosmetics-id';
-    if (isSandbox) {
-      return {
-        data: {
-          summary: {
-            spend: 12450.50,
-            revenue: 38590.20,
-            roas: 3.1,
-            cpa: 24.5,
-            leads: 450,
-            impressions: 1250000,
-            clicks: 18500
-          },
-          timeseries: Array.from({ length: 30 }).map((_, i) => ({
-            date: new Date(Date.now() - (29 - i) * 86400000).toISOString().split('T')[0],
-            spend: 300 + Math.random() * 200,
-            revenue: 900 + Math.random() * 800,
-            roas: 2.5 + Math.random() * 1.5
-          }))
-        }
-      };
-    }
     return apiClient.get(`/analytics/${accountId}/metrics`, { params: { startDate, endDate } });
   },
   exportCsvUrl: (accountId: string, startDate: string, endDate: string) => 

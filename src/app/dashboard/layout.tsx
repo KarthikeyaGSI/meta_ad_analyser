@@ -16,8 +16,14 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   useEffect(() => {
     setMounted(true);
-    if (!user) router.push('/login');
-  }, [user, router]);
+    if (!user) {
+      router.push('/login');
+    } else if (!user.onboardingCompleted && !pathname.startsWith('/dashboard/onboarding')) {
+      router.push('/dashboard/onboarding');
+    } else if (user.onboardingCompleted && pathname.startsWith('/dashboard/onboarding')) {
+      router.push('/dashboard');
+    }
+  }, [user, router, pathname]);
 
   if (!mounted || !user) {
     return (

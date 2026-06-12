@@ -33,10 +33,6 @@ function FlowCanvas() {
   const { user } = useStore();
   const orgId = user?.organizationId || 'default-org';
   
-  // Real-time sync with database
-  const savedWorkflows: any[] = [];
-  const saveWorkflow = async (data: any) => 'mock-id';
-  
   const [nodes, setNodes] = useState<Node[]>(defaultNodes);
   const [edges, setEdges] = useState<Edge[]>(defaultEdges);
   const [isSaved, setIsSaved] = useState(true);
@@ -48,27 +44,49 @@ function FlowCanvas() {
 
   // Load from DB when available
   useEffect(() => {
-    if (savedWorkflows && savedWorkflows.length > 0) {
-      const dbWorkflow = savedWorkflows[0];
-      setWorkflowId(dbWorkflow._id);
-      if (dbWorkflow.nodes?.length) setNodes(dbWorkflow.nodes);
-      if (dbWorkflow.edges?.length) setEdges(dbWorkflow.edges);
-      setIsSaved(true);
+    async function loadWorkflows() {
+      try {
+        const res = await fetch('/api/workflows', {
+          headers: { 'x-organization-id': orgId }
+        });
+        if (!res.ok) return;
+        const data = await res.json();
+        if (data && data.length > 0) {
+          const dbWorkflow = data[0];
+          setWorkflowId(dbWorkflow.id);
+          if (dbWorkflow.nodes?.length) setNodes(dbWorkflow.nodes);
+          if (dbWorkflow.edges?.length) setEdges(dbWorkflow.edges);
+          setIsSaved(true);
+        }
+      } catch (err) {
+        console.error("Failed to load workflows:", err);
+      }
     }
-  }, [savedWorkflows]);
+    if (orgId !== 'default-org') {
+      loadWorkflows();
+    }
+  }, [orgId]);
 
   const handleSave = async () => {
     setIsSaved(true);
     try {
-      const newId = await saveWorkflow({
-        id: workflowId,
-        organizationId: orgId,
-        name: 'Main Automation',
-        nodes,
-        edges,
-        status: 'active'
+      const res = await fetch('/api/workflows', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-organization-id': orgId
+        },
+        body: JSON.stringify({
+          id: workflowId,
+          name: 'Main Automation',
+          nodes,
+          edges,
+          status: 'active'
+        })
       });
-      if (!workflowId) setWorkflowId(newId);
+      if (!res.ok) throw new Error("Save failed");
+      const savedData = await res.json();
+      if (!workflowId) setWorkflowId(savedData.id);
     } catch (e) {
       console.error("Failed to save workflow:", e);
       setIsSaved(false);
