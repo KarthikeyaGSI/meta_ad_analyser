@@ -86,7 +86,7 @@ export default function AnalyticsBreakdowns() {
                         borderRadius: '12px',
                         color: '#F8FAFC'
                       }}
-                      formatter={(val: any, name: string) => [
+                      formatter={(val: any, name: any) => [
                         name === 'spend' ? formatCurrency(Number(val)) : formatNumber(Number(val)),
                         name === 'spend' ? 'Spend' : 'Purchases'
                       ]}
