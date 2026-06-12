@@ -57,16 +57,20 @@ export default function SignupPage() {
     setErrorMessage('');
 
     try {
-      // In Better Auth emailOTP plugin, signUp takes name and other required fields.
-      const { data, error } = await authClient.signUp.emailOtp({
+      // In Better Auth emailOTP plugin, signIn is used for both login and signup
+      const { data, error } = await authClient.signIn.emailOtp({
         email,
-        otp,
-        name
+        otp
       });
 
       if (error) {
         throw new Error(error.message || 'Invalid OTP code');
       }
+
+      // Update the user's name
+      await authClient.updateUser({
+        name
+      });
 
       setStatus('success');
       setTimeout(() => {
