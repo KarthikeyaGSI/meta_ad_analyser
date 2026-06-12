@@ -1,18 +1,17 @@
 // src/client/components/ui/ThemeToggle.tsx
-import { useTheme } from '@/hooks/useTheme';
+import { useUIStore } from '@/lib/store';
 import { Button } from '@/components/ui/button';
 import { useEffect } from 'react';
-import { motion } from 'framer-motion'; // ensure framer-motion is installed
+import { motion } from 'framer-motion';
 
-/**
- * ThemeToggle – a tiny component that toggles between light and dark mode.
- * Enhancements:
- * • Glass‑morphism background with subtle blur.
- * • Micro‑animation using Framer Motion (rotation on toggle).
- * • Persists theme in localStorage and syncs with the `/api/theme` endpoint.
- */
 export default function ThemeToggle() {
-  const { theme, toggle } = useTheme();
+  const theme = useUIStore(state => state.theme);
+  const setTheme = useUIStore(state => state.setTheme);
+
+  const toggle = () => {
+    const newTheme = theme === 'dark' ? 'light' : 'dark';
+    setTheme(newTheme);
+  };
 
   // Persist theme to localStorage on change and sync with backend cookie
   useEffect(() => {

@@ -10,13 +10,26 @@ import { useUIStore } from '@/lib/store';
  */
 export default function ThemeProvider({ children }: { children: React.ReactNode }) {
   const theme = useUIStore(state => state.theme);
+  const setTheme = useUIStore(state => state.setTheme);
+
+  useEffect(() => {
+    const stored = localStorage.getItem('theme') as 'light' | 'dark' | null;
+    if (stored === 'light' || stored === 'dark') {
+      setTheme(stored);
+    } else {
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      setTheme(prefersDark ? 'dark' : 'light');
+    }
+  }, [setTheme]);
 
   useEffect(() => {
     const root = window.document.documentElement;
     if (theme === 'dark') {
       root.classList.add('dark');
+      root.classList.remove('light');
     } else {
       root.classList.remove('dark');
+      root.classList.add('light');
     }
   }, [theme]);
 
