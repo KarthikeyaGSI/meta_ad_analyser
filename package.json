@@ -98,6 +98,7 @@
     "@types/react-dom": "^18.2.25",
     "@types/recharts": "^1.8.29",
     "@types/supertest": "^7.2.0",
+    "@vitejs/plugin-react": "^6.0.2",
     "autoprefixer": "^10.4.19",
     "axios": "^1.17.0",
     "drizzle-kit": "^0.31.10",
