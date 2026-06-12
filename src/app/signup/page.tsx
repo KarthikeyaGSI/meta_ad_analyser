@@ -26,7 +26,7 @@ export default function SignupPage() {
     try {
       const { error } = await authClient.emailOtp.sendVerificationOtp({
         email,
-        type: "sign-up"
+        type: "sign-in"
       });
 
       if (error) {
