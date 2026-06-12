@@ -9,7 +9,7 @@ import TriggerNode from '../../../client/components/workflow/nodes/TriggerNode';
 import ConditionNode from '../../../client/components/workflow/nodes/ConditionNode';
 import ActionNode from '../../../client/components/workflow/nodes/ActionNode';
 import { motion } from 'framer-motion';
-// convex import removed
+import { toast } from 'sonner';
 // convex import removed
 
 const nodeTypes = {
@@ -87,8 +87,10 @@ function FlowCanvas() {
       if (!res.ok) throw new Error("Save failed");
       const savedData = await res.json();
       if (!workflowId) setWorkflowId(savedData.id);
+      toast.success("Workflow saved successfully!");
     } catch (e) {
       console.error("Failed to save workflow:", e);
+      toast.error("Failed to save workflow. Please try again.");
       setIsSaved(false);
     }
   };

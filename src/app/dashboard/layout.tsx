@@ -6,7 +6,7 @@ import { useRouter, usePathname } from 'next/navigation';
 import Navbar from '../../client/components/Navbar';
 import Sidebar from '../../client/components/Sidebar';
 import { useStore } from '../../client/store/useStore';
-import { CommandPalette } from '../../client/components/CommandPalette';
+import { CommandMenu } from '@/components/ui/CommandMenu';
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const router    = useRouter();
@@ -35,7 +35,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   return (
     <div className="min-h-screen bg-[#0a0b0d]">
-      <CommandPalette />
+      <CommandMenu />
       <Sidebar />
       <Navbar />
 

@@ -22,20 +22,38 @@ const mockData = [
 
 export default function PerformanceChart() {
   return (
-    <div className="card p-5">
-      <h2 className="text-base font-semibold mb-4">Spend & ROAS Over Time</h2>
-      <ResponsiveContainer width="100%" height={300}>
-        <LineChart data={mockData} margin={{ top: 5, right: 20, left: 0, bottom: 5 }}>
-          <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
-          <XAxis dataKey="date" stroke="#a1a1aa" />
-          <YAxis yAxisId="left" orientation="left" stroke="#a1a1aa" />
-          <YAxis yAxisId="right" orientation="right" stroke="#a1a1aa" domain={['dataMin', 'dataMax']} />
-          <Tooltip />
-          <Legend />
-          <Line yAxisId="left" type="monotone" dataKey="spend" stroke="#4f46e5" strokeWidth={2} dot={false} name="Spend ($)" />
-          <Line yAxisId="right" type="monotone" dataKey="roas" stroke="#10b981" strokeWidth={2} dot={false} name="ROAS" />
-        </LineChart>
-      </ResponsiveContainer>
+    <div className="card p-5 flex flex-col gap-6">
+      <div>
+        <h2 className="text-base font-semibold mb-4">Spend Over Time</h2>
+        <ResponsiveContainer width="100%" height={200}>
+          <LineChart data={mockData} syncId="performance-charts" margin={{ top: 5, right: 20, left: 0, bottom: 5 }}>
+            <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
+            <XAxis dataKey="date" stroke="#8b92a0" fontSize={12} tickMargin={8} />
+            <YAxis stroke="#8b92a0" fontSize={12} tickFormatter={(val) => `$${val}`} />
+            <Tooltip
+              contentStyle={{ backgroundColor: '#111316', borderColor: 'rgba(255,255,255,0.1)', borderRadius: '8px' }}
+              itemStyle={{ color: '#fff' }}
+            />
+            <Line type="monotone" dataKey="spend" stroke="#4f46e5" strokeWidth={3} dot={{ r: 3, fill: '#4f46e5' }} activeDot={{ r: 6 }} name="Spend" />
+          </LineChart>
+        </ResponsiveContainer>
+      </div>
+
+      <div>
+        <h2 className="text-base font-semibold mb-4">ROAS Over Time</h2>
+        <ResponsiveContainer width="100%" height={200}>
+          <LineChart data={mockData} syncId="performance-charts" margin={{ top: 5, right: 20, left: 0, bottom: 5 }}>
+            <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
+            <XAxis dataKey="date" stroke="#8b92a0" fontSize={12} tickMargin={8} />
+            <YAxis stroke="#8b92a0" fontSize={12} domain={['dataMin - 0.5', 'dataMax + 0.5']} tickFormatter={(val) => `${val}x`} />
+            <Tooltip
+              contentStyle={{ backgroundColor: '#111316', borderColor: 'rgba(255,255,255,0.1)', borderRadius: '8px' }}
+              itemStyle={{ color: '#fff' }}
+            />
+            <Line type="monotone" dataKey="roas" stroke="#10b981" strokeWidth={3} dot={{ r: 3, fill: '#10b981' }} activeDot={{ r: 6 }} name="ROAS" />
+          </LineChart>
+        </ResponsiveContainer>
+      </div>
     </div>
   );
 }

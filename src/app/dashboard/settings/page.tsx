@@ -20,6 +20,7 @@ import React, { useState, useEffect } from 'react';
 import { analyticsApi, authApi } from '../../../services/api';
 import { useStore } from '../../../client/store/useStore';
 import PremiumCTA from "@/components/ui/PremiumCTA";
+import { toast } from "sonner";
 
 export default function SettingsPage() {
   const { setActiveAccount, triggerRefresh, activeAccount, brandColor, setBrandColor, agencyName, setAgencyName, isPremium } = useStore();
@@ -91,20 +92,18 @@ export default function SettingsPage() {
 
   const handleMetaOauth = async () => {
     setOauthConnecting(true);
-    setErrorMsg('');
-    setSuccessMsg('');
     try {
       const res = await authApi.getMetaLoginUrl();
       if (res.data?.url && !res.data.url.includes('client_id=demo_app_id') && !res.data.url.includes('client_id=')) {
         window.location.href = res.data.url;
       } else {
-        setErrorMsg('No Meta App ID discovered in .env. Booting sandbox OAuth verification callback...');
+        toast.warning('No Meta App ID discovered in .env. Booting sandbox OAuth verification callback...');
         setTimeout(() => {
           window.location.href = '/auth/callback?code=mock_code_generic';
         }, 1500);
       }
     } catch {
-      setErrorMsg('Failed to connect via Meta OAuth. Redirecting to callback simulator...');
+      toast.error('Failed to connect via Meta OAuth. Redirecting to callback simulator...');
       setTimeout(() => {
         window.location.href = '/auth/callback?code=mock_code_generic';
       }, 1500);
@@ -123,14 +122,12 @@ export default function SettingsPage() {
   const handleConnectDirectToken = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!directActId.trim() || !directToken.trim()) {
-      setErrorMsg('Ad Account ID and User Access Token are required.');
+      toast.error('Ad Account ID and User Access Token are required.');
       return;
     }
 
     console.log("[Settings API Slot] connect button click: Initializing multi-stage Meta Live Account connection flow...");
     setConnecting(true);
-    setErrorMsg('');
-    setSuccessMsg('');
     try {
       console.log("[Settings API Slot] Meta validation: Verifying token directly with Facebook Graph API...");
       const actId = directActId.trim();
@@ -162,7 +159,7 @@ export default function SettingsPage() {
       const { account, insightsWorking, accountId } = res.data;
       console.log(`[Settings API Slot] insights response: Insights verified: ${insightsWorking ? 'YES' : 'NO'}`);
       console.log(`[Settings API Slot] sync start: Live campaigns synced successfully for account: ${accountId}`);
-      setSuccessMsg('Successfully connected and synchronized direct Meta API account!');
+      toast.success('Successfully connected and synchronized direct Meta API account!');
       setDirectActId('');
       setDirectToken('');
       setDirectName('');
@@ -177,7 +174,7 @@ export default function SettingsPage() {
     } catch (err: any) {
       console.error('[Settings API Slot] Connection failed:', err);
       const axiosMsg = err.response?.data?.message || err.response?.data?.details;
-      setErrorMsg(axiosMsg || err.message || 'Connection handshake failed. Verify token status.');
+      toast.error(axiosMsg || err.message || 'Connection handshake failed. Verify token status.');
     } finally {
       setConnecting(false);
     }
@@ -423,18 +420,6 @@ export default function SettingsPage() {
                 <p className="text-[10px] text-muted">Bypass OAuth developer app approvals. Connect your live ad spend directly for advanced analysis.</p>
               </div>
             </div>
-            {errorMsg && (
-              <div className="p-3.5 rounded-xl border border-red-500/20 bg-red-500/10 text-[10px] font-semibold text-danger flex items-start gap-2">
-                <ShieldAlert className="w-4.5 h-4.5 shrink-0" />
-                <span>{errorMsg}</span>
-              </div>
-            )}
-            {successMsg && (
-              <div className="p-3.5 rounded-xl border border-success/20 bg-success/15 text-[10px] font-semibold text-success flex items-start gap-2">
-                <Check className="w-4.5 h-4.5 shrink-0" />
-                <span>{successMsg}</span>
-              </div>
-            )}
             <form onSubmit={handleConnectDirectToken} className="space-y-4">
               <fieldset className="space-y-4 border-none p-0 m-0">
                 <legend className="sr-only">Connect Direct Meta API Account</legend>

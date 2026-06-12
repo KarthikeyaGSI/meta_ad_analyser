@@ -12,6 +12,8 @@ import { useStore } from '../../client/store/useStore';
 import { analyticsApi } from '../../services/api';
 import { formatCurrency, formatRoas } from '../../shared/utils/formatters';
 import { Button } from '@/components/ui/button';
+import { InfoTooltip } from '@/components/ui/InfoTooltip';
+import { Skeleton } from '@/components/ui/skeleton';
 import PerformanceChart from '@/components/charts/PerformanceChart';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -147,9 +149,11 @@ function HealthScoreRing({ score }: { score: number }) {
   );
 }
 
-function KpiTile({ label, value, subtext, color = 'default' }: {
-  label: string; value: string | number; subtext?: string;
+function KpiTile({ label, value, subtext, color = 'default', tooltipContent, isLoading }: {
+  label: string; value: React.ReactNode; subtext?: string;
   color?: 'default' | 'critical' | 'warning' | 'success' | 'accent';
+  tooltipContent?: string;
+  isLoading?: boolean;
 }) {
   const colorMap = {
     default:  'text-[#f1f3f5]',
@@ -159,9 +163,16 @@ function KpiTile({ label, value, subtext, color = 'default' }: {
     accent:   'text-[#818cf8]',
   };
   return (
-    <div className="card p-4">
-      <p className="stat-label mb-2">{label}</p>
-      <p className={`text-2xl font-bold tracking-tight ${colorMap[color]}`}>{value}</p>
+    <div className="card p-4 relative group">
+      <div className="flex items-center mb-2">
+        <p className="stat-label mb-0">{label}</p>
+        {tooltipContent && <InfoTooltip content={tooltipContent} />}
+      </div>
+      {isLoading ? (
+        <Skeleton className="h-8 w-24 my-1 bg-white/5" />
+      ) : (
+        <p className={`text-2xl font-bold tracking-tight ${colorMap[color]}`}>{value}</p>
+      )}
       {subtext && <p className="text-xs text-[#535a65] mt-1">{subtext}</p>}
     </div>
   );
@@ -298,22 +309,30 @@ export default function DashboardOverview() {
           value={formatCurrency(spendAtRisk)}
           subtext="from identified issues"
           color="critical"
+          tooltipContent="Estimated potential loss based on current campaign performance issues."
+          isLoading={overviewLoading}
         />
         <KpiTile
           label="Total Spend"
-          value={overviewLoading ? '—' : formatCurrency(overview?.spend ?? 0)}
+          value={formatCurrency(overview?.spend ?? 0)}
           subtext={dateRange.label}
+          tooltipContent="Total amount spent across all active campaigns in the selected timeframe."
+          isLoading={overviewLoading}
         />
         <KpiTile
           label="ROAS"
-          value={overviewLoading ? '—' : formatRoas(overview?.roas ?? 0)}
+          value={formatRoas(overview?.roas ?? 0)}
           subtext="return on ad spend"
           color={( overview?.roas ?? 0) > 3 ? 'success' : 'default'}
+          tooltipContent="Return on Ad Spend: Total conversion value divided by total spend."
+          isLoading={overviewLoading}
         />
         <KpiTile
           label="Active Campaigns"
           value={campaigns.length}
           subtext="with spend this period"
+          tooltipContent="Total number of campaigns that have incurred costs in the selected timeframe."
+          isLoading={campaignsLoading}
         />
       </div>
 
