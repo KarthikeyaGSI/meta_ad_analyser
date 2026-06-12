@@ -100,7 +100,7 @@ export default function AudienceDashboard() {
                 <Tooltip 
                   contentStyle={{ backgroundColor: 'rgba(15,23,42,0.9)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px' }}
                   itemStyle={{ color: '#fff' }}
-                  formatter={(value: number) => [`${value}%`, 'Users']}
+                  formatter={(value: any) => [`${value}%`, 'Users']}
                 />
                 <Legend verticalAlign="bottom" height={36} iconType="circle" wrapperStyle={{ fontSize: '12px', color: '#94a3b8' }} />
               </PieChart>
