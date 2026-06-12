@@ -11,7 +11,7 @@ import Link from 'next/link';
 import { useStore } from '../../client/store/useStore';
 import { analyticsApi } from '../../services/api';
 import { formatCurrency, formatRoas } from '../../shared/utils/formatters';
-import { Button } from '../../client/components/ui/button';
+import { Button } from '@/components/ui/button';
 import PerformanceChart from '@/components/charts/PerformanceChart';
 
 // ─── Types ────────────────────────────────────────────────────────────────────

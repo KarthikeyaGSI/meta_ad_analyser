@@ -1,4 +1,5 @@
-// src/components/ThemeProvider.tsx
+"use client";
+
 import { useEffect } from 'react';
 import { useUIStore } from '@/lib/store';
 
