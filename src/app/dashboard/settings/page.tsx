@@ -156,7 +156,7 @@ export default function SettingsPage() {
       }
       const res = await analyticsApi.connectDirectToken({
         adAccountId: directActId.trim(),
-        accessToken: directToken.trim(),
+        metaKey: directToken.trim(),
         customAccountName: directName.trim() || undefined
       });
       const { account, insightsWorking, accountId } = res.data;
