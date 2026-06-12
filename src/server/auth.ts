@@ -24,14 +24,20 @@ export const auth = betterAuth({
       async sendVerificationOTP({ email, otp, type }) {
         if (process.env.NODE_ENV !== "development" || process.env.RESEND_API_KEY) {
           try {
-            await resend.emails.send({
-              from: "Vero <noreply@vero.ai>", // Or your verified domain
+            const result = await resend.emails.send({
+              from: "Vero <onboarding@resend.dev>", // default test domain
               to: email,
               subject: "Your Vero Login Code",
               html: `<h1>${otp}</h1><p>Enter this 6-digit code to log in. It expires in 10 minutes.</p>`,
             });
-          } catch (e) {
-            console.error("Failed to send OTP", e);
+            if (result.error) {
+               console.error("Resend API Error:", result.error);
+               throw new Error(result.error.message);
+            }
+            console.log(`[OTP SENT]: ${otp} for ${email}`);
+          } catch (e: any) {
+            console.error("Failed to send OTP:", e.message);
+            throw e;
           }
         } else {
           console.log(`[DEV OTP]: ${otp} for ${email}`);
