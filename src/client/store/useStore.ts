@@ -12,6 +12,7 @@ export interface UserSession {
   name: string;
   email?: string;
   organizationId?: string;
+  onboardingCompleted?: boolean;
 }
 
 export interface AdAccount {
